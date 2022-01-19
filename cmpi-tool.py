@@ -25,16 +25,13 @@ def fldmean(ds):
     weights = np.cos(np.deg2rad(ds.lat))
     weights.name = "weights"
     ds_weighted = ds.weighted(weights)
-    return ds.mean(("lon", "lat")
-
-
-if __name__ == '__main__':
+    return ds.mean("lon", "lat")
 
 #Define paths
-obs_path='obs/'
-model_path='input/'
-out_path='output/'
-eval_path='eval/'
+obs_path = 'obs/'
+model_path = '/work/ollie/jstreffi/runtime/awicm3-frontiers/reference/outdata/oifs/test2/'
+out_path = 'output/'
+eval_path = 'eval/'
 time = '198912-201411'
 
 '''
@@ -56,7 +53,7 @@ obs = { 'siconc':'OSISAF',
 
 
 models = {
-    'AWICM3':{
+    'AWI-CM3_REF':{
         'siconc':'OSISAF',
         'tas':'ERA5',
         'clt':'MODIS',
@@ -67,20 +64,6 @@ models = {
         'ua':'ERA5',
         'zg':'ERA5'},
 }
-#Define evaluation models
-eval_models = {
-    'AWICM3':{
-        'siconc':'OSISAF',
-        'tas':'ERA5',
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'}}
-    
-'''
 #Define evaluation models
 eval_models = {
     'ACCESS-ESM1-5':{
@@ -427,7 +410,6 @@ regions={'glob' : {
     'lat_max':-60,}
           
 }
-'''
 
 #Define seasons
 seasons = ['MAM', 'JJA', 'SON', 'DJF']
