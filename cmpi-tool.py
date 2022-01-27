@@ -1,13 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-'''
-The climate model performance indicies (cmip) tool provides normalized 
-performance indicies evaluates your climate models performance against
-reanalysis and obstervational data. It will also normalize your performance
-to allow for comparison with the top 10 performing CMIP6 models
+#!/usr/bin/env python
+# coding: utf-8
 
-@author: Jan Streffing (jan.streffing@awi.de), January 2022
-'''
+
 #Imports
 import xarray as xr
 import numpy as np
@@ -20,18 +14,28 @@ from cartopy import config
 import cartopy.crs as ccrs
 
 
+
 # Returns equvalent to cdo fldmean
 def fldmean(ds):
     weights = np.cos(np.deg2rad(ds.lat))
     weights.name = "weights"
     ds_weighted = ds.weighted(weights)
-    return ds.mean("lon", "lat")
+    return ds.mean(("lon", "lat"))
+
+
+
+
+#Choose ERA5 or NCEP2. This switch also selects the eval/???? subfolders, so do not mix and match as this would lead to incorrect results.
+reanalysis='ERA5'
 
 #Define paths
-obs_path = 'obs/'
-model_path = '/work/ollie/jstreffi/runtime/awicm3-frontiers/reference/outdata/oifs/test2/'
-out_path = 'output/'
-eval_path = 'eval/'
+obs_path='obs/'
+#model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/reference/outdata/oifs/combined/'
+model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/enthalpy_of_fusion/outdata/oifs/combined/'
+#model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/defuse_sea_alb_005/outdata/oifs/combined/'
+#model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/meltpond_alb+025/outdata/oifs/combined/'
+out_path='output/'
+eval_path='eval/'+reanalysis+'/'
 time = '198912-201411'
 
 '''
@@ -40,345 +44,360 @@ I'd like to write this in a less verbose way, but it seems to involve conversion
 via exec() locals() or globals(). I want that even less than long dict def.
 '''
 
+
+
 obs = { 'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'}
-
-
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis}
 
 models = {
-    'AWI-CM3_REF':{
+    'AWI-CM3_EOF':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis}
 }
+
+eval_models = {
+    'AWI-CM3_REF':{
+        'siconc':'OSISAF',
+        'tas':reanalysis,
+        'clt':'MODIS',
+        'pr':'GPCP',
+        'rlut':'CERES',
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis}
+}
+
+'''
 #Define evaluation models
 eval_models = {
     'ACCESS-ESM1-5':{
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'AWI-CM1-MR':{
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'AWI-ESM1-LR':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'BCC':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'CAMS':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'CAS-ESM2-0':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'CAN5':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'CESM2':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'ua':reanalysis,
+        'zg':reanalysis},
     'CIESM':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'ua':reanalysis,
+        'zg':reanalysis},
     'CMCC-CM2-SR5':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'CNRM6':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'E3SM-1-1':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'ua':reanalysis,
+        'zg':reanalysis},
     'EC-Earth3':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'FGOALS-f3-L':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'FGOALS-g3':{
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'ua':reanalysis,
+        'zg':reanalysis},
     'FIO2':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP'},
     'GISS-E2-1-G':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'HadGEM3MM':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'HAMMOZ':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'INM5':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'IITM':{
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',},
+        'uas':reanalysis,
+        'vas':reanalysis,},
     'IPSL-CM6A-LR':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'KACE-1-0-G':{
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'KIOST-ESM':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'MCMUA1':{
-        'tas':'ERA5',
+        'tas':reanalysis,
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'MIROC6':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'MPI-ESM1-2-LR':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'MRI':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'NESM3':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'NORESM2':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'ua':reanalysis,
+        'zg':reanalysis},
     'NOAA-GFDL':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis},
     'SNU': {   
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'ua':reanalysis,
+        'zg':reanalysis},
     'TAIESM':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'ua':'ERA5',
-        'zg':'ERA5'},
+        'ua':reanalysis,
+        'zg':reanalysis},
     'UKESM1-0-LL':{
         'siconc':'OSISAF',
-        'tas':'ERA5',
+        'tas':reanalysis,
         'clt':'MODIS',
         'pr':'GPCP',
         'rlut':'CERES',
-        'uas':'ERA5',
-        'vas':'ERA5',
-        'ua':'ERA5',
-        'zg':'ERA5'}
+        'uas':reanalysis,
+        'vas':reanalysis,
+        'ua':reanalysis,
+        'zg':reanalysis}
 }
-
+'''
 
 #Define regions
 regions={'glob' : {
@@ -411,8 +430,11 @@ regions={'glob' : {
           
 }
 
+
 #Define seasons
 seasons = ['MAM', 'JJA', 'SON', 'DJF']
+
+
 
 
 
@@ -425,6 +447,9 @@ for var in obs:
         intermediate = xr.open_dataset(obs_path+var+'_'+obs[var]+'_'+seas+'.nc')
         ds_obs[var,seas] = intermediate.compute()
 
+
+
+
 #Loading model data
 ds_model = OrderedDict()
 for model in models:
@@ -433,7 +458,10 @@ for model in models:
             print('loading '+model_path+var+'_'+model+'_'+time+'_'+seas+'.nc')
             intermediate = xr.open_dataset(model_path+var+'_'+model+'_'+time+'_'+seas+'.nc')
             ds_model[var,seas,model] = intermediate.compute()
-                   
+
+
+
+
 #Calculate absolute error and build field mean of abs error
 abs_error = OrderedDict()
 mean_error = OrderedDict()
@@ -451,6 +479,9 @@ for model in models:
                                                    ds_obs[var,seas].drop('time').where(filter1 & filter2)))
                 mean_error[var,seas,model,region] = fldmean(abs_error[var,seas,model,region])
 
+
+
+
 #Write field mean of errors into csv files
 for model in models:
     with open(out_path+'abs/'+model+'.csv', 'w', newline='') as csvfile:
@@ -462,23 +493,27 @@ for model in models:
                     continue
                 for seas in seasons:
                     if (var == 'tas'):
-                        writer.writerow([var,region,seas,mean_error[var,seas,model,region].tas.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].tas.values[0])])
                     if (var == 'uas'):
-                        writer.writerow([var,region,seas,mean_error[var,seas,model,region].uas.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].uas.values[0])])
                     if (var == 'vas'):
-                        writer.writerow([var,region,seas,mean_error[var,seas,model,region].vas.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].vas.values[0])])
                     if (var == 'ua'):
-                        writer.writerow([var,region,seas,mean_error[var,seas,model,region].ua.values[0][0]])
+                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].ua.values[0])])
                     if (var == 'zg'):
-                        writer.writerow([var,region,seas,mean_error[var,seas,model,region].zg.values[0][0]])
+                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].zg.values[0])])
                     if (var == 'pr'):
-                        writer.writerow([var,region,seas,mean_error[var,seas,model,region].pr.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].pr.values[0])])
                     if (var == 'rlut'):
-                        writer.writerow([var,region,seas,mean_error[var,seas,model,region].rlut.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].rlut.values[0])])
                     if (var == 'clt'):
-                        writer.writerow([var,region,seas,mean_error[var,seas,model,region].clt.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].clt.values[0])])
                     if (var == 'siconc'):
-                        writer.writerow([var,region,seas,mean_error[var,seas,model,region].siconc.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].siconc.values[0])])
+
+
+# In[117]:
+
 
 #Read precalculated cmip6 field mean of errors from csv files
 collect = np.empty([len(eval_models),len(obs),len(regions),len(seasons)])*np.nan
@@ -511,6 +546,9 @@ for eval_model in eval_models:
     i+=1
 ensmean=np.nanmean(collect,axis=0)
 
+
+
+
 #Place sums of error into easier to inspect dictionary
 eval_error_mean = OrderedDict()
 j=0
@@ -526,6 +564,9 @@ for var in obs:
         k+=1
     j+=1
 
+
+
+
 #calculate ratio of current model error to evaluation model error
 error_fraction = OrderedDict()
 sum=0
@@ -536,6 +577,9 @@ for model in models:
                 continue
             for seas in seasons:
                 error_fraction[var,seas,model,region] = mean_error[var,seas,model,region] / eval_error_mean[var,region,seas]
+
+
+
 
 #Write ratio of field mean of errors into csv files and sum up error fractions for cmpi score
 #TODO beautification: find way to access error_fraction[var,seas,model,region].var.values[0] to make
@@ -553,35 +597,38 @@ for model in models:
                     continue
                 for seas in seasons:
                     if (var == 'tas'):
-                        writer.writerow([var,region,seas,error_fraction[var,seas,model,region].tas.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].tas.values[0])])
                         sum+=error_fraction[var,seas,model,region].tas.values[0]
                     if (var == 'uas'):
-                        writer.writerow([var,region,seas,error_fraction[var,seas,model,region].uas.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].uas.values[0])])
                         sum+=error_fraction[var,seas,model,region].uas.values[0]
                     if (var == 'vas'):
-                        writer.writerow([var,region,seas,error_fraction[var,seas,model,region].vas.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].vas.values[0])])
                         sum+=error_fraction[var,seas,model,region].vas.values[0]
                     if (var == 'ua'):
-                        writer.writerow([var,region,seas,error_fraction[var,seas,model,region].ua.values[0][0]])
+                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].ua.values[0])])
                         sum+=error_fraction[var,seas,model,region].ua.values[0][0]
                     if (var == 'zg'):
-                        writer.writerow([var,region,seas,error_fraction[var,seas,model,region].zg.values[0][0]])
+                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].zg.values[0])])
                         sum+=error_fraction[var,seas,model,region].zg.values[0][0]
                     if (var == 'pr'):
-                        writer.writerow([var,region,seas,error_fraction[var,seas,model,region].pr.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].pr.values[0])])
                         sum+=error_fraction[var,seas,model,region].pr.values[0]
                     if (var == 'rlut'):
-                        writer.writerow([var,region,seas,error_fraction[var,seas,model,region].rlut.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].rlut.values[0])])
                         sum+=error_fraction[var,seas,model,region].rlut.values[0]
                     if (var == 'clt'):
-                        writer.writerow([var,region,seas,error_fraction[var,seas,model,region].clt.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].clt.values[0])])
                         sum+=error_fraction[var,seas,model,region].clt.values[0]
                     if (var == 'siconc'):
-                        writer.writerow([var,region,seas,error_fraction[var,seas,model,region].siconc.values[0]])
+                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].siconc.values[0])])
                         sum+=error_fraction[var,seas,model,region].siconc.values[0]
                     iter+=1
-        cmpi[model]=sum/iter
+        cmpi[model]=np.squeeze(sum)/iter
         writer.writerow(['CMPI','global','yearly',cmpi[model]])
+
+
+
 
 #Read precalculated evaluation field means of errors from csv files and plot heatmap
 collect_frac = np.empty([len(models),len(obs),len(regions),len(seasons)])*np.nan
@@ -615,7 +662,6 @@ for model in models:
             k+=1
         j+=1
     collect_frac_reshaped = collect_frac[i,:,:,:].reshape(len(obs),len(regions)*len(seasons))
-    #collect_frac_reshaped = collect_frac[i,:,:,:].reshape(j,k*l)
 
     seasons_plot = [' MAM', ' JJA', ' SON', ' DJF'] #adding spaces in front
     a=seasons_plot*len(regions)
@@ -633,3 +679,5 @@ for model in models:
     
     plt.savefig(out_path+'plot/'+model+'.png',dpi=150,bbox_inches='tight')
     i+=1
+
+
