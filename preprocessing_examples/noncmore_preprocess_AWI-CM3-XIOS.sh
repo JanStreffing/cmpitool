@@ -32,16 +32,19 @@ for i in `seq $starty $endy`;
 do
 	for var in ci 2t ttr tcc cp lsp 10u 10v;
 	do
-		rm -f ${var}_${tmpstr}.nc
-        echo "cdo cat awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &"
+		rm -f ${outdir}/${var}_${tmpstr}.nc
 		cdo cat awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
 	done
-	for var in u z;
-	do
-		rm -f ${var}_${tmpstr}.nc
-        echo "cdo cat awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &"
-		cdo cat awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
-	done
+	var='u'
+	rm -f ${outdir}/${var}_${tmpstr}.nc ${outdir}/${var}_${tmpstr}_lvl.nc
+	cdo sellevel,30000 awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}_lvl.nc &
+	var='z'
+	rm -f ${outdir}/${var}_${tmpstr}.nc ${outdir}/${var}_${tmpstr}_lvl.nc
+	cdo sellevel,50000 awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}_lvl.nc &
+    wait
+	cdo cat ${outdir}/${var}_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
+	var='u'
+	cdo cat ${outdir}/${var}_${tmpstr}_lvl.n ${outdir}/${var}_${tmpstr}.nc &
     wait
 done
 
@@ -73,11 +76,9 @@ cdo chname,10u,uas 10u_${tmpstr}_remap.nc uas_${tmpstr}.nc
 
 cdo chname,10v,vas 10v_${tmpstr}_remap.nc vas_${tmpstr}.nc
 
-cdo chname,u,ua u_${tmpstr}_remap.nc ua_l19_${tmpstr}.nc
-cdo sellevel,30000 ua_l19_${tmpstr}.nc ua_${tmpstr}.nc
+cdo chname,u,ua u_${tmpstr}_remap.nc  ua_${tmpstr}.nc
 
-cdo chname,z,zg z_${tmpstr}_remap.nc zg_l19_${tmpstr}.nc
-cdo sellevel,50000 zg_l19_${tmpstr}.nc zg_${tmpstr}_tmp.nc
+cdo chname,z,zg z_${tmpstr}_remap.nc zg_${tmpstr}_tmp.nc
 cdo divc,9.807 zg_${tmpstr}_tmp.nc zg_${tmpstr}.nc
 
 
