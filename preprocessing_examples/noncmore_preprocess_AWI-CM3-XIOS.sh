@@ -12,19 +12,23 @@ Help()
 	echo "#1    directory containing raw model output"
 	echo "#2    cmpi input subdirectory"
 	echo "#3    name of climate model"
+	echo "#4    first year of analysis period"
+	echo "#5    last year of analysis period"
 	echo "Positional optional argument:"
-	echo "#4    boolean to delete tmp files"
+	echo "#6    boolean to delete tmp files"
 }
 
 origdir=$1 
 outdir=$2 
 model_name=$3 
-deltmp=$4
+starty=$4
+endy=$5
+deltmp=$6
 
 cd $origdir
 tmpstr="analysis_cmpi_period"
-'''
-for i in `seq 2000 2001`;
+
+for i in `seq $starty $endy`;
 do
 	for var in ci 2t ttr tcc cp lsp 10u 10v;
 	do
@@ -47,8 +51,6 @@ do
     cdo remapbil,r180x91 ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc &
 done
 wait
-'''
-cd $outdir
 cdo chname,ci,siconc ci_${tmpstr}_remap.nc siconc_${tmpstr}_tmp.nc
 cdo mulc,100 siconc_${tmpstr}_tmp.nc siconc_${tmpstr}.nc
 
