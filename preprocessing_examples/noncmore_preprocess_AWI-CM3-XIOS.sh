@@ -45,6 +45,7 @@ do
 done
 wait
 
+mkdir -p $outdir
 cd $outdir
 for var in ci 2t ttr tcc cp lsp 10u 10v u v z;
 do
