@@ -23,46 +23,59 @@ deltmp=$4
 
 cd $origdir
 tmpstr="analysis_cmpi_period"
-
-for i in `seq 8 9`;
+'''
+for i in `seq 2000 2001`;
 do
-	for var in CI T2M TTR TCC CP LSP U10M V10M U V Z;
+	for var in ci 2t ttr tcc cp lsp 10u 10v;
 	do
 		rm -f ${var}_${tmpstr}.nc
-		cdo cat ${var}_$(printf "%05d" $i).nc ${var}_${tmpstr}.nc &
+        echo "cdo cat awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}${var}_${tmpstr}.nc &"
+		cdo cat awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}${var}_${tmpstr}.nc &
 	done
-done
-wait
-for i in `seq 8 9`;
-do
-	for var in CI T2M TTR TCC CP LSP U10M V10M U V Z;
+	for var in u v z;
 	do
-		cdo remapbil,r180x91 ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc &
+		rm -f ${var}_${tmpstr}.nc
+        echo "cat awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}${var}_${tmpstr}.nc &"
+		cdo cat awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}${var}_${tmpstr}.nc &
 	done
 done
 wait
 
-cdo mulc,100 -chname,CI,siconc CI_${tmpstr}_remap.nc siconc_${tmpstr}.nc
+cd $outdir
+for var in ci 2t ttr tcc cp lsp 10u 10v u v z;
+do
+    cdo remapbil,r180x91 ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc &
+done
+wait
+'''
+cd $outdir
+cdo chname,ci,siconc ci_${tmpstr}_remap.nc siconc_${tmpstr}_tmp.nc
+cdo mulc,100 siconc_${tmpstr}_tmp.nc siconc_${tmpstr}.nc
 
-cdo chname,T2M,tas T2M_${tmpstr}_remap.nc tas_${tmpstr}.nc
+cdo chname,2t,tas 2t_${tmpstr}_remap.nc tas_${tmpstr}.nc
 
-cdo mulc,100 -chname,TCC,clt TCC_${tmpstr}_remap.nc clt_${tmpstr}.nc
+cdo chname,tcc,clt tcc_${tmpstr}_remap.nc clt_${tmpstr}_tmp.nc
+cdo mulc,100 clt_${tmpstr}_tmp.nc clt_${tmpstr}.nc
 
-cdo divc,24 -chname,LSP,pr LSP_${tmpstr}_remap.nc lsp_r_${tmpstr}.nc
-cdo divc,24 -chname,CP,pr CP_${tmpstr}_remap.nc cp_r_${tmpstr}.nc
+cdo chname,lsp,pr lsp_${tmpstr}_remap.nc lsp_r_${tmpstr}_tmp.nc
+cdo divc,24 lsp_r_${tmpstr}_tmp.nc lsp_r_${tmpstr}.nc
+cdo chname,cp,pr cp_${tmpstr}_remap.nc cp_r_${tmpstr}_tmp.nc
+cdo divc,24 cp_r_${tmpstr}_tmp.nc cp_r_${tmpstr}.nc
 cdo add lsp_r_${tmpstr}.nc cp_r_${tmpstr}.nc pr_${tmpstr}.nc
 
-cdo divc,-21600 -chname,TTR,rlut TTR_${tmpstr}_remap.nc rlut_${tmpstr}.nc
+cdo chname,ttr,rlut ttr_${tmpstr}_remap.nc rlut_${tmpstr}_tmp.nc
+cdo divc,-21600 rlut_${tmpstr}_tmp.nc rlut_${tmpstr}.nc
 
-cdo chname,U10M,uas U10M_${tmpstr}_remap.nc uas_${tmpstr}.nc
+cdo chname,10u,uas 10u_${tmpstr}_remap.nc uas_${tmpstr}.nc
 
-cdo chname,V10M,vas V10M_${tmpstr}_remap.nc vas_${tmpstr}.nc
+cdo chname,10v,vas 10v_${tmpstr}_remap.nc vas_${tmpstr}.nc
 
-cdo chname,U,ua U_${tmpstr}_remap.nc ua_l19_${tmpstr}.nc
+cdo chname,u,ua u_${tmpstr}_remap.nc ua_l19_${tmpstr}.nc
 cdo sellevel,30000 ua_l19_${tmpstr}.nc ua_${tmpstr}.nc
 
-cdo chname,Z,zg Z_${tmpstr}_remap.nc zg_l19_${tmpstr}.nc
-cdo divc,9.807 -sellevel,50000 zg_l19_${tmpstr}.nc zg_${tmpstr}.nc
+cdo chname,z,zg z_${tmpstr}_remap.nc zg_l19_${tmpstr}.nc
+cdo sellevel,50000 zg_l19_${tmpstr}.nc zg_${tmpstr}_tmp.nc
+cdo divc,9.807 zg_${tmpstr}_tmp.nc zg_${tmpstr}.nc
 
 
 for var in siconc tas clt pr rlut uas vas ua zg;
