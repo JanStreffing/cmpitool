@@ -457,8 +457,11 @@ for model in models:
                 continue
             try:
                 filter1 = ds_model[var,seas,model].drop(timedim).lat>regions[region]['lat_min']
+                filter2 = ds_model[var,seas,model].drop(timedim).lat<regions[region]['lat_max']
+
             except:
                 timedim='time_counter'
+                filter1 = ds_model[var,seas,model].drop(timedim).lat>regions[region]['lat_min']
                 filter2 = ds_model[var,seas,model].drop(timedim).lat<regions[region]['lat_max']
             for seas in seasons:
                 abs_error[var,seas,model,region]=np.sqrt((ds_model[var,seas,model].drop(timedim).where(filter1 & filter2)-
