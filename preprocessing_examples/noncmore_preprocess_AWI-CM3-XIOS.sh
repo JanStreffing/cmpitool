@@ -28,18 +28,21 @@ deltmp=$6
 cd $origdir
 tmpstr="analysis_cmpi_period"
 
+# clean up so cat does not do strange things
+for var in ci 2t ttr tcc cp lsp 10u 10v u z;
+do
+    rm -f ${outdir}/${var}_${tmpstr}.nc ${outdir}/${var}_${tmpstr}_lvl.nc
+done
+
 for i in `seq $starty $endy`;
 do
 	for var in ci 2t ttr tcc cp lsp 10u 10v;
 	do
-		rm -f ${outdir}/${var}_${tmpstr}.nc
 		cdo cat awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
 	done
 	var='u'
-	rm -f ${outdir}/${var}_${tmpstr}.nc ${outdir}/${var}_${tmpstr}_lvl.nc
 	cdo sellevel,30000 awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}_lvl.nc &
 	var='z'
-	rm -f ${outdir}/${var}_${tmpstr}.nc ${outdir}/${var}_${tmpstr}_lvl.nc
 	cdo sellevel,50000 awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}_lvl.nc &
     wait
 	cdo cat ${outdir}/${var}_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
