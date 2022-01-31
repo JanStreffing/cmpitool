@@ -47,7 +47,7 @@ do
     wait
 	cdo cat ${outdir}/${var}_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
 	var='u'
-	cdo cat ${outdir}/${var}_${tmpstr}_lvl.n ${outdir}/${var}_${tmpstr}.nc &
+	cdo cat ${outdir}/${var}_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
     wait
 done
 
