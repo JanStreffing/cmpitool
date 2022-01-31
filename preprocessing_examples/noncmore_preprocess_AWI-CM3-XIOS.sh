@@ -33,21 +33,21 @@ do
 	for var in ci 2t ttr tcc cp lsp 10u 10v;
 	do
 		rm -f ${var}_${tmpstr}.nc
-        echo "cdo cat awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}${var}_${tmpstr}.nc &"
-		cdo cat awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}${var}_${tmpstr}.nc &
+        echo "cdo cat awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &"
+		cdo cat awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
 	done
-	for var in u v z;
+	for var in u z;
 	do
 		rm -f ${var}_${tmpstr}.nc
-        echo "cat awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}${var}_${tmpstr}.nc &"
-		cdo cat awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}${var}_${tmpstr}.nc &
+        echo "cdo cat awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &"
+		cdo cat awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
 	done
+    wait
 done
-wait
 
 mkdir -p $outdir
 cd $outdir
-for var in ci 2t ttr tcc cp lsp 10u 10v u v z;
+for var in ci 2t ttr tcc cp lsp 10u 10v u z;
 do
     cdo remapbil,r180x91 ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc &
 done
