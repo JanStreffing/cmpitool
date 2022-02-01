@@ -6,4 +6,4 @@ zg_ERA5: 1989/11/01 to 2014/11/30
 pr_GPCP: 1989/11/01 to 2014/11/30
 siconc_OSISAF: 1989/11/01 to 2014/11/30
 rlut_CERES: 2000/03/15 to 2014/06/30
-clt_MODIS: to be added
+clt_MODIS: 2000/??/?? to 2011/??/??
