@@ -31,7 +31,7 @@ reanalysis='ERA5'
 #Define paths
 obs_path='obs/'
 #model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/reference/outdata/oifs/combined/'
-model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/enthalpy_of_fusion/outdata/oifs/combined/'
+model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/combined_with_fesom21_namelist/outdata/oifs/combined/'
 #model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/defuse_sea_alb_005/outdata/oifs/combined/'
 #model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/meltpond_alb+025/outdata/oifs/combined/'
 out_path='output/'
@@ -57,7 +57,7 @@ obs = { 'siconc':'OSISAF',
         'zg':reanalysis}
 
 models = {
-    'AWI-CM3_EOF':{
+    'AWI-CM3_FES21':{
         'siconc':'OSISAF',
         'tas':reanalysis,
         'clt':'MODIS',
