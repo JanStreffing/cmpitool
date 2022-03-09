@@ -9,55 +9,99 @@ Help()
 	echo "# Author: Jan Streffing 2022-01-18					   #"
 	echo "##############################################################################"
 	echo "Positional arguments:"
-	echo "#1    directory containing raw model output"
+	echo "#1    esm_tools outdata dir of run"
 	echo "#2    cmpi input subdirectory"
-	echo "#3    name of climate model"
+	echo "#3    name of the model/run (your free choice!)"
 	echo "#4    first year of analysis period"
 	echo "#5    last year of analysis period"
+	echo "#6    path to fesom2 grid description netcdf file"
 	echo "Positional optional argument:"
-	echo "#6    boolean to delete tmp files"
+	echo "#7    boolean to delete tmp files"
+	echo "#################################################"
+	echo "# example: ./noncmore_preprocess_AWI-CM3-XIOS.sh /p/scratch/chhb19/streffing1/runtime/awicm3-frontiers-xios/test_for_cmip/outdata /p/project/chhb19/streffing1/software/cmpi-tool/input/ AWI-CM3-test 2000 2000 /p/project/chhb19/streffing1/input/fesom2/core2/core2_griddes_nodes.nc"
 }
 
+
+##########################
+# read command line args #
+##########################
 origdir=$1 
 outdir=$2 
 model_name=$3 
 starty=$4
 endy=$5
-deltmp=$6
+gridfile=$6
+deltmp=$7
 
 cd $origdir
 tmpstr="analysis_cmpi_period"
 
-# clean up so cat does not do strange things
-for var in ci 2t ttr tcc cp lsp 10u 10v u z;
+
+##############################################
+# clean up so cat does not do strange things #
+##############################################
+for var in ci 2t ttr tcc cp lsp 10u 10v u z temp salt;
 do
-    rm -f ${outdir}/${var}_${tmpstr}.nc ${outdir}/${var}_${tmpstr}_lvl.nc
+    rm -f ${outdir}/${var}_${tmpstr}*
 done
 
+
+################################
+# cat together analysis period #
+################################
 for i in `seq $starty $endy`;
 do
+	for var in temp salt;
+	do
+		cdo -intlevel,10,100,1000,4000 fesom/${var}.fesom.${i}.nc fesom/${var}.fesom.${i}.int.nc
+		cdo cat fesom/${var}.fesom.${i}.int.nc ${outdir}/${var}_${tmpstr}.nc
+	done
 	for var in ci 2t ttr tcc cp lsp 10u 10v;
 	do
-		cdo cat awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
+		cdo cat oifs/atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
 	done
 	var='u'
-	cdo sellevel,30000 awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}_lvl.nc &
+	cdo sellevel,30000 oifs/atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}_lvl.nc &
 	var='z'
-	cdo sellevel,50000 awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}_lvl.nc &
-    wait
+	cdo sellevel,50000 oifs/atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}_lvl.nc &
+    	wait
 	cdo cat ${outdir}/${var}_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
 	var='u'
 	cdo cat ${outdir}/${var}_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
-    wait
+    	wait
 done
 
 mkdir -p $outdir
 cd $outdir
+
+
+################
+# remap FESOM2 #
+################
+for var in temp salt;
+do
+	cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${outdir}/${var}_${tmpstr}.nc ${outdir}/weights_unstr_2_r180x91.nc
+	cdo -L -splitlevel -remap,r180x91,weights_unstr_2_r180x91.nc -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_
+        for lvl in "000010" "000100" "001000" "004000";
+        do
+		mv ${var}_${tmpstr}_${lvl}.nc ${var}_${tmpstr}_${lvl}_remap.nc
+	done
+done
+
+
+#################
+# remap OpenIFS #
+#################
 for var in ci 2t ttr tcc cp lsp 10u 10v u z;
 do
     cdo remapbil,r180x91 ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc &
 done
 wait
+
+
+########################################
+# quasi CMORize data so it matches obs #
+########################################
 cdo chname,ci,siconc ci_${tmpstr}_remap.nc siconc_${tmpstr}_tmp.nc
 cdo mulc,100 siconc_${tmpstr}_tmp.nc siconc_${tmpstr}.nc
 
@@ -84,12 +128,28 @@ cdo chname,u,ua u_${tmpstr}_remap.nc  ua_${tmpstr}.nc
 cdo chname,z,zg z_${tmpstr}_remap.nc zg_${tmpstr}_tmp.nc
 cdo divc,9.807 zg_${tmpstr}_tmp.nc zg_${tmpstr}.nc
 
-
 for var in siconc tas clt pr rlut uas vas ua zg;
 do
-	cdo splitseas -yseasmean ${var}_${tmpstr}.nc $outdir/${var}_${model_name}_198912-201411_ &
+	cdo -L splitseas -yseasmean ${var}_${tmpstr}.nc $outdir/${var}_${model_name}_198912-201411_ &
 done
 wait
+
+
+for lvl in "000010" "000100" "001000" "004000";
+do
+	cdo chname,salt,so salt_${tmpstr}_${lvl}_remap.nc so_${tmpstr}_${lvl}.nc &
+	cdo chname,temp,thetao temp_${tmpstr}_${lvl}_remap.nc thetao_${tmpstr}_${lvl}.nc &
+done
+wait
+for var in thetao so
+do
+	for lvl in "000010" "000100" "001000" "004000";
+	do
+		cdo -L splitseas -yseasmean ${var}_${tmpstr}_${lvl}.nc $outdir/${var}_${lvl}_${model_name}_198912-201411_
+	done
+done
+
+
 if $deltmp; then
 	rm -rf ${tmpstr}
 fi
