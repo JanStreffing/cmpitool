@@ -31,7 +31,7 @@ reanalysis='ERA5'
 #Define paths
 obs_path='obs/'
 #model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/reference/outdata/oifs/combined/'
-model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/combined_with_fesom21_namelist/outdata/oifs/combined/'
+model_path='input/'
 #model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/defuse_sea_alb_005/outdata/oifs/combined/'
 #model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/meltpond_alb+025/outdata/oifs/combined/'
 out_path='output/'
@@ -57,7 +57,7 @@ obs = { 'siconc':'OSISAF',
         'zg':reanalysis}
 
 models = {
-    'AWI-CM3_FES21':{
+    'AWI-CM3_TCO319_DART':{
         'siconc':'OSISAF',
         'tas':reanalysis,
         'clt':'MODIS',
@@ -69,20 +69,7 @@ models = {
         'zg':reanalysis}
 }
 
-eval_models = {
-    'AWI-CM3_REF':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis}
-}
 
-'''
 #Define evaluation models
 eval_models = {
     'ACCESS-ESM1-5':{
@@ -397,7 +384,6 @@ eval_models = {
         'ua':reanalysis,
         'zg':reanalysis}
 }
-'''
 
 #Define regions
 regions={'glob' : {
@@ -460,26 +446,29 @@ for model in models:
             ds_model[var,seas,model] = intermediate.compute()
 
 
-
-
 #Calculate absolute error and build field mean of abs error
 abs_error = OrderedDict()
 mean_error = OrderedDict()
+timedim='time'
 for model in models:
     for var in models[model]:
         for region in regions:
             if var == 'siconc' and (region != 'arctic' and region != 'antarctic'):
                 continue
-            filter1 = ds_model[var,seas,model].drop('time').lat>regions[region]['lat_min']
-            filter2 = ds_model[var,seas,model].drop('time').lat<regions[region]['lat_max']
+            try:
+                filter1 = ds_model[var,seas,model].drop(timedim).lat>regions[region]['lat_min']
+                filter2 = ds_model[var,seas,model].drop(timedim).lat<regions[region]['lat_max']
+
+            except:
+                timedim='time_counter'
+                filter1 = ds_model[var,seas,model].drop(timedim).lat>regions[region]['lat_min']
+                filter2 = ds_model[var,seas,model].drop(timedim).lat<regions[region]['lat_max']
             for seas in seasons:
-                abs_error[var,seas,model,region]=np.sqrt((ds_model[var,seas,model].drop('time').where(filter1 & filter2)-
+                abs_error[var,seas,model,region]=np.sqrt((ds_model[var,seas,model].drop(timedim).where(filter1 & filter2)-
                                                    ds_obs[var,seas].drop('time')).where(filter1 & filter2)*
-                                                  (ds_model[var,seas,model].drop('time').where(filter1 & filter2)-
+                                                  (ds_model[var,seas,model].drop(timedim).where(filter1 & filter2)-
                                                    ds_obs[var,seas].drop('time').where(filter1 & filter2)))
                 mean_error[var,seas,model,region] = fldmean(abs_error[var,seas,model,region])
-
-
 
 
 #Write field mean of errors into csv files
