@@ -40,7 +40,7 @@ tmpstr="analysis_cmpi_period"
 ##############################################
 # clean up so cat does not do strange things #
 ##############################################
-for var in ci 2t ttr tcc cp lsp 10u 10v u z temp salt;
+for var in ci 2t ttr tcc cp lsp 10u 10v u z temp salt MLD1 ssh;
 do
     rm -f ${outdir}/${var}_${tmpstr}*
 done
@@ -55,6 +55,10 @@ do
 	do
 		cdo -intlevel,10,100,1000,4000 fesom/${var}.fesom.${i}.nc fesom/${var}.fesom.${i}.int.nc
 		cdo cat fesom/${var}.fesom.${i}.int.nc ${outdir}/${var}_${tmpstr}.nc
+	done
+	for var in MLD1 ssh;
+	do
+		cdo cat fesom/${var}.fesom.${i}.nc ${outdir}/${var}_${tmpstr}.nc
 	done
 	for var in ci 2t ttr tcc cp lsp 10u 10v;
 	do
@@ -86,6 +90,17 @@ do
         do
 		mv ${var}_${tmpstr}_${lvl}.nc ${var}_${tmpstr}_${lvl}_remap.nc
 	done
+done
+for var in MLD1;
+do
+	cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${outdir}/${var}_${tmpstr}.nc ${outdir}/weights_unstr_2_r180x91.nc
+	cdo -L -remap,r180x91,weights_unstr_2_r180x91.nc -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc
+done
+cdo -L -splitseas -chname,ssh,zos ssh_${tmpstr}.nc zos_${tmpstr}_
+cdo genycon,r180x91 -selname,zos -setgrid,$gridfile ${outdir}/zos_${tmpstr}_DJF.nc ${outdir}/weights_unstr_2_r180x91.nc
+for seas in DJF MAM JJA SON;
+do
+	cdo -L -remap,r180x91,weights_unstr_2_r180x91.nc -timvar -selname,zos -setgrid,$gridfile zos_${tmpstr}_${seas}.nc zos_${model_name}_198912-201411_surface_${seas}.nc
 done
 
 
@@ -128,11 +143,16 @@ cdo chname,u,ua u_${tmpstr}_remap.nc  ua_${tmpstr}.nc
 cdo chname,z,zg z_${tmpstr}_remap.nc zg_${tmpstr}_tmp.nc
 cdo divc,9.807 zg_${tmpstr}_tmp.nc zg_${tmpstr}.nc
 
-for var in siconc tas clt pr rlut uas vas ua zg;
+cdo chname,MLD1,mlotst -divc,-1 MLD1_${tmpstr}_remap.nc  mlotst_${tmpstr}.nc
+
+
+for var in siconc tas clt pr rlut uas vas mlotst;
 do
-	cdo -L splitseas -yseasmean ${var}_${tmpstr}.nc $outdir/${var}_${model_name}_198912-201411_ &
+	cdo -L splitseas -yseasmean ${var}_${tmpstr}.nc $outdir/${var}_${model_name}_198912-201411_surface_ &
 done
 wait
+cdo -L splitseas -yseasmean ua_${tmpstr}.nc $outdir/ua_${model_name}_198912-201411_300hPa_ &
+cdo -L splitseas -yseasmean zg_${tmpstr}.nc $outdir/zg_${model_name}_198912-201411_500hPa_ &
 
 
 for lvl in "000010" "000100" "001000" "004000";
@@ -143,13 +163,15 @@ done
 wait
 for var in thetao so
 do
-	for lvl in "000010" "000100" "001000" "004000";
+	for lvl in 10 100 1000 4000;
 	do
-		cdo -L splitseas -yseasmean ${var}_${tmpstr}_${lvl}.nc $outdir/${var}_${lvl}_${model_name}_198912-201411_
+		printf "cdo -L splitseas -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${lvl}m_${model_name}_198912-201411_"
+		cdo -L splitseas -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_
 	done
 done
 
 
 if $deltmp; then
+	printf "Deleting tmp data"
 	rm -rf ${tmpstr}
 fi
