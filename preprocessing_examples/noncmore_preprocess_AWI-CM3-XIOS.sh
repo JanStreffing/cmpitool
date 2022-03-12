@@ -22,9 +22,9 @@ Help()
 }
 
 
-##########################
-# read command line args #
-##########################
+printf "##########################\n"
+printf "# read command line args #\n"
+printf "##########################\n"
 origdir=$1 
 outdir=$2 
 model_name=$3 
@@ -37,76 +37,104 @@ cd $origdir
 tmpstr="analysis_cmpi_period"
 
 
-##############################################
-# clean up so cat does not do strange things #
-##############################################
+printf "##############################################\n"
+printf "# clean up so cat does not do strange things #\n"
+printf "##############################################\n"
 for var in ci 2t ttr tcc cp lsp 10u 10v u z temp salt MLD1 ssh;
 do
-    rm -f ${outdir}/${var}_${tmpstr}*
+    rm -f ${outdir}/${var}_${tmpstr}* 
 done
+wait
 
 
-################################
-# cat together analysis period #
-################################
+printf "##################################\n"
+printf "# split off / interpolate levels #\n"
+printf "##################################\n"
 for i in `seq $starty $endy`;
 do
 	for var in temp salt;
 	do
-		cdo -intlevel,10,100,1000,4000 fesom/${var}.fesom.${i}.nc fesom/${var}.fesom.${i}.int.nc
-		cdo cat fesom/${var}.fesom.${i}.int.nc ${outdir}/${var}_${tmpstr}.nc
+		cdo -intlevel,10,100,1000,4000 fesom/${var}.fesom.${i}.nc fesom/${var}.fesom.${i}.int.nc &
 	done
+	var='u'
+	cdo sellevel,30000 oifs/atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
+	var='z'
+	cdo sellevel,50000 oifs/atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
+done
+wait
+
+printf "#######################################\n"
+printf "# cat together analysis period part 2 #\n"
+printf "#######################################\n"
+
+
+for i in `seq $starty $endy`;
+do
 	for var in MLD1 ssh;
 	do
-		cdo cat fesom/${var}.fesom.${i}.nc ${outdir}/${var}_${tmpstr}.nc
+		cdo cat fesom/${var}.fesom.${i}.nc ${outdir}/${var}_${tmpstr}.nc &
 	done
 	for var in ci 2t ttr tcc cp lsp 10u 10v;
 	do
 		cdo cat oifs/atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
 	done
-	var='u'
-	cdo sellevel,30000 oifs/atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}_lvl.nc &
+	for var in temp salt;
+	do
+		cdo cat fesom/${var}.fesom.${i}.int.nc ${outdir}/${var}_${tmpstr}.nc &
+	done
 	var='z'
-	cdo sellevel,50000 oifs/atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}_lvl.nc &
-    	wait
-	cdo cat ${outdir}/${var}_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
+	cdo cat ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
 	var='u'
-	cdo cat ${outdir}/${var}_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
-    	wait
+	cdo cat ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
+	wait
 done
 
 mkdir -p $outdir
 cd $outdir
 
 
-################
-# remap FESOM2 #
-################
+printf "################\n"
+printf "# remap FESOM2 #\n"
+printf "################\n"
 for var in temp salt;
 do
-	cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${outdir}/${var}_${tmpstr}.nc ${outdir}/weights_unstr_2_r180x91.nc
-	cdo -L -splitlevel -remap,r180x91,weights_unstr_2_r180x91.nc -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_
+	cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${outdir}/${var}_${tmpstr}.nc ${outdir}/weights_unstr_2_r180x91_${var}.nc &
+done
+wait
+
+for var in temp salt;
+do
+	cdo -L -splitlevel -remap,r180x91,weights_unstr_2_r180x91_${var}.nc -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_ &
+done
+wait
+
+for var in temp salt;
+do
         for lvl in "000010" "000100" "001000" "004000";
         do
-		mv ${var}_${tmpstr}_${lvl}.nc ${var}_${tmpstr}_${lvl}_remap.nc
+		mv ${var}_${tmpstr}_${lvl}.nc ${var}_${tmpstr}_${lvl}_remap.nc &
 	done
 done
+wait
+
+
 for var in MLD1;
 do
 	cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${outdir}/${var}_${tmpstr}.nc ${outdir}/weights_unstr_2_r180x91.nc
 	cdo -L -remap,r180x91,weights_unstr_2_r180x91.nc -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc
 done
+
 cdo -L -splitseas -chname,ssh,zos ssh_${tmpstr}.nc zos_${tmpstr}_
 cdo genycon,r180x91 -selname,zos -setgrid,$gridfile ${outdir}/zos_${tmpstr}_DJF.nc ${outdir}/weights_unstr_2_r180x91.nc
 for seas in DJF MAM JJA SON;
 do
-	cdo -L -remap,r180x91,weights_unstr_2_r180x91.nc -timvar -selname,zos -setgrid,$gridfile zos_${tmpstr}_${seas}.nc zos_${model_name}_198912-201411_surface_${seas}.nc
+	cdo -L -remap,r180x91,weights_unstr_2_r180x91.nc -timvar -selname,zos -setgrid,$gridfile zos_${tmpstr}_${seas}.nc zos_${model_name}_198912-201411_surface_${seas}.nc &
 done
+wait
 
-
-#################
-# remap OpenIFS #
-#################
+printf "#################\n"
+printf "# remap OpenIFS #\n"
+printf "#################\n"
 for var in ci 2t ttr tcc cp lsp 10u 10v u z;
 do
     cdo remapbil,r180x91 ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc &
@@ -114,43 +142,43 @@ done
 wait
 
 
-########################################
-# quasi CMORize data so it matches obs #
-########################################
+printf "########################################\n"
+printf "# quasi CMORize data so it matches obs #\n"
+printf "########################################\n"
 cdo chname,ci,siconc ci_${tmpstr}_remap.nc siconc_${tmpstr}_tmp.nc
-cdo mulc,100 siconc_${tmpstr}_tmp.nc siconc_${tmpstr}.nc
+cdo mulc,100 siconc_${tmpstr}_tmp.nc siconc_${tmpstr}.nc &
 
-cdo chname,2t,tas 2t_${tmpstr}_remap.nc tas_${tmpstr}.nc
+cdo chname,2t,tas 2t_${tmpstr}_remap.nc tas_${tmpstr}.nc &
 
 cdo chname,tcc,clt tcc_${tmpstr}_remap.nc clt_${tmpstr}_tmp.nc
-cdo mulc,100 clt_${tmpstr}_tmp.nc clt_${tmpstr}.nc
+cdo mulc,100 clt_${tmpstr}_tmp.nc clt_${tmpstr}.nc &
 
 cdo chname,lsp,pr lsp_${tmpstr}_remap.nc lsp_r_${tmpstr}_tmp.nc
 cdo divc,24 lsp_r_${tmpstr}_tmp.nc lsp_r_${tmpstr}.nc
 cdo chname,cp,pr cp_${tmpstr}_remap.nc cp_r_${tmpstr}_tmp.nc
 cdo divc,24 cp_r_${tmpstr}_tmp.nc cp_r_${tmpstr}.nc
-cdo add lsp_r_${tmpstr}.nc cp_r_${tmpstr}.nc pr_${tmpstr}.nc
+cdo add lsp_r_${tmpstr}.nc cp_r_${tmpstr}.nc pr_${tmpstr}.nc &
 
 cdo chname,ttr,rlut ttr_${tmpstr}_remap.nc rlut_${tmpstr}_tmp.nc
-cdo divc,-21600 rlut_${tmpstr}_tmp.nc rlut_${tmpstr}.nc
+cdo divc,-21600 rlut_${tmpstr}_tmp.nc rlut_${tmpstr}.nc &
 
-cdo chname,10u,uas 10u_${tmpstr}_remap.nc uas_${tmpstr}.nc
+cdo chname,10u,uas 10u_${tmpstr}_remap.nc uas_${tmpstr}.nc & 
 
-cdo chname,10v,vas 10v_${tmpstr}_remap.nc vas_${tmpstr}.nc
+cdo chname,10v,vas 10v_${tmpstr}_remap.nc vas_${tmpstr}.nc &
 
-cdo chname,u,ua u_${tmpstr}_remap.nc  ua_${tmpstr}.nc
+cdo chname,u,ua u_${tmpstr}_remap.nc  ua_${tmpstr}.nc &
 
 cdo chname,z,zg z_${tmpstr}_remap.nc zg_${tmpstr}_tmp.nc
-cdo divc,9.807 zg_${tmpstr}_tmp.nc zg_${tmpstr}.nc
+cdo divc,9.807 zg_${tmpstr}_tmp.nc zg_${tmpstr}.nc &
 
-cdo chname,MLD1,mlotst -divc,-1 MLD1_${tmpstr}_remap.nc  mlotst_${tmpstr}.nc
+cdo chname,MLD1,mlotst -divc,-1 MLD1_${tmpstr}_remap.nc  mlotst_${tmpstr}.nc &
+wait
 
 
 for var in siconc tas clt pr rlut uas vas mlotst;
 do
 	cdo -L splitseas -yseasmean ${var}_${tmpstr}.nc $outdir/${var}_${model_name}_198912-201411_surface_ &
 done
-wait
 cdo -L splitseas -yseasmean ua_${tmpstr}.nc $outdir/ua_${model_name}_198912-201411_300hPa_ &
 cdo -L splitseas -yseasmean zg_${tmpstr}.nc $outdir/zg_${model_name}_198912-201411_500hPa_ &
 
@@ -161,17 +189,18 @@ do
 	cdo chname,temp,thetao temp_${tmpstr}_${lvl}_remap.nc thetao_${tmpstr}_${lvl}.nc &
 done
 wait
+
 for var in thetao so
 do
 	for lvl in 10 100 1000 4000;
 	do
-		printf "cdo -L splitseas -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${lvl}m_${model_name}_198912-201411_"
-		cdo -L splitseas -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_
+		cdo -L splitseas -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_ &
 	done
 done
+wait
 
 
 if $deltmp; then
 	printf "Deleting tmp data"
-	rm -rf ${tmpstr}
+	rm -rf *${tmpstr}*
 fi
