@@ -40,7 +40,7 @@ tmpstr="analysis_cmpi_period"
 printf "##############################################\n"
 printf "# clean up so cat does not do strange things #\n"
 printf "##############################################\n"
-for var in ci 2t ttr tcc cp lsp 10u 10v u z temp salt MLD1 ssh;
+for var in ci 2t ttr tcc cp lsp 10u 10v u z temp salt MLD1 ssh sst;
 do
     rm -f ${outdir}/${var}_${tmpstr}* 
 done
@@ -70,7 +70,7 @@ printf "#######################################\n"
 
 for i in `seq $starty $endy`;
 do
-	for var in MLD1 ssh;
+	for var in MLD1 ssh sst;
 	do
 		cdo cat fesom/${var}.fesom.${i}.nc ${outdir}/${var}_${tmpstr}.nc &
 	done
@@ -124,11 +124,16 @@ do
 	cdo -L -remap,r180x91,weights_unstr_2_r180x91.nc -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc
 done
 
-cdo -L -splitseas -chname,ssh,zos ssh_${tmpstr}.nc zos_${tmpstr}_
-cdo genycon,r180x91 -selname,zos -setgrid,$gridfile ${outdir}/zos_${tmpstr}_DJF.nc ${outdir}/weights_unstr_2_r180x91.nc
+
+cdo -L -splitseas -chname,ssh,zos ssh_${tmpstr}.nc zos_${tmpstr}_ &
+cdo -L -splitseas -chname,sst,tos sst_${tmpstr}.nc tos_${tmpstr}_ &
+wait
+cdo genycon,r180x91 -selname,zos -setgrid,$gridfile ${outdir}/zos_${tmpstr}_DJF.nc ${outdir}/weights_zos_unstr_2_r180x91.nc
+cdo genycon,r180x91 -selname,tos -setgrid,$gridfile ${outdir}/tos_${tmpstr}_DJF.nc ${outdir}/weights_tos_unstr_2_r180x91.nc
 for seas in DJF MAM JJA SON;
 do
-	cdo -L -remap,r180x91,weights_unstr_2_r180x91.nc -timvar -selname,zos -setgrid,$gridfile zos_${tmpstr}_${seas}.nc zos_${model_name}_198912-201411_surface_${seas}.nc &
+	cdo -L -remap,r180x91,weights_zos_unstr_2_r180x91.nc -timstd -selname,zos -setgrid,$gridfile zos_${tmpstr}_${seas}.nc zos_${model_name}_198912-201411_surface_${seas}.nc &
+	cdo -L -remap,r180x91,weights_tos_unstr_2_r180x91.nc -timstd -selname,tos -setgrid,$gridfile tos_${tmpstr}_${seas}.nc tos_${model_name}_198912-201411_surface_${seas}.nc &
 done
 wait
 
