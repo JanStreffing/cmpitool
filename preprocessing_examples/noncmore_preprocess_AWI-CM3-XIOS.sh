@@ -104,7 +104,7 @@ wait
 
 for var in temp salt;
 do
-	cdo -L -splitlevel -remap,r180x91,weights_unstr_2_r180x91_${var}.nc -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_ &
+	cdo -L -splitlevel -remap,r180x91,weights_unstr_2_r180x91_${var}.nc -setctomiss,0 -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_ &
 done
 wait
 
