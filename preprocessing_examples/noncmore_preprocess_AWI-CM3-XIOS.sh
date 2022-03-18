@@ -195,15 +195,22 @@ do
 done
 wait
 
-for var in thetao so
+for var in thetao
 do
 	for lvl in 10 100 1000 4000;
 	do
+		cdo -L splitseas -setctomiss,0  -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_ &
+	done
+done
+for var in so
+do
+	for lvl in 10 100 1000 4000;
+	do
+		#cdo -L splitseas -setctomiss,0 -expr,so=(so<20.0)?0.0:so;  -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_ &
 		cdo -L splitseas -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_ &
 	done
 done
 wait
-
 
 if $deltmp; then
 	printf "Deleting tmp data"
