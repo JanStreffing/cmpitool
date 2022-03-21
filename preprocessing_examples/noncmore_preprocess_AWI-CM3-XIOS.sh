@@ -57,9 +57,9 @@ do
 		cdo -intlevel,10,100,1000,4000 fesom/${var}.fesom.${i}.nc fesom/${var}.fesom.${i}.int.nc &
 	done
 	var='u'
-	cdo sellevel,30000 oifs/atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
+	cdo sellevel,30000 oifs/atm_remapped_1m_pl_${var}_1m_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
 	var='z'
-	cdo sellevel,50000 oifs/atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
+	cdo sellevel,50000 oifs/atm_remapped_1m_pl_${var}_1m_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
 done
 wait
 
