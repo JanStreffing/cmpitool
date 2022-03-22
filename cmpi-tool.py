@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[6]:
+# In[1]:
 
 
 #Imports
@@ -25,7 +25,7 @@ from dask.diagnostics import ProgressBar
 from multiprocessing.pool import ThreadPool
 
 
-# In[188]:
+# In[2]:
 
 
 #Verbose?
@@ -143,7 +143,7 @@ obs = {
 
 
 
-# In[49]:
+# In[6]:
 
 
 #Select seasons
@@ -205,45 +205,46 @@ regions={'glob' : {
 all_regions=[ 'glob', 'arctic', 'northmid', 'tropics', 'innertropics', 'nino34', 'southmid', 'antarctic']
 
 
-# In[18]:
+# In[7]:
 
 
 # Visulatize regions
 
-projection = ccrs.PlateCarree()
+if verbose == 'true':
+    projection = ccrs.PlateCarree()
 
-# Plot the leading EOF expressed as correlation in the Pacific domain.
-plt.figure(figsize=(12,9))
-ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
+    # Plot the leading EOF expressed as correlation in the Pacific domain.
+    plt.figure(figsize=(12,9))
+    ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
 
-ax.add_feature(cfeature.LAND, color='lightgrey')
-ax.add_feature(cfeature.COASTLINE)
-ax.gridlines(draw_labels=True, dms=True, x_inline=False, y_inline=False)
+    ax.add_feature(cfeature.LAND, color='lightgrey')
+    ax.add_feature(cfeature.COASTLINE)
+    ax.gridlines(draw_labels=True, dms=True, x_inline=False, y_inline=False)
 
-plt.title('Regions', fontsize=13,fontweight="bold")
+    plt.title('Regions', fontsize=13,fontweight="bold")
 
-ax.set_extent([0, -1, 90, -90])
-for region in regions:
-    if region == 'glob':
-        continue 
-    else:
-        lon_min=regions[region]['lon_min']
-        lon_max=regions[region]['lon_max']
-        lat_min=regions[region]['lat_min']
-        lat_max=regions[region]['lat_max']
-        ax.add_patch(mpatches.Rectangle(xy=[lon_min-1, lat_min], width=lon_max-lon_min, height=lat_max-lat_min,
-                                        facecolor=regions[region]['plot_color'],
-                                        alpha=0.5,
-                                        edgecolor=regions[region]['plot_color'],
-                                        lw='2',
-                                        transform=ccrs.PlateCarree())
-                     )
-        plt.text(lon_min-177,lat_max-7,region,weight='bold')
+    ax.set_extent([0, -1, 90, -90])
+    for region in regions:
+        if region == 'glob':
+            continue 
+        else:
+            lon_min=regions[region]['lon_min']
+            lon_max=regions[region]['lon_max']
+            lat_min=regions[region]['lat_min']
+            lat_max=regions[region]['lat_max']
+            ax.add_patch(mpatches.Rectangle(xy=[lon_min-1, lat_min], width=lon_max-lon_min, height=lat_max-lat_min,
+                                            facecolor=regions[region]['plot_color'],
+                                            alpha=0.5,
+                                            edgecolor=regions[region]['plot_color'],
+                                            lw='2',
+                                            transform=ccrs.PlateCarree())
+                         )
+            plt.text(lon_min-177,lat_max-7,region,weight='bold')
 
-ax.tick_params(labelsize=13)
+    ax.tick_params(labelsize=13)
 
 
-# In[19]:
+# In[8]:
 
 
 print('Loading obs data')
@@ -273,7 +274,7 @@ for var,depths in zip(obs,var_depths):
             
 
 
-# In[20]:
+# In[9]:
 
 
 print('Loading model data')
@@ -299,7 +300,7 @@ for model in tqdm(models):
                     pass
 
 
-# In[21]:
+# In[10]:
 
 
 print('Calculating absolute error and field mean of abs error')
@@ -332,7 +333,7 @@ for model in tqdm(models):
                     mean_error[var,var_depths[var][depth],seas,model,region] = fldmean(abs_error[var,var_depths[var][depth],seas,model,region])
 
 
-# In[22]:
+# In[11]:
 
 
 print('Writing field mean of errors into csv files')
@@ -348,7 +349,7 @@ for model in tqdm(models):
                         writer.writerow([var,region,var_depths[var][depth],seas,np.squeeze(mean_error[var,var_depths[var][depth],seas,model,region].to_array(var).values[0])])
 
 
-# In[182]:
+# In[12]:
 
 
 print('Reading precalculated cmip6 field mean of errors from csv files')
@@ -401,7 +402,7 @@ with warnings.catch_warnings():
     ensmean=np.nanmean(collect,axis=0)
 
 
-# In[183]:
+# In[13]:
 
 
 print('Placing sums of error into easier to inspect dictionary')
@@ -423,7 +424,7 @@ for var in tqdm(obs):
     j+=1
 
 
-# In[184]:
+# In[14]:
 
 
 print('Calculating ratio of current model error to evaluation model error')
@@ -439,7 +440,7 @@ for model in tqdm(models):
                     error_fraction[var,var_depths[var][depth],seas,model,region] = mean_error[var,var_depths[var][depth],seas,model,region] / eval_error_mean[var,region,var_depths[var][depth],seas]
 
 
-# In[185]:
+# In[15]:
 
 
 print('Writing ratio of field mean of errors into csv files and sum up error fractions for cmpi score')
@@ -466,7 +467,7 @@ for model in tqdm(models):
         writer.writerow(['CMPI','global','yearly',cmpi[model]])
 
 
-# In[186]:
+# In[16]:
 
 
 print('Reading precalculated evaluation field means of errors from csv files and plotting heatmap(s)')
@@ -537,11 +538,12 @@ for model in tqdm(models):
 
 
 
-# In[ ]:
+# In[17]:
 
 
 # Debug plot script
 
+'''
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.util import add_cyclic_point
@@ -557,7 +559,7 @@ levels=np.linspace(0,500,11)
 seas='JJA'
 var='mlotst'
 
-get_ipython().run_line_magic('matplotlib', 'inline')
+%matplotlib inline
 
 fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6,4.5))
 ax=plt.subplot(1,1,1,projection=ccrs.PlateCarree())
@@ -584,10 +586,5 @@ cbar_ax_abs = fig.add_axes([0.15, 0.11, 0.7, 0.05])
 cbar_ax_abs.tick_params(labelsize=12)
 cb = fig.colorbar(imf, cax=cbar_ax_abs, orientation='horizontal')
 cb.ax.tick_params(labelsize='12')
-
-
-# In[ ]:
-
-
-
+'''
 
