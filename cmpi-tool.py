@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# In[6]:
+
 
 #Imports
 import xarray as xr
@@ -8,14 +10,301 @@ import numpy as np
 import pandas as pd
 from collections import OrderedDict
 import csv
+import math as ma
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import seaborn as sns
 from cartopy import config
 import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import warnings
+from tqdm import tqdm
+import dask
+from dask.delayed import delayed
+from dask.diagnostics import ProgressBar
+from multiprocessing.pool import ThreadPool
+
+
+# In[188]:
+
+
+#Verbose?
+verbose='false'
+
+#Choose ERA5 or NCEP2. This switch also selects the eval/???? subfolders, so do not mix and match as this 
+#would lead to incorrect results.
+reanalysis='ERA5'
+
+#Define paths
+obs_path='obs/'
+model_path='/p/project/chhb19/streffing1/software/cmpi-tool/input/'
+out_path='output/'
+eval_path='eval/'+reanalysis+'/'
+time = '198912-201411'
+
+
+#Define the name and evaluated variables for your model run
+
+
+cmip6 = {
+    'ACCESS-CM2':   [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'AWI-CM1-MR':   [           'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'BCC-SM2-MR':   [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'CAMS':         [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'CanESM5':      [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'CAS-ESM2-0':   [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos',                         ],
+    'CESM2':        [ 'siconc', 'tas', 'clt', 'pr', 'rlut',               'ua', 'zg', 'zos', 'tos', 'mlotst'                ],
+    'CIESM':        [           'tas', 'clt', 'pr', 'rlut',               'ua', 'zg', 'zos', 'tos',           'thetao', 'so'],
+    'CMCC-CM2-SR5': [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'CNRM-CM6-1-HR':[ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst'                ],
+    'E3SM-1-1':     [ 'siconc', 'tas', 'clt', 'pr', 'rlut',               'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'EC-Earth3':    [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'FGOALS-f3-L':  [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'FIO-ESM-2-0':  [ 'siconc', 'tas', 'clt', 'pr', 'rlut',               'ua', 'zg', 'zos', 'tos',           'thetao', 'so'],
+    'GISS-E2-1-G':  [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'HadGEM3MM':    [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'ICON-ESM-LR':  [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'IITM-ESM':     [           'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg',        'tos',                         ],
+    'INM5':         [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg',                         'thetao', 'so'],
+    'IPSL-CM6A-LR': [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'KIOST-ESM':    [ 'siconc', 'tas', 'clt',       'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst',               ],
+    'MCMUA1':       [           'tas',        'pr', 'rlut', 'uas', 'vas', 'ua', 'zg',        'tos',           'thetao', 'so'],
+    'MIROC6':       [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos',                         ],
+    'MPI-ESM1-2-HR':[ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'MRI-ESM2-0':   [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas',             'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'NESM3':        [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],   
+    'NOAA-GFDL':    [ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos',           'thetao', 'so'],
+    'NorESM2-MM':   [ 'siconc', 'tas', 'clt', 'pr', 'rlut',               'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'SNU':          [ 'siconc', 'tas', 'clt', 'pr', 'rlut',               'ua', 'zg', 'zos', 'tos',           'thetao', 'so'],
+    'TaiESM1':      [ 'siconc', 'tas', 'clt', 'pr', 'rlut',               'ua', 'zg', 'zos', 'tos',           'thetao', 'so'],
+}
+
+awi_cm3_ref= {
+    'AWI-CM3-REF':[ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so']
+}
+
+awi_cm3_eof= {
+    'AWI-CM3-EOF':[ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'AWI-CM3-NOHEM':[ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'AWI-CM3-PRHEAT':[ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+    'AWI-CM3-SSI':[ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+}
+
+awi_cm3_lr= {
+    'AWI-CM3-LR':[ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst'],
+}
+
+awi_esm1= {
+    'AWI-ESM-1-1-LR':[ 'siconc', 'tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg', 'zos', 'tos', 'mlotst', 'thetao', 'so'],
+}
+
+models = cmip6
+
+eval_models = cmip6
+
+#Select for each variable which vertical levels shall be taken into account
+var_depths ={    
+        'siconc':['surface'],
+        'tas':['surface'],
+        'clt':['surface'],
+        'pr':['surface'],
+        'rlut':['surface'],
+        'uas':['surface'],
+        'vas':['surface'],
+        'ua':['300hPa'],
+        'zg':['500hPa'],
+        'zos':['surface'],
+        'tos':['surface'],
+        'mlotst':['surface'],
+        #'thetao':['10m'],
+        #'so':['10m'],
+        'thetao':['10m','100m','1000m'],
+        'so':['10m','100m','1000m'],
+}
+
+
+#Define which observational dataset biases are computed against for each variable
+obs = { 
+    'siconc':'OSISAF',
+    'tas':reanalysis,
+    'clt':'MODIS',
+    'pr':'GPCP',
+    'rlut':'CERES',
+    'uas':reanalysis,
+    'vas':reanalysis,
+    'ua':reanalysis,
+    'zg':reanalysis,
+    'zos':'NESDIS',
+    'tos':'HadISST2',
+    'mlotst':'C-GLORSv7',
+    'thetao':'EN4',
+    'so':'EN4',
+}
 
 
 
-# Returns equvalent to cdo fldmean
+# In[49]:
+
+
+#Select seasons
+seasons = ['MAM', 'JJA', 'SON', 'DJF']
+
+#Define regions
+regions={'glob' : {
+    'lat_min':-90,
+    'lat_max':90,
+    'lon_min':0,
+    'lon_max':360,
+    'plot_color':'none',},
+         
+    'arctic' : {
+    'lat_min':60,
+    'lat_max':90,
+    'lon_min':0,
+    'lon_max':360,
+    'plot_color':'red',},
+         
+    'northmid' : {
+    'lat_min':30,
+    'lat_max':60,
+    'lon_min':0,
+    'lon_max':360,
+    'plot_color':'lightgrey',},
+         
+    'tropics' : {
+    'lat_min':-30,
+    'lat_max':30,
+    'lon_min':0,
+    'lon_max':360,
+    'plot_color':'green',},
+         
+    'nino34' : {
+    'lat_min':-5,
+    'lat_max':5,
+    'lon_min':190,
+    'lon_max':240,
+    'plot_color':'yellow',},
+         
+    'southmid' : {
+    'lat_min':-60,
+    'lat_max':-30,
+    'lon_min':0,
+    'lon_max':360,
+    'plot_color':'pink',},
+         
+    'antarctic' : {
+    'lat_min':-90,
+    'lat_max':-60,
+    'lon_min':0,
+    'lon_max':360,
+    'plot_color':'blue',},
+          
+}
+
+# This stores all regions for which the evaluation data has been generated
+all_regions=[ 'glob', 'arctic', 'northmid', 'tropics', 'innertropics', 'nino34', 'southmid', 'antarctic']
+
+
+# In[18]:
+
+
+# Visulatize regions
+
+projection = ccrs.PlateCarree()
+
+# Plot the leading EOF expressed as correlation in the Pacific domain.
+plt.figure(figsize=(12,9))
+ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
+
+ax.add_feature(cfeature.LAND, color='lightgrey')
+ax.add_feature(cfeature.COASTLINE)
+ax.gridlines(draw_labels=True, dms=True, x_inline=False, y_inline=False)
+
+plt.title('Regions', fontsize=13,fontweight="bold")
+
+ax.set_extent([0, -1, 90, -90])
+for region in regions:
+    if region == 'glob':
+        continue 
+    else:
+        lon_min=regions[region]['lon_min']
+        lon_max=regions[region]['lon_max']
+        lat_min=regions[region]['lat_min']
+        lat_max=regions[region]['lat_max']
+        ax.add_patch(mpatches.Rectangle(xy=[lon_min-1, lat_min], width=lon_max-lon_min, height=lat_max-lat_min,
+                                        facecolor=regions[region]['plot_color'],
+                                        alpha=0.5,
+                                        edgecolor=regions[region]['plot_color'],
+                                        lw='2',
+                                        transform=ccrs.PlateCarree())
+                     )
+        plt.text(lon_min-177,lat_max-7,region,weight='bold')
+
+ax.tick_params(labelsize=13)
+
+
+# In[19]:
+
+
+print('Loading obs data')
+
+ds_obs = OrderedDict()
+
+for var,depths in zip(obs,var_depths):
+    for depth in np.arange(0,len(var_depths[depths])):
+        for seas in seasons:
+            if verbose == 'true':
+                print('loading '+obs_path+var+'_'+obs[var]+'_'+var_depths[depths][depth]+'_'+seas+'.nc')
+
+            intermediate = xr.open_dataset(obs_path+var+'_'+obs[var]+'_'+var_depths[depths][depth]+'_'+seas+'.nc')
+            ds_obs[var,var_depths[depths][depth],seas] = intermediate.compute()
+            try:
+                ds_obs[var,var_depths[var][depth],seas]=ds_obs[var,var_depths[var][depth],seas].drop('time_bnds')
+            except:
+                pass
+            try:
+                ds_obs[var,var_depths[var][depth],seas]=ds_obs[var,var_depths[var][depth],seas].drop('time_bnds_2')
+            except:
+                pass
+            try:
+                ds_obs[var,var_depths[var][depth],seas]=ds_obs[var,var_depths[var][depth],seas].drop('depth')
+            except:
+                pass
+            
+
+
+# In[20]:
+
+
+print('Loading model data')
+
+ds_model = OrderedDict()
+
+for model in tqdm(models):
+    for var in models[model]:
+        for depth in np.arange(0,len(var_depths[var])):
+            for seas in seasons:
+                if verbose == 'true':
+                    print('loading '+model_path+var+'_'+model+'_'+time+'_'+var_depths[var][depth]+'_'+seas+'.nc')
+                intermediate = xr.open_mfdataset(model_path+var+'_'+model+'_'+time+'_'+var_depths[var][depth]+'_'+seas+'.nc')
+                intermediate = intermediate.squeeze(drop=True)
+                ds_model[var,var_depths[var][depth],seas,model] = intermediate.compute()
+                try:
+                    ds_model[var,var_depths[var][depth],seas,model]=ds_model[var,var_depths[var][depth],seas,model].drop('time_bnds')
+                except:
+                    pass
+                try:
+                    ds_model[var,var_depths[var][depth],seas,model]=ds_model[var,var_depths[var][depth],seas,model].drop('depth')
+                except:
+                    pass
+
+
+# In[21]:
+
+
+print('Calculating absolute error and field mean of abs error')
+
+# Returns equvalent to cdo fldmean ()
 def fldmean(ds):
     weights = np.cos(np.deg2rad(ds.lat))
     weights.name = "weights"
@@ -23,642 +312,214 @@ def fldmean(ds):
     return ds.mean(("lon", "lat"))
 
 
-
-
-#Choose ERA5 or NCEP2. This switch also selects the eval/???? subfolders, so do not mix and match as this would lead to incorrect results.
-reanalysis='ERA5'
-
-#Define paths
-obs_path='obs/'
-#model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/reference/outdata/oifs/combined/'
-model_path='input/'
-#model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/defuse_sea_alb_005/outdata/oifs/combined/'
-#model_path='/work/ollie/jstreffi/runtime/awicm3-frontiers/meltpond_alb+025/outdata/oifs/combined/'
-out_path='output/'
-eval_path='eval/'+reanalysis+'/'
-time = '198912-201411'
-
-'''
-Define model(s) and the respective variable dicts. (some models dont have the full set of variables available). 
-I'd like to write this in a less verbose way, but it seems to involve conversion of string into variable 
-via exec() locals() or globals(). I want that even less than long dict def.
-'''
-
-
-
-obs = { 'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis}
-
-models = {
-    'AWI-CM3_TCO319_DART':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis}
-}
-
-
-#Define evaluation models
-eval_models = {
-    'ACCESS-ESM1-5':{
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'AWI-CM1-MR':{
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'AWI-ESM1-LR':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'BCC':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'CAMS':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'CAS-ESM2-0':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'CAN5':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'CESM2':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'CIESM':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'CMCC-CM2-SR5':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'CNRM6':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'E3SM-1-1':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'EC-Earth3':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'FGOALS-f3-L':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'FGOALS-g3':{
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'FIO2':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP'},
-    'GISS-E2-1-G':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'HadGEM3MM':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'HAMMOZ':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'INM5':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'IITM':{
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,},
-    'IPSL-CM6A-LR':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'KACE-1-0-G':{
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'KIOST-ESM':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'MCMUA1':{
-        'tas':reanalysis,
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'MIROC6':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'MPI-ESM1-2-LR':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'MRI':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'NESM3':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'NORESM2':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'NOAA-GFDL':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'SNU': {   
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'TAIESM':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'ua':reanalysis,
-        'zg':reanalysis},
-    'UKESM1-0-LL':{
-        'siconc':'OSISAF',
-        'tas':reanalysis,
-        'clt':'MODIS',
-        'pr':'GPCP',
-        'rlut':'CERES',
-        'uas':reanalysis,
-        'vas':reanalysis,
-        'ua':reanalysis,
-        'zg':reanalysis}
-}
-
-#Define regions
-regions={'glob' : {
-    'lat_min':-90,
-    'lat_max':90,},
-         
-    'arctic' : {
-    'lat_min':60,
-    'lat_max':90,},
-         
-    'northmid' : {
-    'lat_min':30,
-    'lat_max':60,},
-         
-    'tropics' : {
-    'lat_min':-30,
-    'lat_max':30,},
-         
-    'innertropics' : {
-    'lat_min':-15,
-    'lat_max':15,},
-         
-    'southmid' : {
-    'lat_min':-60,
-    'lat_max':-30,},
-         
-    'antarctic' : {
-    'lat_min':-90,
-    'lat_max':-60,}
-          
-}
-
-
-#Define seasons
-seasons = ['MAM', 'JJA', 'SON', 'DJF']
-
-
-
-
-
-#Loading obs data
-ds_obs = OrderedDict()
-for var in obs:
-    for seas in seasons:
-        print('loading '+obs_path+var+'_'+obs[var]+'_'+seas+'.nc')
-
-        intermediate = xr.open_dataset(obs_path+var+'_'+obs[var]+'_'+seas+'.nc')
-        ds_obs[var,seas] = intermediate.compute()
-
-
-
-
-#Loading model data
-ds_model = OrderedDict()
-for model in models:
-    for var in models[model]:
-        for seas in seasons:
-            print('loading '+model_path+var+'_'+model+'_'+time+'_'+seas+'.nc')
-            intermediate = xr.open_dataset(model_path+var+'_'+model+'_'+time+'_'+seas+'.nc')
-            ds_model[var,seas,model] = intermediate.compute()
-
-
-#Calculate absolute error and build field mean of abs error
 abs_error = OrderedDict()
 mean_error = OrderedDict()
-timedim='time'
-for model in models:
+
+for model in tqdm(models):
     for var in models[model]:
-        for region in regions:
-            if var == 'siconc' and (region != 'arctic' and region != 'antarctic'):
-                continue
-            try:
-                filter1 = ds_model[var,seas,model].drop(timedim).lat>regions[region]['lat_min']
-                filter2 = ds_model[var,seas,model].drop(timedim).lat<regions[region]['lat_max']
+        for depth in np.arange(0,len(var_depths[var])):
+            for region in regions:
+                filter1 = ds_model[var,var_depths[var][depth],seas,model].lat>regions[region]['lat_min']
+                filter2 = ds_model[var,var_depths[var][depth],seas,model].lat<regions[region]['lat_max']
+                filter3 = ds_model[var,var_depths[var][depth],seas,model].lon>regions[region]['lon_min']
+                filter4 = ds_model[var,var_depths[var][depth],seas,model].lon<regions[region]['lon_max']
 
-            except:
-                timedim='time_counter'
-                filter1 = ds_model[var,seas,model].drop(timedim).lat>regions[region]['lat_min']
-                filter2 = ds_model[var,seas,model].drop(timedim).lat<regions[region]['lat_max']
-            for seas in seasons:
-                abs_error[var,seas,model,region]=np.sqrt((ds_model[var,seas,model].drop(timedim).where(filter1 & filter2)-
-                                                   ds_obs[var,seas].drop('time')).where(filter1 & filter2)*
-                                                  (ds_model[var,seas,model].drop(timedim).where(filter1 & filter2)-
-                                                   ds_obs[var,seas].drop('time').where(filter1 & filter2)))
-                mean_error[var,seas,model,region] = fldmean(abs_error[var,seas,model,region])
+                for seas in seasons:
+                    abs_error[var,var_depths[var][depth],seas,model,region]=np.sqrt((ds_model[var,var_depths[var][depth],seas,model].where(filter1 & filter2 & filter3 & filter4)-
+                                                       ds_obs[var,var_depths[var][depth],seas]).where(filter1 & filter2 & filter3 & filter4)*
+                                                      (ds_model[var,var_depths[var][depth],seas,model].where(filter1 & filter2 & filter3 & filter4)-
+                                                       ds_obs[var,var_depths[var][depth],seas].where(filter1 & filter2 & filter3 & filter4)))
+                    mean_error[var,var_depths[var][depth],seas,model,region] = fldmean(abs_error[var,var_depths[var][depth],seas,model,region])
 
 
-#Write field mean of errors into csv files
-for model in models:
+# In[22]:
+
+
+print('Writing field mean of errors into csv files')
+
+for model in tqdm(models):
     with open(out_path+'abs/'+model+'.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=' ',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['Variable','Region','Season','AbsMeanError'])
+        writer.writerow(['Variable','Region','Level','Season','AbsMeanError'])
         for var in models[model]:
             for region in regions:
-                if var == 'siconc' and (region != 'arctic' and region != 'antarctic'):
-                    continue
-                for seas in seasons:
-                    if (var == 'tas'):
-                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].tas.values[0])])
-                    if (var == 'uas'):
-                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].uas.values[0])])
-                    if (var == 'vas'):
-                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].vas.values[0])])
-                    if (var == 'ua'):
-                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].ua.values[0])])
-                    if (var == 'zg'):
-                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].zg.values[0])])
-                    if (var == 'pr'):
-                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].pr.values[0])])
-                    if (var == 'rlut'):
-                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].rlut.values[0])])
-                    if (var == 'clt'):
-                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].clt.values[0])])
-                    if (var == 'siconc'):
-                        writer.writerow([var,region,seas,np.squeeze(mean_error[var,seas,model,region].siconc.values[0])])
+                for depth in np.arange(0,len(var_depths[var])):
+                    for seas in seasons:
+                        writer.writerow([var,region,var_depths[var][depth],seas,np.squeeze(mean_error[var,var_depths[var][depth],seas,model,region].to_array(var).values[0])])
 
 
-# In[117]:
+# In[182]:
 
 
-#Read precalculated cmip6 field mean of errors from csv files
-collect = np.empty([len(eval_models),len(obs),len(regions),len(seasons)])*np.nan
+print('Reading precalculated cmip6 field mean of errors from csv files')
+
+max_depth=0
+for var in var_depths:
+    if len(var_depths[var]) > max_depth:
+        max_depth = len(var_depths[var])
+
+collect = np.empty([len(eval_models),len(obs),len(regions),max_depth,len(seasons)])*np.nan
 i=0
-for eval_model in eval_models:
+for eval_model in tqdm(eval_models):
     df = pd.read_csv(eval_path+eval_model+'.csv', delimiter=' ')
-    values = df['AbsMeanError'] #you can also use df['column_name']
+    values = df['AbsMeanError']
+    regions_csv = df['Region']
+    var_csv = df['Variable']
     j=0
     r=0
     for var in obs:
         k=0
         a=(df['Variable']==var).to_list()
-        if any(a): # Check if variable appears in list. If not, skip it.
-            print('reading',eval_model,var)
-            pass
-        else:
-            j+=1
-            print('skipping',eval_model,var)
-            continue
+        if verbose == 'true':
+            if any(a): # Check if variable appears in list. If not, skip it.
+                print('reading: ',eval_model,var)
+            else:
+                print('filling: ',eval_model,var)
         for region in regions:
             l=0
-            if var == 'siconc' and (region != 'arctic' and region != 'antarctic'):
-                continue
-            for seas in seasons:
-                collect[i,j,k,l]=values[r]
+            for depth in np.arange(0,len(var_depths[var])):
+                m=0
+                for seas in seasons:
+                    if any(a): # Check if variable appears in csv. If not, skip it.
+                        if regions_csv[r] not in regions: # Check if region from csv part of the analysis. Else advance
+                            while True:
+                                r+=1
+                                if regions_csv[r] in regions:
+                                    break
+                        collect[i,j,k,l,m]=values[r]
+                        r+=1
+                    m+=1
                 l+=1
-                r+=1
             k+=1
         j+=1
     i+=1
-ensmean=np.nanmean(collect,axis=0)
+# Ignoring non useful warning:
+# /tmp/ipykernel_19478/363568120.py:37: RuntimeWarning: Mean of empty slice
+#  ensmean=np.nanmean(collect,axis=0)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", category=RuntimeWarning)
+    ensmean=np.nanmean(collect,axis=0)
 
 
+# In[183]:
 
 
-#Place sums of error into easier to inspect dictionary
+print('Placing sums of error into easier to inspect dictionary')
+
 eval_error_mean = OrderedDict()
+
 j=0
-for var in obs:
+for var in tqdm(obs):
     k=0
     for region in regions:
         l=0
-        if var == 'siconc' and (region != 'arctic' and region != 'antarctic'):
-            continue
-        for seas in seasons:
-            eval_error_mean[var,region,seas]=ensmean[j,k,l]
+        for depth in np.arange(0,len(var_depths[var])):
+            m=0
+            for seas in seasons:
+                eval_error_mean[var,region,var_depths[var][depth],seas]=ensmean[j,k,l,m]
+                m+=1
             l+=1
         k+=1
     j+=1
 
 
+# In[184]:
 
 
-#calculate ratio of current model error to evaluation model error
+print('Calculating ratio of current model error to evaluation model error')
+
 error_fraction = OrderedDict()
+
 sum=0
-for model in models:
+for model in tqdm(models):
     for var in models[model]:
         for region in regions:
-            if var == 'siconc' and (region != 'arctic' and region != 'antarctic'):
-                continue
-            for seas in seasons:
-                error_fraction[var,seas,model,region] = mean_error[var,seas,model,region] / eval_error_mean[var,region,seas]
+            for depth in np.arange(0,len(var_depths[var])):
+                for seas in seasons:
+                    error_fraction[var,var_depths[var][depth],seas,model,region] = mean_error[var,var_depths[var][depth],seas,model,region] / eval_error_mean[var,region,var_depths[var][depth],seas]
 
 
+# In[185]:
 
 
-#Write ratio of field mean of errors into csv files and sum up error fractions for cmpi score
-#TODO beautification: find way to access error_fraction[var,seas,model,region].var.values[0] to make
-#one call out of nine
+print('Writing ratio of field mean of errors into csv files and sum up error fractions for cmpi score')
+
 cmpi = OrderedDict()
-for model in models:
+
+for model in tqdm(models):
     sum=0
     iter=0
     with open(out_path+'frac/'+model+'_fraction.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=' ',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['Variable','Region','Season','FracMeanError'])
+        writer.writerow(['Variable','Region','Level','Season','FracMeanError'])
         for var in models[model]:
-            for region in regions:
-                if var == 'siconc' and (region != 'arctic' and region != 'antarctic'):
-                    continue
-                for seas in seasons:
-                    if (var == 'tas'):
-                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].tas.values[0])])
-                        sum+=error_fraction[var,seas,model,region].tas.values[0]
-                    if (var == 'uas'):
-                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].uas.values[0])])
-                        sum+=error_fraction[var,seas,model,region].uas.values[0]
-                    if (var == 'vas'):
-                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].vas.values[0])])
-                        sum+=error_fraction[var,seas,model,region].vas.values[0]
-                    if (var == 'ua'):
-                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].ua.values[0])])
-                        sum+=error_fraction[var,seas,model,region].ua.values[0][0]
-                    if (var == 'zg'):
-                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].zg.values[0])])
-                        sum+=error_fraction[var,seas,model,region].zg.values[0][0]
-                    if (var == 'pr'):
-                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].pr.values[0])])
-                        sum+=error_fraction[var,seas,model,region].pr.values[0]
-                    if (var == 'rlut'):
-                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].rlut.values[0])])
-                        sum+=error_fraction[var,seas,model,region].rlut.values[0]
-                    if (var == 'clt'):
-                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].clt.values[0])])
-                        sum+=error_fraction[var,seas,model,region].clt.values[0]
-                    if (var == 'siconc'):
-                        writer.writerow([var,region,seas,np.squeeze(error_fraction[var,seas,model,region].siconc.values[0])])
-                        sum+=error_fraction[var,seas,model,region].siconc.values[0]
-                    iter+=1
+            for depth in np.arange(0,len(var_depths[var])):
+                for region in regions:
+                    for seas in seasons:
+                        writer.writerow([var,region,var_depths[var][depth],seas,np.squeeze(error_fraction[var,var_depths[var][depth],seas,model,region].to_array(var).values[0])])
+                        if ma.isnan(np.squeeze(error_fraction[var,var_depths[var][depth],seas,model,region].to_array(var).values[0])):
+                            pass
+                        else:
+                            sum+=np.squeeze(error_fraction[var,var_depths[var][depth],seas,model,region].to_array(var).values[0])
+                            iter+=1
         cmpi[model]=np.squeeze(sum)/iter
         writer.writerow(['CMPI','global','yearly',cmpi[model]])
 
 
+# In[186]:
 
 
-#Read precalculated evaluation field means of errors from csv files and plot heatmap
-collect_frac = np.empty([len(models),len(obs),len(regions),len(seasons)])*np.nan
-i=0
-for model in models:
+print('Reading precalculated evaluation field means of errors from csv files and plotting heatmap(s)')
+
+max_depth=0
+for var in var_depths:
+    if len(var_depths[var]) > max_depth:
+        max_depth = len(var_depths[var])
+
+plt.rcParams.update({'figure.max_open_warning': 0})
+collect_frac_non = OrderedDict()
+for model in tqdm(models):
     df = pd.read_csv(out_path+'frac/'+model+'_fraction.csv', delimiter=' ')
     values = df['FracMeanError'] #you can also use df['column_name']
-    j=0
     r=0
     for var in obs:
-        k=0
         a=(df['Variable']==var).to_list()
-        if any(a): # Check if variable appears in list. If not, skip it.
-            print('reading',model,var)
-            pass
-        else:
-            j+=1
-            print('skipping',model,var)
-            continue
-        for region in regions:
-            l=0 # Check if combination of variable and region appears in list. If not, skip it.
-            if np.max(np.add(list(map(int, (df['Variable']==var).to_list())),list(map(int, (df['Region']==region).to_list())))) ==2:
-                pass
+        if verbose == 'true':
+            if any(a): # Check if variable appears in list. If not, skip it.
+                print('reading: ',model,var)
             else:
-                k+=1
-                continue
-            for seas in seasons:
-                collect_frac[i,j,k,l]=values[r]
-                l+=1
-                r+=1
-            k+=1
-        j+=1
-    collect_frac_reshaped = collect_frac[i,:,:,:].reshape(len(obs),len(regions)*len(seasons))
+                print('filling: ',model,var)
+        for depth in np.arange(0,len(var_depths[var])):
+            for region in regions:
+                for seas in seasons:
+                    if any(a):
+                        collect_frac_non[var+' '+region,var_depths[var][depth]+' '+seas]=values[r]
+                        r+=1
+                    else:
+                        collect_frac_non[var+' '+region,var_depths[var][depth]+' '+seas]=np.nan
+
 
     seasons_plot = [' MAM', ' JJA', ' SON', ' DJF'] #adding spaces in front
     a=seasons_plot*len(regions)
     b=np.repeat(list(regions.keys()),len(seasons_plot))
     coord=[n+str(m) for m,n in zip(a,b)]
-    collect_frac_dataframe = pd.DataFrame(data=collect_frac_reshaped, index=obs, columns=coord)
     
-    fig, ax = plt.subplots(figsize=(len(coord)/1.5,len(obs)/1.5))
+    index_obs=[]
+    for var in obs:
+        for depth in np.arange(0,len(var_depths[var])):
+            if var_depths[var][depth] == 'surface':
+                levelname=''
+            else:
+                levelname=var_depths[var][depth]+' '
+            if var == 'zos' or var == 'tos':
+                levelname='st. dev. '
+            index_obs.append(levelname+var)
+    if verbose == 'true':
+        print(model,'number of values: ',len(list(collect_frac_non.values())),'; shape:',len(index_obs),'x',len(regions)*len(seasons))
+    collect_frac_reshaped = np.array(list(collect_frac_non.values()) ).reshape(len(index_obs),len(regions)*len(seasons)) # transform to 2D
+    collect_frac_dataframe = pd.DataFrame(data=collect_frac_reshaped, index=index_obs, columns=coord)
+
+    fig, ax = plt.subplots(figsize=((len(regions)*len(seasons))/1.5,len(index_obs)/1.5))
     fig.patch.set_facecolor('white')
     plt.rcParams['axes.facecolor'] = 'white'
     ax = sns.heatmap(collect_frac_dataframe, vmin=0.5, vmax=1.5,center=1,annot=True,fmt='.2f',cmap="PiYG_r",cbar=False,linewidths=1)
@@ -666,7 +527,67 @@ for model in models:
     plt.yticks(rotation=0, ha='right',fontsize=14)
     plt.title(model+' CMPI: '+str(round(cmpi[model],3)), fontsize=18)
     
-    plt.savefig(out_path+'plot/'+model+'.png',dpi=150,bbox_inches='tight')
+    plt.savefig(out_path+'plot/'+model+'.png',dpi=200,bbox_inches='tight')
     i+=1
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+# Debug plot script
+
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+from cartopy.util import add_cyclic_point
+import cmocean
+import math
+
+#model='BCC-SM2-MR'
+#model='AWI-CM3-REF'
+#model='AWI-CM1-MR'
+depth=2
+levels=np.linspace(0,500,11)
+#levels=np.linspace(0,1000,11)
+seas='JJA'
+var='mlotst'
+
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6,4.5))
+ax=plt.subplot(1,1,1,projection=ccrs.PlateCarree())
+ax.add_feature(cfeature.COASTLINE,zorder=3)
+
+
+data = ds_model[var,var_depths[var][depth],seas,model].to_array(var).values[0]
+obsp = np.squeeze(ds_obs[var,var_depths[var][depth],seas].to_array(var).values[0])
+#data_to_plot = data[0:90,:]#-obsp[0:90,:]
+data_to_plot = obsp[0:90,:]
+
+lon = np.arange(0, 360, 2)
+lat = np.arange(-90, 90, 2)
+
+imf=plt.contourf(lon, lat, data_to_plot, cmap=plt.cm.PuOr,levels=levels, extend='both', transform=ccrs.PlateCarree())
+
+ax.set_title(model+' '+var+var_depths[var][depth]+' '+seas,fontweight="bold")
+plt.tight_layout() 
+gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+              linewidth=1, color='gray', alpha=0.2, linestyle='-')
+
+gl.xlabels_bottom = False    
+cbar_ax_abs = fig.add_axes([0.15, 0.11, 0.7, 0.05])
+cbar_ax_abs.tick_params(labelsize=12)
+cb = fig.colorbar(imf, cax=cbar_ax_abs, orientation='horizontal')
+cb.ax.tick_params(labelsize='12')
+
+
+# In[ ]:
+
+
 
 
