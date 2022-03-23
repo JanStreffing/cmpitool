@@ -54,7 +54,7 @@ for i in `seq $starty $endy`;
 do
 	for var in temp salt;
 	do
-		cdo -intlevel,10,100,1000,4000 fesom/${var}.fesom.${i}.nc fesom/${var}.fesom.${i}.int.nc &
+		cdo -intlevel,10,100,1000,4000 -setctomiss,0 fesom/${var}.fesom.${i}.nc fesom/${var}.fesom.${i}.int.nc &
 	done
 	var='u'
 	cdo sellevel,30000 oifs/atm_remapped_1m_pl_${var}_1m_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
@@ -199,14 +199,13 @@ for var in thetao
 do
 	for lvl in 10 100 1000 4000;
 	do
-		cdo -L splitseas -setctomiss,0  -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_ &
+		cdo -L splitseas  -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_ &
 	done
 done
 for var in so
 do
 	for lvl in 10 100 1000 4000;
 	do
-		#cdo -L splitseas -setctomiss,0 -expr,so=(so<20.0)?0.0:so;  -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_ &
 		cdo -L splitseas -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_ &
 	done
 done
