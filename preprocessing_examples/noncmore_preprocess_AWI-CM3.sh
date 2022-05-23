@@ -5,16 +5,19 @@ Help()
    # Display Help
 	echo "##############################################################################"
 	echo "# This is an example script preparing climate output without CMOR complient  #"
-	echo "# output from the cmip-tool                                                  #"
-	echo "# Author: Jan Streffing 2022-01-18					   #"
+	echo "# output for  the cmip-tool                                                  #"
+	echo "# Author: Jan Streffing 2022-01-18					                       #"
 	echo "##############################################################################"
-	echo "Positional arguments:"
-	echo "#1    directory containing raw model output"
-	echo "#2    cmpi input subdirectory"
-	echo "#3    name of climate model"
-	echo "Positional optional argument:"
-	echo "#4    boolean to delete tmp files"
+	echo "# Positional arguments:                                                      #"
+	echo "#  1 directory containing raw model output                                   #"
+	echo "#  2 cmpi input subdirectory                                                 #"
+	echo "#  3 name of climate model                                                   #"
+	echo "# Positional optional argument:                                              #"
+	echo "#  4 boolean to delete tmp files                                             #"
+	echo "##############################################################################"
 }
+
+Help
 
 origdir=$1 
 outdir=$2 

@@ -1,233 +1,577 @@
-Variable Region Season AbsMeanError
-siconc arctic MAM 4.413386212177109
-siconc arctic JJA 14.317513995461008
-siconc arctic SON 17.433872583805414
-siconc arctic DJF 5.261903779871859
-siconc antarctic MAM 14.23982422664789
-siconc antarctic JJA 7.797848573753788
-siconc antarctic SON 7.970389849232709
-siconc antarctic DJF 13.883620757057738
-tas glob MAM 1.7737485
-tas glob JJA 2.117273
-tas glob SON 2.0446868
-tas glob DJF 1.6925815
-tas arctic MAM 1.5025151
-tas arctic JJA 1.5050321
-tas arctic SON 4.1103816
-tas arctic DJF 3.1905365
-tas northmid MAM 1.9645144
-tas northmid JJA 1.6522691
-tas northmid SON 1.2823747
-tas northmid DJF 2.1333895
-tas tropics MAM 1.0954006
-tas tropics JJA 1.1446489
-tas tropics SON 1.1066267
-tas tropics DJF 1.1772609
-tas innertropics MAM 0.9367265
-tas innertropics JJA 1.0336636
-tas innertropics SON 0.9210406
-tas innertropics DJF 1.0318415
-tas southmid MAM 0.6913011
-tas southmid JJA 1.2591698
-tas southmid SON 1.2256593
-tas southmid DJF 0.705677
-tas antarctic MAM 4.505719
-tas antarctic JJA 6.169229
-tas antarctic SON 3.6708224
-tas antarctic DJF 1.7874961
-clt glob MAM 15.213226
-clt glob JJA 14.788737
-clt glob SON 12.230542
-clt glob DJF 13.111017
-clt arctic MAM 19.951178
-clt arctic JJA 8.922903
-clt arctic SON 14.339214
-clt arctic DJF 22.036036
-clt northmid MAM 7.7952046
-clt northmid JJA 11.024772
-clt northmid SON 8.483208
-clt northmid DJF 10.534224
-clt tropics MAM 14.931059
-clt tropics JJA 15.647046
-clt tropics SON 13.681264
-clt tropics DJF 14.470188
-clt innertropics MAM 16.450264
-clt innertropics JJA 16.878689
-clt innertropics SON 15.605268
-clt innertropics DJF 16.634089
-clt southmid MAM 5.0994687
-clt southmid JJA 5.1875362
-clt southmid SON 3.4912903
-clt southmid DJF 3.8838987
-clt antarctic MAM 30.478931
-clt antarctic JJA 33.338394
-clt antarctic SON 21.08764
-clt antarctic DJF 14.377747
-pr glob MAM 8.580611e-06
-pr glob JJA 9.20743e-06
-pr glob SON 7.852302e-06
-pr glob DJF 8.018871e-06
-pr arctic MAM 3.7953769e-06
-pr arctic JJA 5.059417e-06
-pr arctic SON 5.112902e-06
-pr arctic DJF 3.698347e-06
-pr northmid MAM 6.8459617e-06
-pr northmid JJA 7.1675213e-06
-pr northmid SON 5.4431644e-06
-pr northmid DJF 7.4017134e-06
-pr tropics MAM 1.5797814e-05
-pr tropics JJA 1.5184075e-05
-pr tropics SON 1.3795268e-05
-pr tropics DJF 1.4985721e-05
-pr innertropics MAM 2.4121098e-05
-pr innertropics JJA 2.0699832e-05
-pr innertropics SON 1.9238585e-05
-pr innertropics DJF 2.1624404e-05
-pr southmid MAM 5.872849e-06
-pr southmid JJA 8.541747e-06
-pr southmid SON 5.7467837e-06
-pr southmid DJF 4.3993796e-06
-pr antarctic MAM 3.480446e-06
-pr antarctic JJA 4.3829946e-06
-pr antarctic SON 3.4175987e-06
-pr antarctic DJF 2.5028037e-06
-rlut glob MAM 6.046405
-rlut glob JJA 6.873326
-rlut glob SON 5.8526115
-rlut glob DJF 5.3294206
-rlut arctic MAM 1.9993744
-rlut arctic JJA 1.9940195
-rlut arctic SON 4.6489744
-rlut arctic DJF 4.2682614
-rlut northmid MAM 5.4754505
-rlut northmid JJA 6.8369637
-rlut northmid SON 3.5766826
-rlut northmid DJF 3.6595452
-rlut tropics MAM 10.437045
-rlut tropics JJA 10.39919
-rlut tropics SON 8.755336
-rlut tropics DJF 8.230316
-rlut innertropics MAM 14.535538
-rlut innertropics JJA 11.043425
-rlut innertropics SON 10.981988
-rlut innertropics DJF 10.806938
-rlut southmid MAM 5.6472282
-rlut southmid JJA 7.8255067
-rlut southmid SON 7.1545215
-rlut southmid DJF 5.4862375
-rlut antarctic MAM 2.3685403
-rlut antarctic JJA 3.5849485
-rlut antarctic SON 2.4543166
-rlut antarctic DJF 2.2828107
-uas glob MAM 1.037953
-uas glob JJA 1.0999198
-uas glob SON 0.9813225
-uas glob DJF 1.0474137
-uas arctic MAM 0.65208006
-uas arctic JJA 0.63138425
-uas arctic SON 0.6686448
-uas arctic DJF 1.023247
-uas northmid MAM 0.8215923
-uas northmid JJA 0.7143186
-uas northmid SON 0.86722285
-uas northmid DJF 1.1716956
-uas tropics MAM 0.7704077
-uas tropics JJA 0.8923279
-uas tropics SON 0.7428149
-uas tropics DJF 0.8583375
-uas innertropics MAM 0.79614574
-uas innertropics JJA 0.8431883
-uas innertropics SON 0.8298998
-uas innertropics DJF 0.7911088
-uas southmid MAM 1.188564
-uas southmid JJA 1.3404387
-uas southmid SON 1.1281248
-uas southmid DJF 1.1404474
-uas antarctic MAM 1.9985633
-uas antarctic JJA 2.1604571
-uas antarctic SON 1.728296
-uas antarctic DJF 1.1925471
-vas glob MAM 0.93571794
-vas glob JJA 0.961012
-vas glob SON 0.8678907
-vas glob DJF 0.945012
-vas arctic MAM 0.6059643
-vas arctic JJA 0.5146348
-vas arctic SON 0.76572156
-vas arctic DJF 1.1789557
-vas northmid MAM 0.6181254
-vas northmid JJA 0.60033995
-vas northmid SON 0.64475673
-vas northmid DJF 1.107937
-vas tropics MAM 0.8212178
-vas tropics JJA 0.89438236
-vas tropics SON 0.6996843
-vas tropics DJF 0.77967215
-vas innertropics MAM 0.9509413
-vas innertropics JJA 0.99854165
-vas innertropics SON 0.7543612
-vas innertropics DJF 0.807471
-vas southmid MAM 0.80202824
-vas southmid JJA 0.8999689
-vas southmid SON 0.753422
-vas southmid DJF 0.73957163
-vas antarctic MAM 2.003309
-vas antarctic JJA 2.0503232
-vas antarctic SON 1.7043185
-vas antarctic DJF 1.09481
-ua glob MAM 2.3973546
-ua glob JJA 2.4601188
-ua glob SON 2.0001185
-ua glob DJF 2.0124044
-ua arctic MAM 1.4281604
-ua arctic JJA 1.4997594
-ua arctic SON 1.4522153
-ua arctic DJF 1.9242742
-ua northmid MAM 2.7460895
-ua northmid JJA 2.8229666
-ua northmid SON 3.0176904
-ua northmid DJF 2.9572413
-ua tropics MAM 2.9752743
-ua tropics JJA 3.1866012
-ua tropics SON 1.7835915
-ua tropics DJF 1.963774
-ua innertropics MAM 1.9589791
-ua innertropics JJA 1.6276222
-ua innertropics SON 1.2702332
-ua innertropics DJF 1.5601356
-ua southmid MAM 1.9793652
-ua southmid JJA 2.275053
-ua southmid SON 1.7061696
-ua southmid DJF 1.5837612
-ua antarctic MAM 1.9241447
-ua antarctic JJA 1.7098724
-ua antarctic SON 1.9799762
-ua antarctic DJF 1.4539838
-zg glob MAM 49.063496
-zg glob JJA 46.301952
-zg glob SON 40.999184
-zg glob DJF 45.995876
-zg arctic MAM 29.689558
-zg arctic JJA 20.604654
-zg arctic SON 18.992157
-zg arctic DJF 23.048477
-zg northmid MAM 79.63543
-zg northmid JJA 50.077343
-zg northmid SON 49.520134
-zg northmid DJF 66.712685
-zg tropics MAM 54.118805
-zg tropics JJA 60.892498
-zg tropics SON 51.08677
-zg tropics DJF 59.63067
-zg innertropics MAM 54.298126
-zg innertropics JJA 55.992695
-zg innertropics SON 50.18545
-zg innertropics DJF 59.338413
-zg southmid MAM 41.558414
-zg southmid JJA 63.898823
-zg southmid SON 60.65088
-zg southmid DJF 43.515106
-zg antarctic MAM 34.811455
-zg antarctic JJA 18.92649
-zg antarctic SON 13.929152
-zg antarctic DJF 22.434069
+Variable Region Level Season AbsMeanError
+siconc glob surface MAM 8.196357405873531
+siconc glob surface JJA 11.515919763462927
+siconc glob surface SON 13.741198097317396
+siconc glob surface DJF 8.472388857035135
+siconc arctic surface MAM 4.331297225126175
+siconc arctic surface JJA 14.336081475164445
+siconc arctic surface SON 17.502086231194546
+siconc arctic surface DJF 5.166124280289764
+siconc northmid surface MAM 11.201330400740186
+siconc northmid surface JJA 5.2628773393792665
+siconc northmid surface SON 5.073401037950621
+siconc northmid surface DJF 10.525178453511959
+siconc tropics surface MAM nan
+siconc tropics surface JJA nan
+siconc tropics surface SON nan
+siconc tropics surface DJF nan
+siconc innertropics surface MAM nan
+siconc innertropics surface JJA nan
+siconc innertropics surface SON nan
+siconc innertropics surface DJF nan
+siconc nino34 surface MAM nan
+siconc nino34 surface JJA nan
+siconc nino34 surface SON nan
+siconc nino34 surface DJF nan
+siconc southmid surface MAM 4.862052761018756
+siconc southmid surface JJA 9.3608748346035
+siconc southmid surface SON 14.094556870820476
+siconc southmid surface DJF 4.898150009700382
+siconc antarctic surface MAM 14.251816779427454
+siconc antarctic surface JJA 7.825368916662318
+siconc antarctic surface SON 7.995185986191102
+siconc antarctic surface DJF 13.931147359110433
+tas glob surface MAM 1.776726
+tas glob surface JJA 2.1198113
+tas glob surface SON 2.0483642
+tas glob surface DJF 1.6967682
+tas arctic surface MAM 1.5060045
+tas arctic surface JJA 1.5086622
+tas arctic surface SON 4.1213446
+tas arctic surface DJF 3.201291
+tas northmid surface MAM 1.9696763
+tas northmid surface JJA 1.6521803
+tas northmid surface SON 1.2832739
+tas northmid surface DJF 2.1401181
+tas tropics surface MAM 1.0962518
+tas tropics surface JJA 1.1469791
+tas tropics surface SON 1.1083337
+tas tropics surface DJF 1.1784177
+tas innertropics surface MAM 0.93617034
+tas innertropics surface JJA 1.0357294
+tas innertropics surface SON 0.92358863
+tas innertropics surface DJF 1.0319773
+tas nino34 surface MAM 0.99590456
+tas nino34 surface JJA 1.5253067
+tas nino34 surface SON 1.7908086
+tas nino34 surface DJF 1.5846692
+tas southmid surface MAM 0.69314116
+tas southmid surface JJA 1.2629033
+tas southmid surface SON 1.2281251
+tas southmid surface DJF 0.707582
+tas antarctic surface MAM 4.5111337
+tas antarctic surface JJA 6.172283
+tas antarctic surface SON 3.676014
+tas antarctic surface DJF 1.7909813
+clt glob surface MAM 15.215518
+clt glob surface JJA 14.785855
+clt glob surface SON 12.239864
+clt glob surface DJF 13.12797
+clt arctic surface MAM 20.01593
+clt arctic surface JJA 8.929289
+clt arctic surface SON 14.373357
+clt arctic surface DJF 22.109056
+clt northmid surface MAM 7.7948704
+clt northmid surface JJA 11.018465
+clt northmid surface SON 8.497029
+clt northmid surface DJF 10.551918
+clt tropics surface MAM 14.920969
+clt tropics surface JJA 15.668555
+clt tropics surface SON 13.7081995
+clt tropics surface DJF 14.471983
+clt innertropics surface MAM 16.412899
+clt innertropics surface JJA 16.915028
+clt innertropics surface SON 15.6447
+clt innertropics surface DJF 16.599272
+clt nino34 surface MAM 13.910303
+clt nino34 surface JJA 12.305552
+clt nino34 surface SON 13.41256
+clt nino34 surface DJF 10.061603
+clt southmid surface MAM 5.1140842
+clt southmid surface JJA 5.191549
+clt southmid surface SON 3.4960563
+clt southmid surface DJF 3.8907018
+clt antarctic surface MAM 30.433632
+clt antarctic surface JJA 33.274002
+clt antarctic surface SON 21.043722
+clt antarctic surface DJF 14.3802595
+pr glob surface MAM 8.596867e-06
+pr glob surface JJA 9.225855e-06
+pr glob surface SON 7.870716e-06
+pr glob surface DJF 8.035571e-06
+pr arctic surface MAM 3.7997165e-06
+pr arctic surface JJA 5.0655417e-06
+pr arctic surface SON 5.114021e-06
+pr arctic surface DJF 3.6946228e-06
+pr northmid surface MAM 6.8569907e-06
+pr northmid surface JJA 7.163236e-06
+pr northmid surface SON 5.4437505e-06
+pr northmid surface DJF 7.3990273e-06
+pr tropics surface MAM 1.583347e-05
+pr tropics surface JJA 1.5225449e-05
+pr tropics surface SON 1.3838431e-05
+pr tropics surface DJF 1.5037941e-05
+pr innertropics surface MAM 2.4162624e-05
+pr innertropics surface JJA 2.0744039e-05
+pr innertropics surface SON 1.9290455e-05
+pr innertropics surface DJF 2.1690736e-05
+pr nino34 surface MAM 1.6357277e-05
+pr nino34 surface JJA 1.2002019e-05
+pr nino34 surface SON 9.80723e-06
+pr nino34 surface DJF 1.6877633e-05
+pr southmid surface MAM 5.8803125e-06
+pr southmid surface JJA 8.565774e-06
+pr southmid surface SON 5.7595425e-06
+pr southmid surface DJF 4.3968116e-06
+pr antarctic surface MAM 3.4821683e-06
+pr antarctic surface JJA 4.384678e-06
+pr antarctic surface SON 3.4263662e-06
+pr antarctic surface DJF 2.50433e-06
+rlut glob surface MAM 6.033236
+rlut glob surface JJA 6.8747087
+rlut glob surface SON 5.8576107
+rlut glob surface DJF 5.3286476
+rlut arctic surface MAM 1.991581
+rlut arctic surface JJA 1.9965224
+rlut arctic surface SON 4.6487885
+rlut arctic surface DJF 4.269998
+rlut northmid surface MAM 5.4757767
+rlut northmid surface JJA 6.8481045
+rlut northmid surface SON 3.5784228
+rlut northmid surface DJF 3.657283
+rlut tropics surface MAM 10.391448
+rlut tropics surface JJA 10.384116
+rlut tropics surface SON 8.759828
+rlut tropics surface DJF 8.223035
+rlut innertropics surface MAM 14.47619
+rlut innertropics surface JJA 11.028213
+rlut innertropics surface SON 11.002937
+rlut innertropics surface DJF 10.793901
+rlut nino34 surface MAM 6.7706103
+rlut nino34 surface JJA 5.986104
+rlut nino34 surface SON 5.270133
+rlut nino34 surface DJF 5.3152695
+rlut southmid surface MAM 5.663168
+rlut southmid surface JJA 7.8462777
+rlut southmid surface SON 7.1752887
+rlut southmid surface DJF 5.49454
+rlut antarctic surface MAM 2.3710458
+rlut antarctic surface JJA 3.5860903
+rlut antarctic surface SON 2.456469
+rlut antarctic surface DJF 2.2859964
+uas glob surface MAM 1.0381384
+uas glob surface JJA 1.0999943
+uas glob surface SON 0.98256296
+uas glob surface DJF 1.0474766
+uas arctic surface MAM 0.65233624
+uas arctic surface JJA 0.6324997
+uas arctic surface SON 0.67069376
+uas arctic surface DJF 1.021968
+uas northmid surface MAM 0.8212281
+uas northmid surface JJA 0.71207196
+uas northmid surface SON 0.87056065
+uas northmid surface DJF 1.1732621
+uas tropics surface MAM 0.77182686
+uas tropics surface JJA 0.89348894
+uas tropics surface SON 0.7431965
+uas tropics surface DJF 0.8592387
+uas innertropics surface MAM 0.7981198
+uas innertropics surface JJA 0.8453287
+uas innertropics surface SON 0.83035266
+uas innertropics surface DJF 0.791073
+uas nino34 surface MAM 0.5486589
+uas nino34 surface JJA 0.56725365
+uas nino34 surface SON 0.63742983
+uas nino34 surface DJF 0.4531313
+uas southmid surface MAM 1.1874033
+uas southmid surface JJA 1.3411287
+uas southmid surface SON 1.1297541
+uas southmid surface DJF 1.1393543
+uas antarctic surface MAM 1.9979388
+uas antarctic surface JJA 2.158047
+uas antarctic surface SON 1.7275003
+uas antarctic surface DJF 1.1918914
+vas glob surface MAM 0.9347967
+vas glob surface JJA 0.96163446
+vas glob surface SON 0.868106
+vas glob surface DJF 0.94488543
+vas arctic surface MAM 0.60269177
+vas arctic surface JJA 0.5150401
+vas arctic surface SON 0.7628981
+vas arctic surface DJF 1.1757481
+vas northmid surface MAM 0.6187832
+vas northmid surface JJA 0.6003502
+vas northmid surface SON 0.64502335
+vas northmid surface DJF 1.1090647
+vas tropics surface MAM 0.81959724
+vas tropics surface JJA 0.89670384
+vas tropics surface SON 0.7009988
+vas tropics surface DJF 0.7797464
+vas innertropics surface MAM 0.94820946
+vas innertropics surface JJA 1.0008181
+vas innertropics surface SON 0.7561079
+vas innertropics surface DJF 0.80700403
+vas nino34 surface MAM 1.4502985
+vas nino34 surface JJA 1.3208117
+vas nino34 surface SON 0.9933853
+vas nino34 surface DJF 1.2400129
+vas southmid surface MAM 0.80219173
+vas southmid surface JJA 0.8994131
+vas southmid surface SON 0.7538876
+vas southmid surface DJF 0.7395308
+vas antarctic surface MAM 2.0033498
+vas antarctic surface JJA 2.049717
+vas antarctic surface SON 1.7052366
+vas antarctic surface DJF 1.0954411
+ua glob 300hPa MAM 2.399353
+ua glob 300hPa JJA 2.4598906
+ua glob 300hPa SON 2.0019906
+ua glob 300hPa DJF 2.010622
+ua arctic 300hPa MAM 1.4220603
+ua arctic 300hPa JJA 1.5024965
+ua arctic 300hPa SON 1.4453255
+ua arctic 300hPa DJF 1.9124309
+ua northmid 300hPa MAM 2.749984
+ua northmid 300hPa JJA 2.82644
+ua northmid 300hPa SON 3.0204916
+ua northmid 300hPa DJF 2.9554572
+ua tropics 300hPa MAM 2.9782553
+ua tropics 300hPa JJA 3.1810985
+ua tropics 300hPa SON 1.7850486
+ua tropics 300hPa DJF 1.9617547
+ua innertropics 300hPa MAM 1.9576929
+ua innertropics 300hPa JJA 1.6263542
+ua innertropics 300hPa SON 1.2718655
+ua innertropics 300hPa DJF 1.552278
+ua nino34 300hPa MAM 3.5043695
+ua nino34 300hPa JJA 1.5473071
+ua nino34 300hPa SON 0.72605133
+ua nino34 300hPa DJF 1.2320669
+ua southmid 300hPa MAM 1.9776022
+ua southmid 300hPa JJA 2.270809
+ua southmid 300hPa SON 1.7119064
+ua southmid 300hPa DJF 1.585359
+ua antarctic 300hPa MAM 1.9320872
+ua antarctic 300hPa JJA 1.7147857
+ua antarctic 300hPa SON 1.9854665
+ua antarctic 300hPa DJF 1.4579934
+zg glob 500hPa MAM 49.077316
+zg glob 500hPa JJA 46.339237
+zg glob 500hPa SON 41.002857
+zg glob 500hPa DJF 45.976532
+zg arctic 500hPa MAM 29.688866
+zg arctic 500hPa JJA 20.667404
+zg arctic 500hPa SON 18.96042
+zg arctic 500hPa DJF 22.975098
+zg northmid 500hPa MAM 79.606384
+zg northmid 500hPa JJA 50.115723
+zg northmid 500hPa SON 49.55406
+zg northmid 500hPa DJF 66.56603
+zg tropics 500hPa MAM 54.101196
+zg tropics 500hPa JJA 60.876217
+zg tropics 500hPa SON 51.109974
+zg tropics 500hPa DJF 59.63736
+zg innertropics 500hPa MAM 54.282833
+zg innertropics 500hPa JJA 55.976635
+zg innertropics 500hPa SON 50.191654
+zg innertropics 500hPa DJF 59.333416
+zg nino34 500hPa MAM 50.23633
+zg nino34 500hPa JJA 52.074768
+zg nino34 500hPa SON 47.416542
+zg nino34 500hPa DJF 54.300465
+zg southmid 500hPa MAM 41.665005
+zg southmid 500hPa JJA 64.01714
+zg southmid 500hPa SON 60.685642
+zg southmid 500hPa DJF 43.598644
+zg antarctic 500hPa MAM 34.865257
+zg antarctic 500hPa JJA 18.96392
+zg antarctic 500hPa SON 13.87617
+zg antarctic 500hPa DJF 22.448404
+zos glob surface MAM 0.035516202
+zos glob surface JJA 0.035096314
+zos glob surface SON 0.03603438
+zos glob surface DJF 0.03420774
+zos arctic surface MAM 0.02058298
+zos arctic surface JJA 0.025296038
+zos arctic surface SON 0.025273666
+zos arctic surface DJF 0.023080569
+zos northmid surface MAM 0.039776053
+zos northmid surface JJA 0.042000756
+zos northmid surface SON 0.042496555
+zos northmid surface DJF 0.03945496
+zos tropics surface MAM 0.029857809
+zos tropics surface JJA 0.029178081
+zos tropics surface SON 0.030605214
+zos tropics surface DJF 0.028289057
+zos innertropics surface MAM 0.025782568
+zos innertropics surface JJA 0.023154544
+zos innertropics surface SON 0.025601756
+zos innertropics surface DJF 0.023623403
+zos nino34 surface MAM 0.038616464
+zos nino34 surface JJA 0.03342025
+zos nino34 surface SON 0.03612903
+zos nino34 surface DJF 0.034252293
+zos southmid surface MAM 0.050659187
+zos southmid surface JJA 0.047969133
+zos southmid surface SON 0.04801674
+zos southmid surface DJF 0.04870355
+zos antarctic surface MAM 0.02030402
+zos antarctic surface JJA 0.02037294
+zos antarctic surface SON 0.02589771
+zos antarctic surface DJF 0.019245323
+tos glob surface MAM 0.27187386
+tos glob surface JJA 0.3704802
+tos glob surface SON 0.317685
+tos glob surface DJF 0.38072112
+tos arctic surface MAM 0.14888111
+tos arctic surface JJA 0.771875
+tos arctic surface SON 0.61423194
+tos arctic surface DJF 0.15246789
+tos northmid surface MAM 0.2882437
+tos northmid surface JJA 0.8995677
+tos northmid surface SON 0.72121733
+tos northmid surface DJF 0.26280603
+tos tropics surface MAM 0.2290874
+tos tropics surface JJA 0.21885699
+tos tropics surface SON 0.20795576
+tos tropics surface DJF 0.2644711
+tos innertropics surface MAM 0.24025637
+tos innertropics surface JJA 0.21058163
+tos innertropics surface SON 0.20960556
+tos innertropics surface DJF 0.242165
+tos nino34 surface MAM 0.5889852
+tos nino34 surface JJA 0.5204518
+tos nino34 surface SON 0.45937958
+tos nino34 surface DJF 0.49605602
+tos southmid surface MAM 0.2543149
+tos southmid surface JJA 0.17586108
+tos southmid surface SON 0.17297705
+tos southmid surface DJF 0.43080014
+tos antarctic surface MAM 0.6237141
+tos antarctic surface JJA 0.16222365
+tos antarctic surface SON 0.15854102
+tos antarctic surface DJF 1.1480578
+mlotst glob surface MAM 14.628612
+mlotst glob surface JJA 16.606998
+mlotst glob surface SON 27.836481
+mlotst glob surface DJF 14.463718
+mlotst arctic surface MAM 32.87401
+mlotst arctic surface JJA 1.6017929
+mlotst arctic surface SON 4.165431
+mlotst arctic surface DJF 28.820284
+mlotst northmid surface MAM 30.320438
+mlotst northmid surface JJA 1.9768188
+mlotst northmid surface SON 4.7444477
+mlotst northmid surface DJF 32.27984
+mlotst tropics surface MAM 6.377942
+mlotst tropics surface JJA 6.843347
+mlotst tropics surface SON 7.0677176
+mlotst tropics surface DJF 6.635282
+mlotst innertropics surface MAM 6.0808687
+mlotst innertropics surface JJA 5.765019
+mlotst innertropics surface SON 6.306366
+mlotst innertropics surface DJF 6.264958
+mlotst nino34 surface MAM 1.5756465
+mlotst nino34 surface JJA 4.294706
+mlotst nino34 surface SON 3.6448314
+mlotst nino34 surface DJF 3.1471791
+mlotst southmid surface MAM 9.772398
+mlotst southmid surface JJA 31.049019
+mlotst southmid surface SON 39.130306
+mlotst southmid surface DJF 10.745233
+mlotst antarctic surface MAM 9.214361
+mlotst antarctic surface JJA 63.18648
+mlotst antarctic surface SON 157.3458
+mlotst antarctic surface DJF 7.6340313
+thetao glob 10m MAM 0.84615237
+thetao glob 10m JJA 0.942108
+thetao glob 10m SON 0.88817924
+thetao glob 10m DJF 0.86956584
+thetao glob 100m MAM 1.1720575
+thetao glob 100m JJA 1.1887883
+thetao glob 100m SON 1.1563972
+thetao glob 100m DJF 1.1598293
+thetao glob 1000m MAM 0.6919149
+thetao glob 1000m JJA 0.6965849
+thetao glob 1000m SON 0.6937438
+thetao glob 1000m DJF 0.6861817
+thetao arctic 10m MAM 0.6318928
+thetao arctic 10m JJA 0.96300656
+thetao arctic 10m SON 0.9159706
+thetao arctic 10m DJF 0.64021516
+thetao arctic 100m MAM 0.89883566
+thetao arctic 100m JJA 0.80069673
+thetao arctic 100m SON 0.8235105
+thetao arctic 100m DJF 0.7860013
+thetao arctic 1000m MAM 0.96893406
+thetao arctic 1000m JJA 0.98352665
+thetao arctic 1000m SON 0.9771728
+thetao arctic 1000m DJF 0.9654063
+thetao northmid 10m MAM 1.435929
+thetao northmid 10m JJA 1.7258055
+thetao northmid 10m SON 1.328566
+thetao northmid 10m DJF 1.4054884
+thetao northmid 100m MAM 1.4189904
+thetao northmid 100m JJA 1.5265667
+thetao northmid 100m SON 1.6475012
+thetao northmid 100m DJF 1.5273999
+thetao northmid 1000m MAM 0.9674553
+thetao northmid 1000m JJA 0.9697505
+thetao northmid 1000m SON 0.97436595
+thetao northmid 1000m DJF 0.9698619
+thetao tropics 10m MAM 0.76937693
+thetao tropics 10m JJA 0.82706386
+thetao tropics 10m SON 0.8344995
+thetao tropics 10m DJF 0.79462117
+thetao tropics 100m MAM 1.4489864
+thetao tropics 100m JJA 1.476097
+thetao tropics 100m SON 1.416631
+thetao tropics 100m DJF 1.4565758
+thetao tropics 1000m MAM 0.5121507
+thetao tropics 1000m JJA 0.52045566
+thetao tropics 1000m SON 0.5169009
+thetao tropics 1000m DJF 0.5101471
+thetao innertropics 10m MAM 0.6736304
+thetao innertropics 10m JJA 0.7310439
+thetao innertropics 10m SON 0.7575666
+thetao innertropics 10m DJF 0.7069961
+thetao innertropics 100m MAM 1.5941588
+thetao innertropics 100m JJA 1.6836458
+thetao innertropics 100m SON 1.6214336
+thetao innertropics 100m DJF 1.610823
+thetao innertropics 1000m MAM 0.4196327
+thetao innertropics 1000m JJA 0.42310628
+thetao innertropics 1000m SON 0.4253132
+thetao innertropics 1000m DJF 0.4172759
+thetao nino34 10m MAM 0.79766357
+thetao nino34 10m JJA 1.1897948
+thetao nino34 10m SON 1.682409
+thetao nino34 10m DJF 1.5245999
+thetao nino34 100m MAM 1.2199135
+thetao nino34 100m JJA 1.1392477
+thetao nino34 100m SON 1.9817699
+thetao nino34 100m DJF 1.9441128
+thetao nino34 1000m MAM 0.06454208
+thetao nino34 1000m JJA 0.05703954
+thetao nino34 1000m SON 0.059777685
+thetao nino34 1000m DJF 0.06493849
+thetao southmid 10m MAM 0.79425657
+thetao southmid 10m JJA 0.88606405
+thetao southmid 10m SON 0.9137799
+thetao southmid 10m DJF 0.79335505
+thetao southmid 100m MAM 1.0293298
+thetao southmid 100m JJA 0.9858035
+thetao southmid 100m SON 0.9060347
+thetao southmid 100m DJF 0.96710384
+thetao southmid 1000m MAM 0.5964654
+thetao southmid 1000m JJA 0.5897387
+thetao southmid 1000m SON 0.5885542
+thetao southmid 1000m DJF 0.5811849
+thetao antarctic 10m MAM 0.7671783
+thetao antarctic 10m JJA 0.46475905
+thetao antarctic 10m SON 0.38568625
+thetao antarctic 10m DJF 0.9503935
+thetao antarctic 100m MAM 0.5894112
+thetao antarctic 100m JJA 0.7358545
+thetao antarctic 100m SON 0.6694912
+thetao antarctic 100m DJF 0.58540154
+thetao antarctic 1000m MAM 1.1128142
+thetao antarctic 1000m JJA 1.128546
+thetao antarctic 1000m SON 1.1197793
+thetao antarctic 1000m DJF 1.1079717
+so glob 10m MAM 0.61983395
+so glob 10m JJA 0.62742615
+so glob 10m SON 0.7246877
+so glob 10m DJF 0.6522869
+so glob 100m MAM 0.28862444
+so glob 100m JJA 0.28675982
+so glob 100m SON 0.2898208
+so glob 100m DJF 0.28906816
+so glob 1000m MAM 0.12811266
+so glob 1000m JJA 0.12716606
+so glob 1000m SON 0.12720716
+so glob 1000m DJF 0.12821925
+so arctic 10m MAM 1.9273486
+so arctic 10m JJA 1.983425
+so arctic 10m SON 2.613339
+so arctic 10m DJF 2.2057743
+so arctic 100m MAM 0.32978994
+so arctic 100m JJA 0.3151188
+so arctic 100m SON 0.36248204
+so arctic 100m DJF 0.34434387
+so arctic 1000m MAM 0.13013792
+so arctic 1000m JJA 0.1244849
+so arctic 1000m SON 0.1239296
+so arctic 1000m DJF 0.13352369
+so northmid 10m MAM 0.7271087
+so northmid 10m JJA 0.79695684
+so northmid 10m SON 0.86417854
+so northmid 10m DJF 0.772502
+so northmid 100m MAM 0.5832195
+so northmid 100m JJA 0.5669146
+so northmid 100m SON 0.5568142
+so northmid 100m DJF 0.5820599
+so northmid 1000m MAM 0.16529638
+so northmid 1000m JJA 0.16571613
+so northmid 1000m SON 0.16675499
+so northmid 1000m DJF 0.16746694
+so tropics 10m MAM 0.40196732
+so tropics 10m JJA 0.37142536
+so tropics 10m SON 0.3617593
+so tropics 10m DJF 0.3565638
+so tropics 100m MAM 0.25988287
+so tropics 100m JJA 0.25596428
+so tropics 100m SON 0.2557013
+so tropics 100m DJF 0.2548144
+so tropics 1000m MAM 0.1170407
+so tropics 1000m JJA 0.11744227
+so tropics 1000m SON 0.11688121
+so tropics 1000m DJF 0.116920434
+so innertropics 10m MAM 0.45890796
+so innertropics 10m JJA 0.42080697
+so innertropics 10m SON 0.42057905
+so innertropics 10m DJF 0.39713562
+so innertropics 100m MAM 0.26992047
+so innertropics 100m JJA 0.26420686
+so innertropics 100m SON 0.2615484
+so innertropics 100m DJF 0.2622051
+so innertropics 1000m MAM 0.11235701
+so innertropics 1000m JJA 0.11330726
+so innertropics 1000m SON 0.11239021
+so innertropics 1000m DJF 0.11219988
+so nino34 10m MAM 0.11800372
+so nino34 10m JJA 0.15680157
+so nino34 10m SON 0.20603244
+so nino34 10m DJF 0.14615981
+so nino34 100m MAM 0.17049523
+so nino34 100m JJA 0.18200347
+so nino34 100m SON 0.17021123
+so nino34 100m DJF 0.14283949
+so nino34 1000m MAM 0.044500478
+so nino34 1000m JJA 0.04953645
+so nino34 1000m SON 0.045474943
+so nino34 1000m DJF 0.042640783
+so southmid 10m MAM 0.30031863
+so southmid 10m JJA 0.29259682
+so southmid 10m SON 0.27531716
+so southmid 10m DJF 0.2934659
+so southmid 100m MAM 0.22602277
+so southmid 100m JJA 0.23442559
+so southmid 100m SON 0.23670164
+so southmid 100m DJF 0.23173188
+so southmid 1000m MAM 0.1563305
+so southmid 1000m JJA 0.1544472
+so southmid 1000m SON 0.15506457
+so southmid 1000m DJF 0.15579054
+so antarctic 10m MAM 0.25264627
+so antarctic 10m JJA 0.265217
+so antarctic 10m SON 0.29499838
+so antarctic 10m DJF 0.28193453
+so antarctic 100m MAM 0.18798622
+so antarctic 100m JJA 0.20033516
+so antarctic 100m SON 0.18366851
+so antarctic 100m DJF 0.1828705
+so antarctic 1000m MAM 0.05069972
+so antarctic 1000m JJA 0.05000806
+so antarctic 1000m SON 0.050171245
+so antarctic 1000m DJF 0.04905361
