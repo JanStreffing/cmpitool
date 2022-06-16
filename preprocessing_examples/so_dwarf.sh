@@ -40,12 +40,24 @@ tmpstr="analysis_cmpi_period"
 printf "##############################################\n"
 printf "# clean up so cat does not do strange things #\n"
 printf "##############################################\n"
-for var in MLD2;
+for var in salt;
 do
     rm -f ${outdir}/${var}_${tmpstr}* 
 done
 wait
 
+
+printf "##################################\n"
+printf "# split off / interpolate levels #\n"
+printf "##################################\n"
+for i in `seq $starty $endy`;
+do
+	for var in salt;
+	do
+		cdo -intlevel,10,100,1000,4000 -setctomiss,0 fesom/${var}.fesom.${i}.nc ${outdir}/${var}.fesom.${i}.int.nc &
+	done
+done
+wait
 
 printf "#######################################\n"
 printf "# cat together analysis period part 2 #\n"
@@ -54,9 +66,9 @@ printf "#######################################\n"
 
 for i in `seq $starty $endy`;
 do
-	for var in MLD2;
+	for var in salt;
 	do
-		cdo cat fesom/${var}.fesom.${i}.nc ${outdir}/${var}_${tmpstr}.nc &
+		cdo cat ${outdir}/${var}.fesom.${i}.int.nc ${outdir}/${var}_${tmpstr}.nc &
 	done
 	wait
 done
@@ -68,21 +80,44 @@ cd $outdir
 printf "################\n"
 printf "# remap FESOM2 #\n"
 printf "################\n"
-for var in MLD2;
+for var in salt;
 do
-	cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${outdir}/${var}_${tmpstr}.nc ${outdir}/weights_unstr_2_r180x91.nc
-	cdo -L -remap,r180x91,weights_unstr_2_r180x91.nc -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc
+	cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${outdir}/${var}_${tmpstr}.nc ${outdir}/weights_unstr_2_r180x91_${var}.nc &
 done
 wait
-pwd
 
-printf "cdo chname,MLD2,mlotst -divc,-1 MLD2_${tmpstr}_remap.nc  mlotst2_${tmpstr}.nc &"
-cdo chname,MLD2,mlotst -divc,-1 MLD2_${tmpstr}_remap.nc  mlotst2_${tmpstr}.nc &
-wait
-
-for var in mlotst2;
+for var in salt;
 do
-    printf"cdo splitseas -yseasmean ${var}_${tmpstr}.nc $outdir/${var}_${model_name}_198912-201411_surface_ "
-    #cdo splitseas -yseasmean ${var}_${tmpstr}.nc $outdir/${var}_${model_name}_198912-201411_surface_ &
+	cdo -L -splitlevel -remap,r180x91,weights_unstr_2_r180x91_${var}.nc -setctomiss,0 -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_ &
 done
 wait
+
+for var in salt;
+do
+        for lvl in "000010" "000100" "001000" "004000";
+        do
+		mv ${var}_${tmpstr}_${lvl}.nc ${var}_${tmpstr}_${lvl}_remap.nc &
+	done
+done
+wait
+
+
+for lvl in "000010" "000100" "001000" "004000";
+do
+	cdo chname,salt,so salt_${tmpstr}_${lvl}_remap.nc so_${tmpstr}_${lvl}.nc &
+done
+wait
+
+for var in so
+do
+	for lvl in 10 100 1000 4000;
+	do
+		cdo -L splitseas -yseasmean ${var}_${tmpstr}_$(printf "%06d" $lvl).nc $outdir/${var}_${model_name}_198912-201411_${lvl}m_ &
+	done
+done
+wait
+
+if $deltmp; then
+	printf "Deleting tmp data"
+	rm -rf *${tmpstr}*
+fi
