@@ -40,7 +40,7 @@ tmpstr="analysis_cmpi_period"
 printf "##############################################\n"
 printf "# clean up so cat does not do strange things #\n"
 printf "##############################################\n"
-for var in ci 2t ttr tcc cp lsp 10u 10v u z temp salt MLD1 ssh sst;
+for var in ci 2t ttr tcc cp lsp 10u 10v u z temp salt MLD2 ssh sst;
 do
     rm -f ${outdir}/${var}_${tmpstr}* 
 done
@@ -70,7 +70,7 @@ printf "#######################################\n"
 
 for i in `seq $starty $endy`;
 do
-	for var in MLD1 ssh sst;
+	for var in MLD2 ssh sst;
 	do
 		cdo cat fesom/${var}.fesom.${i}.nc ${outdir}/${var}_${tmpstr}.nc &
 	done
@@ -118,7 +118,7 @@ done
 wait
 
 
-for var in MLD1;
+for var in MLD2;
 do
 	cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${outdir}/${var}_${tmpstr}.nc ${outdir}/weights_unstr_2_r180x91.nc
 	cdo -L -remap,r180x91,weights_unstr_2_r180x91.nc -selname,${var} -setgrid,$gridfile ${var}_${tmpstr}.nc ${var}_${tmpstr}_remap.nc
@@ -176,7 +176,7 @@ cdo chname,u,ua u_${tmpstr}_remap.nc  ua_${tmpstr}.nc &
 cdo chname,z,zg z_${tmpstr}_remap.nc zg_${tmpstr}_tmp.nc
 cdo divc,9.807 zg_${tmpstr}_tmp.nc zg_${tmpstr}.nc &
 
-cdo chname,MLD1,mlotst -divc,-1 MLD1_${tmpstr}_remap.nc  mlotst_${tmpstr}.nc &
+cdo chname,MLD2,mlotst -divc,-1 MLD2_${tmpstr}_remap.nc  mlotst_${tmpstr}.nc &
 wait
 
 
