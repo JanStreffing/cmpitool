@@ -32,29 +32,20 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
             
     plt.rcParams.update({'figure.max_open_warning': 0})
     reorganized_error_fraction = OrderedDict()
-    m=0
     for model in tqdm(models):
         r=0
-        v=0
         for var in obs:
-            if verbose:
-                if var.name == models[m].variables[v].name: # Check if variable appears in list. If not, skip it.
-                    print('reading: ',model.name,var.name)
-                else:
-                    print('filling: ',model.name,var.name)
             for depth in var.depths:
                 for region in regions:
                     for seas in seasons:
-                        if var.name == models[m].variables[v].name:
+                        try:
                             if len(var.depths) == 1:
                                 reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=error_fraction[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0][0]
                             else:
                                 reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=error_fraction[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0][0][0]
                             r+=1
-                        else:
+                        except:
                             reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=np.nan
-            v+=1
-        m+=1
         
         seasons_plot = [' MAM', ' JJA', ' SON', ' DJF'] #adding spaces in front
         a=seasons_plot*len(regions)

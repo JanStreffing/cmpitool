@@ -10,6 +10,8 @@ __author__ = """Jan Streffing"""
 __email__ = "j.streffing1988@gmail.com"
 __version__ = "0.1.0"
 
+from .cmpitool import *
+from .cmpisetup import *
 from .config_cmip6 import *
 from .add_masks import *
 from .loading_obs import *
