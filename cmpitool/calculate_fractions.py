@@ -45,5 +45,4 @@ def calculate_fractions(models, regions, seasons, mean_error, eval_error_mean, v
                                 print('using calculated value for', var.name,depth,seas,model.name,region.name)
                             error_fraction[var.name,depth,seas,model.name,region.name] = mean_error[var.name,depth,seas,model.name,region.name] / eval_error_mean[var.name,region.name,depth,seas]
 
-
     return error_fraction

@@ -10,9 +10,34 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     and call all subsequent functions.
     
     INPUT:
-    models		        List of climate model objects
+    model_path                  Path pointing towards the output of your model,
+                                preprocessed to be read in by cmiptool
+    models		        List of climate model objects to be evaluated via cmiptool
+    eval_models                 List of climate model objects used as reference for evaluation
+                                By default this is set to None, which results in a set of 30 CMIP6
+                                being used
+    out_path                    String pointing to the folder in which results will be stored
+    obs_path                    String pointing to the folder in which observational data
+                                against which the errors will be calculated are stored
+    reanalysis                  String allowing switch between ERA5 and NCEP2 for the 
+                                variables where obs come from atmopsheric reanalysis
+                                systems (tas, uas, vas, ua, zg)
+    eval_path                   String pointing to the folder that contains pre-computed 
+                                error values for 30 CMIP6 models, as well as the default
+                                variables, regions and seasons.
+    time                        String containing anaylsis period.
+    seasons                     List of seasons for which the analysis can be done
+    maskfixes                   By default we load a set of ocean basins and 
+                                continents that sometimes overlap. This switch
+                                fixes this particular dataset. If you read in
+                                your own masks, you want to turn this off!
+    complexity                  String allowing selection of whether cmip shall be calulated
+                                for simple lat/lon boxes (boxes) or continents & ocean
+                                basins (regions)
+    verbose                     Boolean to activate verbose output
+
+
     RETURN:
-    cmip6_models		List of climate model objects
     '''
 
     from cmpitool import (cmpisetup, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,

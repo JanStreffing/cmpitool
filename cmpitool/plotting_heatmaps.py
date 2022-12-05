@@ -8,13 +8,18 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
     
     INPUT:
     models         		List of models to be evaluated
-    model_path                  Path containing preprocessed model data
+    regions                     List of regions for which the analysis will be done
     seasons                     List of seasons to be evaluated
-    time                        String with time period
+    obs                         List of variables objects for which observations
+                                will be loaded
+    error_fraction              Ordered dictionary containing the fraction of error 
+                                between your model / evaluation model mean
+    cmpi                        List of climate model overall performance indices
+                                one per model
+    out_path                    String pointing to the folder in which results will be stored
     verbose                     Boolean for verbose output
 
     RETURN:
-    ds_model		        Ordered dictionary containing loaded model data
     '''
 
     from collections import OrderedDict

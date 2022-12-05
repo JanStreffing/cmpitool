@@ -12,9 +12,15 @@ def add_masks(regions, verbose, maskfixes=True):
     optional argument maskfixes=False for you own regions.
     
     INPUT:
-    regions	        	class that creates region objects
+    regions	        	List of regions for which the analysis will be done
+    verbose                     Boolean for verbose output
+    maskfixes                   By default we load a set of ocean basins and 
+                                continents that sometimes overlap. This switch
+                                fixes this particular dataset. If you read in
+                                your own masks, you want to turn this off!
     RETURN:
-    regions		        List of regions for which the analysis will be done
+    regions		        List of regions for which the analysis will be done,
+                                and which now contain thier mask arguments
     '''
 
 

@@ -12,7 +12,8 @@ def config_cmip6(climate_model, obs):
     errors and copy them into eval/$reanalysis/
     
     INPUT:
-    climate_model		class that creates climate model objects
+    climate_model		Class that creates climate model objects
+    obs                         Sorted list of observation variable objects
     RETURN:
     cmip6_models		List of climate model objects
     '''

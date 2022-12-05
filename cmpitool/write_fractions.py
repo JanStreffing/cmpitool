@@ -15,6 +15,8 @@ def write_fractions(error_fraction, models, regions, seasons, out_path, verbose)
     verbose                     Boolean for verbose output
 
     RETURN:
+    cmpi                        List of climate model overall performance indices
+                                one per model
     '''
     
     import csv
