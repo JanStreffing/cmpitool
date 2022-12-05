@@ -48,6 +48,7 @@ def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, n_imple
         values = df['AbsMeanError']
         regions_csv = df['Region']
         var_csv = df['Variable']
+        season_csv = df['Season']
         j=0
         r=0
         for var in obs:
@@ -69,6 +70,11 @@ def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, n_imple
                                 while True:
                                     r+=1
                                     if regions_csv[r] in regions_names:
+                                        break
+                            if season_csv[r] not in seasons: # Check if region from csv part of the analysis. Else advance
+                                while True:
+                                    r+=1
+                                    if season_csv[r] in seasons:
                                         break
                             if verbose:
                                 print(eval_model.name,var.name,region.name,depth,seas,values[r])

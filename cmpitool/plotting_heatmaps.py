@@ -46,8 +46,13 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
                             r+=1
                         except:
                             reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=np.nan
-        
-        seasons_plot = [' MAM', ' JJA', ' SON', ' DJF'] #adding spaces in front
+        def add_space(input): #Small helper function added spaces in front of season names
+            output = []
+            for string in input:
+                output.append(str(' ')+string)
+            return output
+
+        seasons_plot = add_space(seasons) 
         a=seasons_plot*len(regions)
         b=np.repeat(regions_names,len(seasons_plot))
         coord=[n+str(m) for m,n in zip(a,b)]
