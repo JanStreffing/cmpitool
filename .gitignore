@@ -1,4 +1,7 @@
 input/
 output/
+build/
 .ipynb_checkpoints/
 .csv
+cmpitool.egg-info
+.eggs
