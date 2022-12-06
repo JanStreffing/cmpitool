@@ -9,6 +9,8 @@
 __author__ = """Jan Streffing"""
 __email__ = "j.streffing1988@gmail.com"
 __version__ = "0.1.0"
+__credits__ = "Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research"
+
 
 from .cmpitool import *
 from .cmpisetup import *
