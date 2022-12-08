@@ -18,7 +18,7 @@ requirements:
     - geopandas
     - matplotlib
     - numpy >=1.17
-    - pandas
+    - pandas >=1.0.0
     - pip
     - pooch
     - python
@@ -30,7 +30,7 @@ requirements:
     - geopandas
     - matplotlib
     - numpy >=1.17
-    - pandas
+    - pandas >=1.0.0
     - pooch
     - python
     - regionmask

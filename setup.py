@@ -15,7 +15,7 @@ requirements = [
     "geopandas",
     "matplotlib",
     "numpy",
-    "pandas",
+    "pandas >=1.0.0",
     "pooch",
     "regionmask",
     "seaborn",
@@ -50,7 +50,7 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/JanStreffing/cmpitool",
-    download_url="https://github.com/JanStreffing/cmpitool/archive/refs/tags/v0.1.1.tar.gz",
-    version="0.1.1",
+    download_url="https://github.com/JanStreffing/cmpitool/archive/refs/tags/v0.1.3.tar.gz",
+    version="0.1.3",
     zip_safe=False,
 )
