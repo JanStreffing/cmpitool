@@ -24,7 +24,7 @@ requirements = [
     "xarray",
 ]
 
-setup_requirements = ["pytest-runner"]
+setup_requirements = []
 
 test_requirements = ["pytest"]
 
@@ -37,7 +37,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.9.6",
+        "Programming Language :: Python :: 3.9",
     ],
     description="cmpitool",
     install_requires=requirements,
@@ -51,7 +51,7 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/JanStreffing/cmpitool",
-    download_url="https://github.com/JanStreffing/cmpitool/archive/refs/tags/v0.1.0.tar.gz",
-    version="0.1.0",
+    download_url="https://github.com/JanStreffing/cmpitool/archive/refs/tags/v0.1.1.tar.gz",
+    version="0.1.1",
     zip_safe=False,
 )

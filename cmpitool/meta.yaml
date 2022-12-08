@@ -1,0 +1,60 @@
+{% set name = "cmpitool" %}
+{% set version = "0.1.1" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+  sha256: b05bd9ae0768aa2e588a758608630c684af0160984d429efe7251e96f4bbc166
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    - cartopy
+    - geopandas
+    - matplotlib
+    - numpy >=1.17
+    - pandas
+    - pip
+    - pooch
+    - python
+    - regionmask
+    - seaborn
+    - tqdm
+    - xarray
+  run:
+    - cartopy
+    - geopandas
+    - matplotlib
+    - numpy >=1.17
+    - pandas
+    - pooch
+    - python
+    - regionmask
+    - seaborn
+    - tqdm
+    - xarray
+
+test:
+  imports:
+    - cmpitool
+  requires:
+    - pytest
+
+about:
+  home: "https://github.com/JanStreffing/cmpitool"
+  license: MIT
+  license_family: MIT
+  license_file: "LICENSE"
+  summary: "cmpitool"
+  doc_url: "https://cmpitool.readthedocs.io/"
+  dev_url: 
+
+extra:
+  recipe-maintainers:
+    - JanStreffing
