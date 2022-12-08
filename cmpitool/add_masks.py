@@ -32,8 +32,6 @@ def add_masks(regions, verbose, maskfixes=True):
     import xarray as xr
     import copy
     import matplotlib.pyplot as plt
-    import cartopy.crs as ccrs
-    import cartopy.feature as cfeature
     from matplotlib import colors as mplc
 
 
@@ -199,7 +197,9 @@ def add_masks(regions, verbose, maskfixes=True):
             print('Selecting Mask for:',r.name)
         r.active = True
         r.mask = regions_avail[r.name]['mask']
-
+    '''
+    import cartopy.crs as ccrs
+    import cartopy.feature as cfeature
     if verbose:
         print('plotting continents and ocean basins')
         cm = plt.get_cmap('tab20')
@@ -214,6 +214,6 @@ def add_masks(regions, verbose, maskfixes=True):
             )
 
         ax.coastlines(color="0.1");
-
+    '''
 
     return regions
