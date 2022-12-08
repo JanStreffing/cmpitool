@@ -15,7 +15,6 @@ build:
 
 requirements:
   host:
-    - cartopy
     - geopandas
     - matplotlib
     - numpy >=1.17
@@ -28,7 +27,6 @@ requirements:
     - tqdm
     - xarray
   run:
-    - cartopy
     - geopandas
     - matplotlib
     - numpy >=1.17
