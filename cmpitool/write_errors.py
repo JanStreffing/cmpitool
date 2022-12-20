@@ -1,4 +1,4 @@
-def write_errors(abs_error, mean_error, models, regions, seasons, out_path, verbose):
+def write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose):
     '''
     AUTHORS:
     Jan Streffing		2022-11-30	Split off from main tool
@@ -17,6 +17,8 @@ def write_errors(abs_error, mean_error, models, regions, seasons, out_path, verb
     regions                     List of regions to be evaluated
     seasons                     List of seasons to be evaluated
     out_path                    Path to folder containing absolute error csv files
+    eval_path                   Path to folder containing absolute errors of evaluation
+                                experiments
     verbose                     Boolean for verbose output
 
     RETURN:
@@ -25,6 +27,7 @@ def write_errors(abs_error, mean_error, models, regions, seasons, out_path, verb
     import csv
     from tqdm import tqdm
     import numpy as np
+    import shutil
 
     print('Writing field mean of errors into csv files')
 
@@ -39,3 +42,5 @@ def write_errors(abs_error, mean_error, models, regions, seasons, out_path, verb
                             if verbose:
                                 print(seas, depth, region.name, var.name, model.name)
                             writer.writerow([var.name,region.name,depth,seas,np.squeeze(mean_error[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0])])
+        if use_for_eval:
+             shutil.copyfile(out_path+'abs/'+model.name+'.csv', eval_path+model.name+'.csv')   

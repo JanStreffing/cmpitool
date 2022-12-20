@@ -6,3 +6,4 @@ dist/
 .csv
 cmpitool.egg-info
 .eggs
+cmpitool/__pycache__
