@@ -84,6 +84,7 @@ done
 wait
 
 
+# Fix names
 seasons=('MAM' 'JJA' 'SON' 'DJF')
 for var in ${vararray[*]}; do
     if [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]] ; then
@@ -97,3 +98,15 @@ for var in ${vararray[*]}; do
 done
 wait
 
+# Cleanup
+for var in ${vararray[*]}; do
+    rm -f ${var}_${model}_198912-201411_??????.nc
+    rm -f ${var}_${model}_198912-201411.nc
+    rm -f ${var}
+    find . -type l -exec unlink {} \;
+done
+wait
+
+echo "==============="
+echo "$model finished"
+echo "==============="
