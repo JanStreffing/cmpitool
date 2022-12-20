@@ -36,8 +36,8 @@ As a first time user, for non-CMORized model output, preparing the raw output fo
 
 It is up to the tool user to generate a script which turns the raw model output into the input for cmpitool. You can find a number of example script for CMORized and a handful for non-CMORized raw output in the subfolder ``preprocessing_examples``.
 
-Use your own set of model runs 
-==============================
+Evaluate against your own experiment(s)
+=======================================
 
 To evaluate your experiment(s) against your own set of eval_models, rather than the default cmpi6 set, follow these steps:
 
