@@ -1,6 +1,6 @@
 def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path='obs/' , reanalysis='ERA5', 
              eval_path=None, time='198912-201411', seasons=['MAM', 'JJA', 'SON', 'DJF'], 
-             maskfixes=True, complexity='boxes', verbose=False):
+             maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False):
     '''
     AUTHORS:
     Jan Streffing		2022-12-01	Split off from main tool
@@ -131,8 +131,8 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     #Writing errors into csv files that can be:
     # a) read in for further cmip calculation
     # b) placed into eval/ subfolder to read as evaluation data
-    write_errors(abs_error, mean_error, models, regions, seasons, out_path, verbose)
-    
+    write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose)
+
     #Reading in previously written absolute errors
     eval_error_mean = read_errors(obs, eval_models, regions, seasons, out_path, eval_path, 
                                   n_implemented_var, verbose)

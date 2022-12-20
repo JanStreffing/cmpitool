@@ -14,6 +14,8 @@ def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, n_imple
     regions                     List of regions to be evaluated
     seasons                     List of seasons to be evaluated
     out_path                    Path to folder containing absolute error csv files
+    eval_path                   Path to folder containing absolute errors of evaluation
+                                experiments
     n_implemented_var           Number of variables currently included in default 
                                 CMIP6 evaluation
     verbose                     Boolean for verbose output
