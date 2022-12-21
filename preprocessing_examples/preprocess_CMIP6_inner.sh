@@ -1,14 +1,17 @@
-workfolder="/work/ab0246/a270092/postprocessing/cmip6_cmpitool/"
-base="/pool/data/CMIP6/data/CMIP/CSIRO-ARCCSS/ACCESS-CM2/historical/r1i1p1f1/"
-model="ACCESS-CM2"
-cleanup=true
-seasons=('MAM' 'JJA' 'SON' 'DJF')
+workfolder=${1:-/work/ab0246/a270092/postprocessing/cmip6_cmpitool/}
+base=${2:-/pool/data/CMIP6/data/CMIP/NCAR/CESM2/historical/r1i1p1f1/}
+model=${3:-CESM2}
+cleanup=${4:-true}
+unit_level_oce=${5:-m}
+unit_level_atm=${6:-Pa}
 
+echo $unit_level_oce
 mkdir -p $workfolder/$model
 
-vararray=("zos")
-#vararray=("siconc" "clt" "tas" "zg" "ua" "pr" "uas" "vas" "so" "thetao" "mlotst" "tos" "zos")
+seasons=('MAM' 'JJA' 'SON' 'DJF')
+vararray=("siconc" "clt" "rlut" "tas" "zg" "ua" "pr" "uas" "vas" "so" "thetao" "mlotst" "tos" "zos")
 
+echo "=============================="
 for var in ${vararray[*]}; do
     echo "==============="
     echo "Working on $var"
@@ -24,7 +27,12 @@ for var in ${vararray[*]}; do
     fi
 
     # Smart select grid
-    cd ${base}/${group}/${var}/
+    if [ -d "${base}/${group}/${var}/" ]; then
+        cd ${base}/${group}/${var}/
+    else
+        echo "$var does not exist for $model, skipping variable!"
+        continue
+    fi
     grids="g*"
     folders=( $grids )
     cd "${folders[0]}"
@@ -58,7 +66,11 @@ for var in ${vararray[*]}; do
     elif [[ "$var" = "ua" ]]; then
         cdo -remapbil,r180x91 -sellevel,30000 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
     elif [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]] ; then
-        cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
+        if [[ "$unit_level_oce" = "cm" ]]; then
+            cdo -splitlevel -remapbil,r180x91 -intlevel,1000,10000,100000,400000 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
+        else
+            cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
+        fi
     elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
         cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_ &
     else
@@ -76,13 +88,17 @@ for var in ${vararray[*]}; do
     elif [[ "$var" = "ua" ]]; then
         cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_300hPa_ &
     elif [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]] ; then
-        levels=('000010' '000100' '001000' '004000')
+        if [[ "$unit_level_oce" = "cm" ]]; then
+            levels=('001000' '010000' '100000' '400000')
+        else
+            levels=('000010' '000100' '001000' '004000')
+        fi
         for i in "${levels[@]}"; do
             cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_ &
         done
     elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
         for seas in  ${seasons[*]}; do
-            cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_${seas} &
+            cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc &
         done
     else
         cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_ &
@@ -95,10 +111,10 @@ wait
 for var in ${vararray[*]}; do
     if [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]] ; then
         for s in "${seasons[@]}"; do
-            mv ${var}_${model}_198912-201411_000010_$s.nc ${var}_${model}_198912-201411_10m_$s.nc &
-            mv ${var}_${model}_198912-201411_000100_$s.nc ${var}_${model}_198912-201411_100m_$s.nc &
-            mv ${var}_${model}_198912-201411_001000_$s.nc ${var}_${model}_198912-201411_1000m_$s.nc &
-            mv ${var}_${model}_198912-201411_004000_$s.nc ${var}_${model}_198912-201411_4000m_$s.nc &
+            mv ${var}_${model}_198912-201411_${levels[0]}_$s.nc ${var}_${model}_198912-201411_10m_$s.nc &
+            mv ${var}_${model}_198912-201411_${levels[1]}_$s.nc ${var}_${model}_198912-201411_100m_$s.nc &
+            mv ${var}_${model}_198912-201411_${levels[2]}_$s.nc ${var}_${model}_198912-201411_1000m_$s.nc &
+            mv ${var}_${model}_198912-201411_${levels[3]}_$s.nc ${var}_${model}_198912-201411_4000m_$s.nc &
         done
     fi
 done
@@ -112,10 +128,11 @@ if $cleanup; then
         rm -f ${var}_${model}_198912-201411.nc
         rm -f ${var}
         find . -type l -exec unlink {} \;
+        mv ${var}* ..
     done
     wait
 fi
 
 echo "==============="
 echo "$model finished"
-echo "==============="
+echo "=============================="
