@@ -1,10 +1,13 @@
 workfolder="/work/ab0246/a270092/postprocessing/cmip6_cmpitool/"
 base="/pool/data/CMIP6/data/CMIP/CSIRO-ARCCSS/ACCESS-CM2/historical/r1i1p1f1/"
 model="ACCESS-CM2"
+cleanup=true
+seasons=('MAM' 'JJA' 'SON' 'DJF')
 
 mkdir -p $workfolder/$model
 
-vararray=("siconc" "tas" "zg" "ua" "pr" "uas" "vas" "so" "thetao" "mlotst" "tos" "zos")
+vararray=("zos")
+#vararray=("siconc" "clt" "tas" "zg" "ua" "pr" "uas" "vas" "so" "thetao" "mlotst" "tos" "zos")
 
 for var in ${vararray[*]}; do
     echo "==============="
@@ -57,7 +60,7 @@ for var in ${vararray[*]}; do
     elif [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]] ; then
         cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
     elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
-        cdo -remapbil,r180x91 -timstd -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
+        cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_ &
     else
         cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
     fi
@@ -77,6 +80,10 @@ for var in ${vararray[*]}; do
         for i in "${levels[@]}"; do
             cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_ &
         done
+    elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
+        for seas in  ${seasons[*]}; do
+            cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_${seas} &
+        done
     else
         cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_ &
     fi
@@ -85,7 +92,6 @@ wait
 
 
 # Fix names
-seasons=('MAM' 'JJA' 'SON' 'DJF')
 for var in ${vararray[*]}; do
     if [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]] ; then
         for s in "${seasons[@]}"; do
@@ -98,14 +104,17 @@ for var in ${vararray[*]}; do
 done
 wait
 
-# Cleanup
-for var in ${vararray[*]}; do
-    rm -f ${var}_${model}_198912-201411_??????.nc
-    rm -f ${var}_${model}_198912-201411.nc
-    rm -f ${var}
-    find . -type l -exec unlink {} \;
-done
-wait
+if $cleanup; then
+    # Cleanup
+    for var in ${vararray[*]}; do
+        rm -f ${var}_${model}_198912-201411_sel_*.nc
+        rm -f ${var}_${model}_198912-201411_??????.nc
+        rm -f ${var}_${model}_198912-201411.nc
+        rm -f ${var}
+        find . -type l -exec unlink {} \;
+    done
+    wait
+fi
 
 echo "==============="
 echo "$model finished"
