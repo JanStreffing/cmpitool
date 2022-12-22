@@ -130,19 +130,14 @@ if $cleanup; then
         rm -f ${var}_${model}_198912-201411_??????.nc
         rm -f ${var}_${model}_198912-201411.nc
         rm -f ${var}
-        find . -type l -exec unlink {} \;
-        mv ${var}* ..
+        mv ${var}_${model}_198912-201411_* ..
     done
+    cd $workfolder
+    rm -rf $model
     wait
 fi
 
-if $cleanup; then
-    # Cleanup
-    for var in ${vararray[*]}; do
-        mv ${var}* ..
-        cd $workfolder
-        rm -rf $model
-    done
-    wait
-fi
+echo "==============="
+echo "$model finished"
+echo "=============================="
 

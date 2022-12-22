@@ -129,15 +129,21 @@ for var in ${vararray[*]}; do
 done
 wait
 
+
 if $cleanup; then
     # Cleanup
     for var in ${vararray[*]}; do
-        mv ${var}* ..
-        cd $workfolder
-        rm -rf $model
+        rm -f ${var}_${model}_198912-201411_sel_*.nc
+        rm -f ${var}_${model}_198912-201411_??????.nc
+        rm -f ${var}_${model}_198912-201411.nc
+        rm -f ${var}
+        mv ${var}_${model}_198912-201411_* ..
     done
+    cd $workfolder
+    rm -rf $model
     wait
 fi
+
 
 echo "==============="
 echo "$model finished"
