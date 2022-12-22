@@ -3,9 +3,12 @@ base=${2:-/pool/data/CMIP6/data/CMIP/NCAR/CESM2/historical/r1i1p1f1/}
 model=${3:-CESM2}
 cleanup=${4:-true}
 unit_level_oce=${5:-m}
-unit_level_atm=${6:-Pa}
+atm_gridfile_path=${6:-}
+oce_gridfile_path=${7:-}
 
-echo $unit_level_oce
+[[ -v atm_gridfile_path ]]; echo $?
+[[ -v oce_gridfile_path ]]; echo $?
+
 mkdir -p $workfolder/$model
 
 seasons=('MAM' 'JJA' 'SON' 'DJF')
@@ -133,6 +136,13 @@ if $cleanup; then
     wait
 fi
 
-echo "==============="
-echo "$model finished"
-echo "=============================="
+if $cleanup; then
+    # Cleanup
+    for var in ${vararray[*]}; do
+        mv ${var}* ..
+        cd $workfolder
+        rm -rf $model
+    done
+    wait
+fi
+
