@@ -9,6 +9,7 @@ mkdir -p $workfolder/$model
 
 seasons=('MAM' 'JJA' 'SON' 'DJF')
 vararray=("siconc" "clt" "rlut" "tas" "zg" "ua" "pr" "uas" "vas" "so" "thetao" "mlotst" "tos" "zos")
+vararray=("clt" "siconc")
 
 echo "=============================="
 for var in ${vararray[*]}; do
@@ -78,10 +79,10 @@ for var in ${vararray[*]}; do
         fi
     elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
         cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_ &
-    elif [[ "$var" = "siconc" ]]; then
-        siconc_max=`cdo -s outputkey,value -fldmax -timmean $var | tail -1 | bc`
-        if (( $(echo "$siconc_max <= 1" |bc -l) )); then
-            echo "Maximum of siconc is: $siconc_max, multiplying by 100"
+    elif [[ "$var" = "siconc" ]] || [[ "$var" = "clt" ]]; then
+        max=`cdo -s outputkey,value -fldmax -timmean $var | tail -1 | bc`
+        if (( $(echo "$max <= 1" |bc -l) )); then
+            echo "Maximum of $var is: $max, multiplying by 100"
             cdo -remapbil,r180x91 -mulc,100 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
         else
             cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
