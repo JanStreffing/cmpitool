@@ -64,11 +64,17 @@ for var in ${vararray[*]}; do
         cdo -remapbil,r180x91 -sellevel,50000 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
     elif [[ "$var" = "ua" ]]; then
         cdo -remapbil,r180x91 -sellevel,30000 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
-    elif [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]] ; then
+    elif [[ "$var" = "thetao" ]]; then
         if [[ "$unit_level_oce" = "cm" ]]; then
-            cdo -splitlevel -remapbil,r180x91 -intlevel,1000,10000,100000,400000 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
+            cdo -splitlevel -remapbil,r180x91 -intlevel,1000,10000,100000,400000 -expr,'thetao = ((thetao < 1000)) ? thetao : (1e20)' -setmissval,1e20  -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
         else
-            cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
+            cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -expr,'thetao = ((thetao < 1000)) ? thetao : (1e20)' -setmissval,1e20 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
+        fi
+    elif [[ "$var" = "so" ]] ; then
+        if [[ "$unit_level_oce" = "cm" ]]; then
+            cdo -splitlevel -remapbil,r180x91 -intlevel,1000,10000,100000,400000 -expr,'so = ((so < 1000)) ? so : (1e20)' -setmissval,1e20 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
+        else
+            cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -expr,'so = ((so < 1000)) ? so : (1e20)' -setmissval,1e20 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
         fi
     elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
         cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_ &
