@@ -18,7 +18,7 @@ Help()
 	echo "Positional optional argument:"
 	echo "#7    boolean to delete tmp files"
 	echo "#################################################"
-	echo "# example: ./noncmore_preprocess_AWI-CM3-XIOS.sh /p/scratch/chhb19/streffing1/runtime/awicm3-frontiers-xios/test_for_cmip/outdata /p/project/chhb19/streffing1/software/cmpi-tool/input/ AWI-CM3-test 2000 2000 /p/project/chhb19/streffing1/input/fesom2/core2/core2_griddes_nodes.nc"
+	echo "# example: ./preprocess_AWI-CM3-XIOS.sh /p/scratch/chhb19/streffing1/runtime/awicm3-frontiers-xios/test_for_cmip/outdata /p/project/chhb19/streffing1/software/cmpi-tool/input/ AWI-CM3-test 2000 2000 /p/project/chhb19/streffing1/input/fesom2/core2/core2_griddes_nodes.nc"
 }
 
 
