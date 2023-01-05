@@ -3,8 +3,7 @@ base=${2:-/pool/data/CMIP6/data/CMIP/NCAR/CESM2/historical/r1i1p1f1/}
 model=${3:-CESM2}
 cleanup=${4:-true}
 unit_level_oce=${5:-m}
-atm_gridfile_path=${6:-}
-oce_gridfile_path=${7:-}
+oce_gridfile_path=${6:-}
 
 
 mkdir -p $workfolder/$model
