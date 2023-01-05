@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Outer script for calling cmip6 model preproccessing. 
-# Inner script may run in parallel 
+# Outer script for calling cmip6 model preproccessing for cmpitool. 
+# Inner scripts may run in parallel by adding & after call. Requires cdo version > 2.0.5 (https://code.mpimet.mpg.de/projects/cdo/)
+# If you don't add any new variable or layer, consider just downloading
+# the preprocessed cmip6 data from zenodo: 
 
 # Setting up global config
 workfolder=/work/ab0246/a270092/postprocessing/cmip6_cmpitool/
@@ -40,6 +42,7 @@ basedir[NorESM2-MM]=/pool/data/CMIP6/data/CMIP/NCC/NorESM2-MM/historical/r1i1p1f
 basedir[SAM0-UNICON]=/pool/data/CMIP6/data/CMIP/SNU/SAM0-UNICON/historical/r1i1p1f1/
 basedir[TaiESM1]=/pool/data/CMIP6/data/CMIP/AS-RCEC/TaiESM1/historical/r1i1p1f1/
 
+# Allows for different unit of ocean depth. e.g. for CESM2
 declare -A unit_level_oce
 unit_level_oce[ACCESS-CM2]=m
 unit_level_oce[AWI-CM-1-1-MR]=m
@@ -72,6 +75,7 @@ unit_level_oce[NorESM2-MM]=m
 unit_level_oce[SAM0-UNICON]=m
 unit_level_oce[TaiESM1]=m
 
+# For unstructured meshe interpolation a mesh description file is needed that does not come with the cmip6 data
 declare -A atm_gridfile_path
 atm_gridfile_path[ACCESS-CM2]=
 atm_gridfile_path[AWI-CM-1-1-MR]=
@@ -104,6 +108,7 @@ atm_gridfile_path[NorESM2-MM]=
 atm_gridfile_path[SAM0-UNICON]=
 atm_gridfile_path[TaiESM1]=
 
+# For unstructured meshe interpolation a mesh description file is needed that does not come with the cmip6 data
 declare -A oce_gridfile_path
 oce_gridfile_path[ACCESS-CM2]=
 oce_gridfile_path[AWI-CM-1-1-MR]=/pool/data/AWICM/FESOM1/MESHES/glob/griddes.nc
@@ -136,7 +141,7 @@ oce_gridfile_path[NorESM2-MM]=
 oce_gridfile_path[SAM0-UNICON]=
 oce_gridfile_path[TaiESM1]=
 
-
+# We call slightly different script for unstructured model components than for structed ones
 for c in "${!basedir[@]}"; do
     printf "Model: $c; Base dir: ${basedir[$c]}; Unit of ocean levels: ${unit_level_oce[$c]}\n"
     if [ -z ${atm_gridfile_path[$c]} ]; then
