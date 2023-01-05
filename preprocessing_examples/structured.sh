@@ -9,7 +9,6 @@ mkdir -p $workfolder/$model
 
 seasons=('MAM' 'JJA' 'SON' 'DJF')
 vararray=("siconc" "clt" "rlut" "tas" "zg" "ua" "pr" "uas" "vas" "so" "thetao" "mlotst" "tos" "zos")
-vararray=("clt" "siconc")
 
 echo "=============================="
 for var in ${vararray[*]}; do
@@ -84,6 +83,30 @@ for var in ${vararray[*]}; do
         if (( $(echo "$max <= 1" |bc -l) )); then
             echo "Maximum of $var is: $max, multiplying by 100"
             cdo -remapbil,r180x91 -mulc,100 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
+        else
+            cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
+        fi
+    elif [[ "$var" = "uas" ]]; then
+        mean=`cdo -s outputkey,value -fldmean -sellonlatbox,-45,-15,53,42 -timmean $var | tail -1 | bc`
+        if (( $(echo "$mean < 0" |bc -l) )); then
+            echo "Mean of $var is: $mean, multiplying by -1"
+            cdo -remapbil,r180x91 -mulc,-1 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
+        else
+            cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
+        fi
+    elif [[ "$var" = "vas" ]]; then
+        mean=`cdo -s outputkey,value -fldmean -sellonlatbox,-25,-15,30,20 -timmean $var | tail -1 | bc`
+        if (( $(echo "$mean > 0" |bc -l) )); then
+            echo "Mean of $var is: $mean, multiplying by -1"
+            cdo -remapbil,r180x91 -mulc,-1 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
+        else
+            cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
+        fi
+    elif [[ "$var" = "pr" ]]; then
+        mean=`cdo -s outputkey,value -fldmean -timmean $var | tail -1 | cut -c 12- | bc`
+        if (( $(echo "$mean > 6" |bc -l) )); then
+            echo "exponent of $var is: $mean, multiplying by 1000"
+            cdo -remapbil,r180x91 -mulc,1000 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
         else
             cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
         fi
