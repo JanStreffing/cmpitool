@@ -18,7 +18,7 @@ Help()
 	echo "Positional optional argument:"
 	echo "#7    boolean to delete tmp files"
 	echo "#################################################"
-	echo "# example: ./noncmore_preprocess_AWI-CM3-XIOS.sh /p/scratch/chhb19/streffing1/runtime/awicm3-frontiers-xios/test_for_cmip/outdata /p/project/chhb19/streffing1/software/cmpi-tool/input/ AWI-CM3-test 2000 2000 /p/project/chhb19/streffing1/input/fesom2/core2/core2_griddes_nodes.nc"
+	echo "# example: ./preprocess_AWI-CM3-XIOS.sh /p/scratch/chhb19/streffing1/runtime/awicm3-frontiers-xios/test_for_cmip/outdata /p/project/chhb19/streffing1/software/cmpi-tool/input/ AWI-CM3-test 2000 2000 /p/project/chhb19/streffing1/input/fesom2/core2/core2_griddes_nodes.nc"
 }
 
 
@@ -57,9 +57,9 @@ do
 		cdo -intlevel,10,100,1000,4000 -setctomiss,0 fesom/${var}.fesom.${i}.nc fesom/${var}.fesom.${i}.int.nc &
 	done
 	var='u'
-	cdo sellevel,30000 oifs/awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
+	cdo sellevel,30000 oifs/atm_remapped_1m_pl_${var}_1m_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
 	var='z'
-	cdo sellevel,50000 oifs/awi3_atm_remapped_6h_pl_${var}_6h_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
+	cdo sellevel,50000 oifs/atm_remapped_1m_pl_${var}_1m_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
 done
 wait
 
@@ -76,7 +76,7 @@ do
 	done
 	for var in ci 2t ttr tcc cp lsp 10u 10v;
 	do
-		cdo cat oifs/awi3_atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
+		cdo cat oifs/atm_remapped_1m_${var}_1m_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
 	done
 	for var in temp salt;
 	do
@@ -125,7 +125,7 @@ do
 done
 
 
-cdo -L -splitseas -chname,ssh,zos ssh_${tmpstr}.nc zos_${tmpstr}_ &
+cdo -L -splitseas -chname,ssh,zos -setmissval,0 ssh_${tmpstr}.nc zos_${tmpstr}_ &
 cdo -L -splitseas -chname,sst,tos sst_${tmpstr}.nc tos_${tmpstr}_ &
 wait
 cdo genycon,r180x91 -selname,zos -setgrid,$gridfile ${outdir}/zos_${tmpstr}_DJF.nc ${outdir}/weights_zos_unstr_2_r180x91.nc
