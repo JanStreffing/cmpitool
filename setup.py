@@ -50,7 +50,7 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/JanStreffing/cmpitool",
-    download_url="https://github.com/JanStreffing/cmpitool/archive/refs/tags/v0.1.4.tar.gz",
-    version="0.1.4",
+    download_url="https://github.com/JanStreffing/cmpitool/archive/refs/tags/v0.1.5.tar.gz",
+    version="0.1.5",
     zip_safe=False,
 )
