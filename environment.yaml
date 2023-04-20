@@ -1,0 +1,17 @@
+name: cmpitool
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - geopandas
+  - matplotlib
+  - numpy
+  - pandas>=1.0.0
+  - pip
+  - pooch
+  - python=3.9
+  - seaborn
+  - tqdm
+  - xarray
+  - pip:
+    - regionmask
