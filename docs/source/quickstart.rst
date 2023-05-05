@@ -1,7 +1,30 @@
 Step by step
 ************
 
-- Obtain the source code. Currently only available via: ``git clone https://github.com/JanStreffing/cmpi-tool/``
+Conda package:
+==============
+Into a clean environment run:
+
+..  code-block:: bash
+
+  conda install cmpitool
+
+..
+
+PyPi package:
+=============
+Into a clean environment run:
+
+..  code-block:: bash
+
+  pip install cmpitool
+
+..
+
+Editable mode (github):
+=======================
+
+- Obtain the source code: ``git clone https://github.com/JanStreffing/cmpitool/``
 - Create a conda environment containing the neccessary libraries: ``conda env create -f environment.yaml``
 - Activate the conda environment via: ``conda activate cmpitool``
 - Install with pip in editable mode: ``pip install -e .``
