@@ -47,9 +47,23 @@ done
 wait
 
 
-printf "##############################################################\n"
-printf "# interpolate levels and cat together analysis period part 2 #\n"
-printf "##############################################################\n"
+printf "######################\n"
+printf "# interpolate levels #\n"
+printf "######################\n"
+
+for i in `seq $starty $endy`;
+do
+        for var in temp salt;
+        do
+                cdo -intlevel,10,100,1000,4000 -setctomiss,0 ${var}.fesom.${i}.nc ${var}.fesom.${i}.int.nc &
+        done
+done
+wait
+
+
+printf "#######################################\n"
+printf "# cat together analysis period part 2 #\n"
+printf "#######################################\n"
 
 
 for i in `seq $starty $endy`;
@@ -60,7 +74,7 @@ do
         done
         for var in temp salt;
         do
-                cdo cat -intlevel,10,100,1000,4000 -setctomiss,0 ${var}.fesom.${i}.nc ${outdir}/${var}_${tmpstr}.nc &
+                cdo cat ${var}.fesom.${i}.int.nc ${outdir}/${var}_${tmpstr}.nc &
         done
         wait
 done
