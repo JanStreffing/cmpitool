@@ -54,7 +54,7 @@ def config_cmip6(climate_model, obs):
         climate_model(name='INM-CM5-0',    variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg,                   thetao, so]),
         climate_model(name='IPSL-CM6A-LR', variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]),
         climate_model(name='KIOST-ESM',    variables=[siconc, tas, clt,     rlut, uas, vas, ua, zg, zos, tos, mlotst,           ]),
-        climate_model(name='MCMUA1',       variables=[        tas,        pr, rlut, uas, vas, ua, zg,    tos,         thetao, so]),
+        climate_model(name='MCM-UA-1-0',       variables=[        tas,        pr, rlut, uas, vas, ua, zg,    tos,         thetao, so]),
         climate_model(name='MIROC6',       variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos,                   ]),
         climate_model(name='MPI-ESM1-2-HR',variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]),
         climate_model(name='MRI-ESM2-0',   variables=[siconc, tas, clt, pr, rlut, uas, vas,         zos, tos, mlotst, thetao, so]),
