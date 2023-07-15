@@ -165,6 +165,7 @@ cdo divc,$(bc -l <<< $fluxscale/900) lsp_r_${tmpstr}_tmp.nc lsp_r_${tmpstr}.nc
 cdo chname,cp,pr cp_${tmpstr}_remap.nc cp_r_${tmpstr}_tmp.nc
 cdo divc,$(bc -l <<< $fluxscale/900) cp_r_${tmpstr}_tmp.nc cp_r_${tmpstr}.nc
 cdo add lsp_r_${tmpstr}.nc cp_r_${tmpstr}.nc pr_${tmpstr}.nc &
+cdo chname,ttr,rlut ttr_${tmpstr}_remap.nc rlut_${tmpstr}_tmp.nc
 cdo divc,$(bc -l <<< $fluxscale*-1) rlut_${tmpstr}_tmp.nc rlut_${tmpstr}.nc &
 cdo chname,10u,uas 10u_${tmpstr}_remap.nc uas_${tmpstr}.nc & 
 
