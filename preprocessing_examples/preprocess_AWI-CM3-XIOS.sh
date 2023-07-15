@@ -21,6 +21,12 @@ Help()
 	echo "# example: ./preprocess_AWI-CM3-XIOS.sh /p/scratch/chhb19/streffing1/runtime/awicm3-frontiers-xios/test_for_cmip/outdata /p/project/chhb19/streffing1/software/cmpi-tool/input/ AWI-CM3-test 2000 2000 /p/project/chhb19/streffing1/input/fesom2/core2/core2_griddes_nodes.nc"
 }
 
+# Check if the script was called with the help option
+if [[ $1 == "--help" ]]; then
+  Help
+  exit 0  # Exit successfully after displaying help
+fi
+
 
 printf "##########################\n"
 printf "# read command line args #\n"
