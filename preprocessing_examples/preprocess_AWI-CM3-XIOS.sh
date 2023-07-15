@@ -33,8 +33,7 @@ starty=$4
 endy=$5
 gridfile=$6
 deltmp=$7
-fluxscale=1
-fluxscale=$8
+fluxscale="${8:-1}"
 
 cd $origdir
 tmpstr="analysis_cmpi_period"
@@ -162,14 +161,11 @@ cdo chname,tcc,clt tcc_${tmpstr}_remap.nc clt_${tmpstr}_tmp.nc
 cdo mulc,100 clt_${tmpstr}_tmp.nc clt_${tmpstr}.nc &
 
 cdo chname,lsp,pr lsp_${tmpstr}_remap.nc lsp_r_${tmpstr}_tmp.nc
-cdo divc,$(($fluxscale/900)) lsp_r_${tmpstr}_tmp.nc lsp_r_${tmpstr}.nc
+cdo divc,$(bc -l <<< $fluxscale/900) lsp_r_${tmpstr}_tmp.nc lsp_r_${tmpstr}.nc
 cdo chname,cp,pr cp_${tmpstr}_remap.nc cp_r_${tmpstr}_tmp.nc
-cdo divc,$(($fluxscale/900)) cp_r_${tmpstr}_tmp.nc cp_r_${tmpstr}.nc
+cdo divc,$(bc -l <<< $fluxscale/900) cp_r_${tmpstr}_tmp.nc cp_r_${tmpstr}.nc
 cdo add lsp_r_${tmpstr}.nc cp_r_${tmpstr}.nc pr_${tmpstr}.nc &
-
-cdo chname,ttr,rlut ttr_${tmpstr}_remap.nc rlut_${tmpstr}_tmp.nc
-cdo divc,-$fluxscale rlut_${tmpstr}_tmp.nc rlut_${tmpstr}.nc &
-
+cdo divc,$(bc -l <<< $fluxscale*-1) rlut_${tmpstr}_tmp.nc rlut_${tmpstr}.nc &
 cdo chname,10u,uas 10u_${tmpstr}_remap.nc uas_${tmpstr}.nc & 
 
 cdo chname,10v,vas 10v_${tmpstr}_remap.nc vas_${tmpstr}.nc &
