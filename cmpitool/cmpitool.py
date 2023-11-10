@@ -43,8 +43,14 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     from cmpitool import (cmpisetup, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,
                           write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps)
 
+    #Setup safe paths
+    obs_path=obs_path+'/'
+    model_path=model_path+'/'
+    out_path=out_path+'/'
     if eval_path == None:
         eval_path='eval/'+reanalysis+'/'
+    else:
+        eval_path=eval_path+'/'
 
     variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
 
