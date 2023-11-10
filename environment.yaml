@@ -13,5 +13,7 @@ dependencies:
   - seaborn
   - tqdm
   - xarray
+  - netcdf4
   - pip:
     - regionmask
+    - dask

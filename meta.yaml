@@ -26,6 +26,8 @@ requirements:
     - seaborn
     - tqdm
     - xarray
+    - netcdf4
+    - dask
   run:
     - geopandas
     - matplotlib
@@ -37,6 +39,8 @@ requirements:
     - seaborn
     - tqdm
     - xarray
+    - netcdf4
+    - dask
 
 test:
   imports:
