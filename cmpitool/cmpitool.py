@@ -122,7 +122,6 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     # End of user config, start of tool #
     #####################################
 
-
     #Function to add masks to the selected regions
     regions = add_masks(regions, verbose)
     
