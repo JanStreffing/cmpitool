@@ -172,6 +172,7 @@ do
   cdo -f nc select,code=129,130,133,138,152,155 ${origdir}/echam/*${i}??.01_echam ${tmpdir}/data_for_afterburner_${i}.nc &
   filelist="${filelist} ${tmpdir}/data_for_afterburner_${i}.nc"
 done
+wait
 cdo mergetime ${filelist} ${tmpdir}/data_for_afterburner.nc
 cdo vardes ${tmpdir}/data_for_afterburner.nc
 for var in u v z
@@ -214,6 +215,7 @@ do
   cdo -f nc -t echam6 select,name=aps ${origdir}/echam/*_${i}??.01_echam ${tmpdir}/aps_${i}_${tmpstr}.nc
   filelist="${filelist} ${tmpdir}/aps_${i}_${tmpstr}.nc"
 done
+wait
 cdo mergetime ${filelist} ${tmpdir}/aps_${tmpstr}.nc
 
 for var in u v z
