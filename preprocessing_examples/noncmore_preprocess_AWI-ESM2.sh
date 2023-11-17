@@ -105,12 +105,9 @@ do
 				then
 					echo "adding vertical level information based on standard levels in AWI-ESM2 (check that this is correct\!\!\!)"
 					#add nz1 information if necessary
-					module load netcdf-c
-					ncdump ${origdir}/fesom/${var}.fesom.${i}.nc | sed -e "/data:/r ${nz1_data}" -e "/variables:/r ${nz1_variables}" | ncgen -o fixed.nc
-					module unload netcdf-c
+					ncdump ${origdir}/fesom/${var}.fesom.${i}.nc | sed -e "/data:/r ${nz1_data}" -e "/variables:/r ${nz1_variables}" | ncgen -o fixed.${var}.${i}.${m}.nc
 					#interpolate based on the fixed file if necessary
-					cdo -intlevel,10,100,1000,4000 fixed.nc ${tmpdir}/${var}.fesom.${i}.int.nc
-					rm fixed.nc
+					cdo -intlevel,10,100,1000,4000 fixed.${var}.${i}.${m}.nc ${tmpdir}/${var}.fesom.${i}.int.nc &
 				else
 					#perform interpolation on original data if possible
 					cdo -intlevel,10,100,1000,4000 ${origdir}/fesom/${var}.fesom.${i}.nc ${tmpdir}/${var}.fesom.${i}.int.nc &
@@ -123,20 +120,18 @@ do
 			then
 				echo "adding vertical level information based on standard levels in AWI-ESM2 (check that this is correct\!\!\!)"
 				#add nz1 information if necessary
-				module load netcdf-c
-				ncdump ${origdir}/fesom/${var}.fesom.${i}01.01.nc | sed -e "/data:/r ${nz1_data}" -e "/variables:/r ${nz1_variables}" | ncgen -o fixed.nc
-				module unload netcdf-c
+				ncdump ${origdir}/fesom/${var}.fesom.${i}01.01.nc | sed -e "/data:/r ${nz1_data}" -e "/variables:/r ${nz1_variables}" | ncgen -o fixed.${var}.${i}.nc
 				#interpolate based on the fixed file if necessary
-				cdo -intlevel,10,100,1000,4000 fixed.nc ${tmpdir}/${var}.fesom.${i}.int.nc
-				rm fixed.nc
+				cdo -intlevel,10,100,1000,4000 fixed.${var}.${i}.nc ${tmpdir}/${var}.fesom.${i}.int.nc &
 			else
 				#perform interpolation on original data if possible
-				cdo -intlevel,10,100,1000,4000 ${origdir}/fesom/${var}.fesom.${i}01.01.nc ${tmpdir}/${var}.fesom.${i}.int.nc #& parallel execution deactivated for testing
+				cdo -intlevel,10,100,1000,4000 ${origdir}/fesom/${var}.fesom.${i}01.01.nc ${tmpdir}/${var}.fesom.${i}.int.nc &
 			fi
 		fi
 	done
 done
 wait
+rm fixed.*.nc
 
 
 #process ECHAM6 data

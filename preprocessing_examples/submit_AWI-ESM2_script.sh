@@ -16,6 +16,7 @@
 #ulimit -c 0
 
 export PATH="/work/ab0246/HPC_libraries/intel-oneapi-compilers/2022.0.1-gcc-11.2.0/openmpi/4.1.2-gcc-11.2.0/bin/:${PATH}"
+module load netcdf-c
 
 set -e
 
