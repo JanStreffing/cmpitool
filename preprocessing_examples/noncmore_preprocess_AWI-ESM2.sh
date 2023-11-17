@@ -131,7 +131,7 @@ do
 	done
 done
 wait
-rm fixed.*.nc
+rm -f fixed.*.nc
 
 
 #process ECHAM6 data
@@ -140,7 +140,7 @@ printf "# process ECHAM6 #\n"
 printf "##################\n"
 for var in seaice temp2 trad0 aclcov aprc aprl u10 v10;
 do
-        filelist=""
+        filelist_$var=""
         if [ -f ${tmpdir}/${var}_${tmpstr}.nc ]
         then
 		rm -f ${tmpdir}/${var}_${tmpstr}.nc
@@ -148,14 +148,16 @@ do
         for i in `seq $first_year $last_year`
         do 
           cdo -t echam6 -f nc select,name=$var ${origdir}/echam/*_${i}??.01_echam ${tmpdir}/${var}_${i}_${tmpstr}.nc &
-          filelist="${filelist} ${tmpdir}/${var}_${i}_${tmpstr}.nc"
+          filelist_$var="${filelist_$var} ${tmpdir}/${var}_${i}_${tmpstr}.nc"
         done
-        wait
-        cdo mergetime ${filelist} ${tmpdir}/${var}_${tmpstr}.nc
-	#cdo -t echam6 -f nc select,name=$var,year=${first_year}/${last_year} ${origdir}/echam/*_??????.01_echam ${tmpdir}/${var}_${tmpstr}.nc &
 done
 wait
 
+for var in seaice temp2 trad0 aclcov aprc aprl u10 v10;
+do
+        cdo mergetime ${filelist_$var} ${tmpdir}/${var}_${tmpstr}.nc &
+done
+wait
 
 #derive atmospheric variables with cdo after
 printf "#################################################\n"
