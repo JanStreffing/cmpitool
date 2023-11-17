@@ -17,17 +17,10 @@ Help()
 	echo "#  4  boolean to delete tmp files                                             #"
 	echo "#  5  integer specifying first model year to process                          #"
 	echo "#  6  integer specifying last model year to process                           #"
-        echo "#  7  string specifying path to and name of gridfile                          #"
-        echo "#  8  string specifying directory path for processed data                     #"
-        echo "#  9  string specifying directory path for nz1 variable definition            #"
-	echo "#     (necessary if fesom output is incomplete re. nz1 level information)     #"
-	echo "#  10 string specifying directory path for nz1 data definition                #"
-	echo "#     (necessary if fesom output is incomplete re. nz1 level information)     #"
-	echo "#  11 fesom output file structure (0: one file per year;                      #"
-        echo "#     1: twelfe files per year)                                               #"
-        echo "# CDO-Version employed:                                                       #"
-        #module load cdo/1.9.10 #we need to verify how geopoth is correctly computed, and with which cdo version!!! See https://code.mpimet.mpg.de/issues/11346
-        echo "# $(cdo --version 2>&1 | head -n 1)            #"
+  echo "#  7  string specifying path to and name of gridfile                          #"
+  echo "#  8  string specifying directory path for processed data                     #"
+  echo "#  9  string specifying fesom file name suffix                                #"
+  echo "# 10  string specifying echam file name suffix                                #"
 	echo "###############################################################################"
 }
 
@@ -50,11 +43,8 @@ first_year=$5
 last_year=$6
 gridfile=$7
 tmpdir=$8
-nz1_variables=$9
-nz1_data=$10
-monthly_fesom_files=0 #0: no monthly output, one file per year
-monthly_fesom_files=$11
-
+fesom_filename_suffix=${9:-}
+echam_filename_suffix=${10:-}
 
 #A note regarding gridfile:
 #the mesh diagnostics file may not always be suitable to perform a proper interpolation, e.g.:
@@ -86,52 +76,90 @@ cd $outdir
 tmpstr="analysis_cmpi_period"
 
 
-#process FESOM2 data
-printf "##################\n"
-printf "# process FESOM2 #\n"
-printf "##################\n"
+printf "##################################\n"
+printf "# split off / interpolate levels #\n"
+printf "##################################\n"
 for i in `seq $first_year $last_year`;
 do
-	echo "working on year $i ..."
-	for var in temp salt;
-	do
-                if [ "${monthly_fesom_files}" == "1" ]
-		then
-                	for m in 01 02 03 04 05 06 07 08 09 10 11 12
-			do
-				#test whether fesom output contains vertical level information that is necessary to interpolate the data to specific depths
-				str="$(cdo -intlevel,10,100,1000,4000 ${origdir}/fesom/${var}.fesom.${i}${m}.01.nc /dev/null/test.nc 2>&1 > /dev/null)"
-				if [[ "$str" == *"intlevel (Abort): No processable variable found"* ]]
-				then
-					echo "adding vertical level information based on standard levels in AWI-ESM2 (check that this is correct\!\!\!)"
-					#add nz1 information if necessary
-					ncdump ${origdir}/fesom/${var}.fesom.${i}.nc | sed -e "/data:/r ${nz1_data}" -e "/variables:/r ${nz1_variables}" | ncgen -o fixed.${var}.${i}.${m}.nc
-					#interpolate based on the fixed file if necessary
-					cdo -intlevel,10,100,1000,4000 fixed.${var}.${i}.${m}.nc ${tmpdir}/${var}.fesom.${i}.int.nc &
-				else
-					#perform interpolation on original data if possible
-					cdo -intlevel,10,100,1000,4000 ${origdir}/fesom/${var}.fesom.${i}.nc ${tmpdir}/${var}.fesom.${i}.int.nc &
-				fi
-			done
-		else
-			#test whether fesom output contains vertical level information that is necessary to interpolate the data to specific depths
-			str="$(cdo -intlevel,10,100,1000,4000 ${origdir}/fesom/${var}.fesom.${i}01.01.nc /dev/null/test.nc 2>&1 > /dev/null)"
-			if [[ "$str" == *"intlevel (Abort): No processable variable found"* ]]
-			then
-				echo "adding vertical level information based on standard levels in AWI-ESM2 (check that this is correct\!\!\!)"
-				#add nz1 information if necessary
-				ncdump ${origdir}/fesom/${var}.fesom.${i}01.01.nc | sed -e "/data:/r ${nz1_data}" -e "/variables:/r ${nz1_variables}" | ncgen -o fixed.${var}.${i}.nc
-				#interpolate based on the fixed file if necessary
-				cdo -intlevel,10,100,1000,4000 fixed.${var}.${i}.nc ${tmpdir}/${var}.fesom.${i}.int.nc &
-			else
-				#perform interpolation on original data if possible
-				cdo -intlevel,10,100,1000,4000 ${origdir}/fesom/${var}.fesom.${i}01.01.nc ${tmpdir}/${var}.fesom.${i}.int.nc &
-			fi
-		fi
-	done
+  for var in temp salt;
+  do
+    cdo -setctomiss,0 ${origdir}/fesom/${var}.fesom.${i}${fesom_filename_suffix}.nc  ${tmpdir}/${var}.fesom.${i}.int2.nc &
+  done
 done
 wait
-rm -f fixed.*.nc
+
+for i in `seq $first_year $last_year`;
+do
+  for var in temp salt;
+  do
+    cdo -intlevel,10,100,1000,4000 ${tmpdir}/${var}.fesom.${i}.int2.nc ${tmpdir}/${var}.fesom.${i}.int.nc &
+  done
+done
+wait
+rm  ${tmpdir}/*.fesom.*.int2.nc
+
+printf "#######################################\n"
+printf "# cat together analysis period part 2 #\n"
+printf "#######################################\n"
+
+
+for i in `seq $first_year $last_year`;
+do
+  for var in MLD3 ssh sst;
+  do
+    cdo cat ${origdir}/fesom/${var}.fesom.${i}${fesom_filename_suffix}.nc ${tmpdir}/${var}_${tmpstr}.nc &
+  done
+  for var in temp salt;
+  do
+    cdo cat ${tmpdir}/${var}.fesom.${i}.int.nc ${tmpdir}/${var}_${tmpstr}.nc &
+  done
+  wait
+done
+
+
+printf "################\n"
+printf "# remap FESOM2 #\n"
+printf "################\n"
+for var in temp salt;
+do
+  cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${tmpdir}/${var}_${tmpstr}.nc ${tmpdir}/weights_unstr_2_r180x91_${var}.nc &
+done
+wait
+
+for var in temp salt;
+do
+  cdo -L -splitlevel -remap,r180x91,${tmpdir}/weights_unstr_2_r180x91_${var}.nc -setctomiss,0 -selname,${var} -setgrid,$gridfile ${tmpdir}/${var}_${tmpstr}.nc ${tmpdir}/${var}_${tmpstr}_ &
+done
+wait
+
+for var in temp salt;
+do
+        for lvl in "000010" "000100" "001000" "004000";
+        do
+    mv ${tmpdir}/${var}_${tmpstr}_${lvl}.nc ${tmpdir}/${var}_${tmpstr}_${lvl}_remap.nc &
+  done
+done
+wait
+
+
+for var in MLD3;
+do
+  cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${tmpdir}/${var}_${tmpstr}.nc ${tmpdir}/weights_unstr_2_r180x91.nc
+  cdo -L -remap,r180x91,${tmpdir}/weights_unstr_2_r180x91.nc -selname,${var} -setgrid,$gridfile ${tmpdir}/${var}_${tmpstr}.nc ${tmpdir}/${var}_${tmpstr}_remap.nc
+done
+
+
+cdo -L -splitseas -chname,ssh,zos -setmissval,0 ${tmpdir}/ssh_${tmpstr}.nc zos_${tmpstr}_ &
+cdo -L -splitseas -chname,sst,tos ${tmpdir}/sst_${tmpstr}.nc tos_${tmpstr}_ &
+wait
+cdo genycon,r180x91 -selname,zos -setgrid,$gridfile ${outdir}/zos_${tmpstr}_DJF.nc ${tmpdir}/weights_zos_unstr_2_r180x91.nc
+cdo genycon,r180x91 -selname,tos -setgrid,$gridfile ${outdir}/tos_${tmpstr}_DJF.nc ${tmpdir}/weights_tos_unstr_2_r180x91.nc
+for seas in DJF MAM JJA SON;
+do
+  cdo -L -remap,r180x91,${tmpdir}/weights_zos_unstr_2_r180x91.nc -timstd -selname,zos -setgrid,$gridfile zos_${tmpstr}_${seas}.nc zos_${model_name}_198912-201411_surface_${seas}.nc &
+  cdo -L -remap,r180x91,${tmpdir}/weights_tos_unstr_2_r180x91.nc -timstd -selname,tos -setgrid,$gridfile tos_${tmpstr}_${seas}.nc tos_${model_name}_198912-201411_surface_${seas}.nc &
+done
+wait
 
 
 #process ECHAM6 data
@@ -140,7 +168,7 @@ printf "# process ECHAM6 #\n"
 printf "##################\n"
 for var in seaice temp2 trad0 aclcov aprc aprl u10 v10;
 do
-        filelist_$var=""
+        filelist=""
         if [ -f ${tmpdir}/${var}_${tmpstr}.nc ]
         then
 		rm -f ${tmpdir}/${var}_${tmpstr}.nc
@@ -148,14 +176,11 @@ do
         for i in `seq $first_year $last_year`
         do 
           cdo -t echam6 -f nc select,name=$var ${origdir}/echam/*_${i}??.01_echam ${tmpdir}/${var}_${i}_${tmpstr}.nc &
-          filelist_$var="${filelist_$var} ${tmpdir}/${var}_${i}_${tmpstr}.nc"
+          filelist="${filelist} ${tmpdir}/${var}_${i}_${tmpstr}.nc"
         done
-done
-wait
-
-for var in seaice temp2 trad0 aclcov aprc aprl u10 v10;
-do
-        cdo mergetime ${filelist_$var} ${tmpdir}/${var}_${tmpstr}.nc &
+        wait
+        cdo mergetime ${filelist} ${tmpdir}/${var}_${tmpstr}.nc
+	#cdo -t echam6 -f nc select,name=$var,year=${first_year}/${last_year} ${origdir}/echam/*_??????.01_echam ${tmpdir}/${var}_${tmpstr}.nc &
 done
 wait
 
@@ -226,66 +251,6 @@ do
 done
 wait
 rm ${tmpdir}/{aps,t}_${tmpstr}.nc ${tmpdir}/{u,v,z}_${tmpstr}_data_for_pressure_level_interpolation.nc
-
-
-#remap fesom data to common grid
-printf "################\n"
-printf "# remap FESOM2 #\n"
-printf "################\n"
-for i in `seq $first_year $last_year`;
-do
-	for var in MLD3 ssh sst;
-	do
-		cdo cat ${origdir}/fesom/${var}.fesom.${i}01.01.nc ${tmpdir}/${var}_${tmpstr}.nc &
-	done
-	for var in temp salt;
-	do
-		cdo cat ${tmpdir}/${var}.fesom.${i}.int.nc ${tmpdir}/${var}_${tmpstr}.nc &
-	done
-	wait
-done
-
-for var in temp salt;
-do
-	cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${tmpdir}/${var}_${tmpstr}.nc ${tmpdir}/weights_unstr_2_r180x91_${var}.nc &
-done
-wait
-
-for var in temp salt;
-do
-	cdo -L -splitlevel -remap,r180x91,${tmpdir}/weights_unstr_2_r180x91_${var}.nc -selname,${var} -setgrid,$gridfile ${tmpdir}/${var}_${tmpstr}.nc ${tmpdir}/${var}_${tmpstr}_ &
-done
-wait
-
-for var in temp salt;
-do
-        for lvl in "000010" "000100" "001000" "004000";
-        do
-		mv ${tmpdir}/${var}_${tmpstr}_${lvl}.nc ${tmpdir}/${var}_${tmpstr}_${lvl}_remap.nc &
-	done
-done
-wait
-
-for var in MLD3;
-do
-	cdo genycon,r180x91 -selname,${var} -setgrid,$gridfile  ${tmpdir}/${var}_${tmpstr}.nc ${tmpdir}/weights_unstr_2_r180x91.nc
-	cdo -L -remap,r180x91,${tmpdir}/weights_unstr_2_r180x91.nc -selname,${var} -setgrid,$gridfile ${tmpdir}/${var}_${tmpstr}.nc ${tmpdir}/${var}_${tmpstr}_remap.nc
-done
-wait
-
-cdo -L -splitseas -chname,ssh,zos ${tmpdir}/ssh_${tmpstr}.nc ${tmpdir}/zos_${tmpstr}_ &
-cdo -L -splitseas -chname,sst,tos ${tmpdir}/sst_${tmpstr}.nc ${tmpdir}/tos_${tmpstr}_ &
-wait
-cdo genycon,r180x91 -selname,zos -setgrid,$gridfile ${tmpdir}/zos_${tmpstr}_DJF.nc ${tmpdir}/weights_zos_unstr_2_r180x91.nc
-cdo genycon,r180x91 -selname,tos -setgrid,$gridfile ${tmpdir}/tos_${tmpstr}_DJF.nc ${tmpdir}/weights_tos_unstr_2_r180x91.nc
-for seas in DJF MAM JJA SON;
-do
-	cdo -L -remap,r180x91,${tmpdir}/weights_zos_unstr_2_r180x91.nc -timstd -selname,zos -setgrid,$gridfile ${tmpdir}/zos_${tmpstr}_${seas}.nc $outdir/zos_${model_name}_${first_year}12-${last_year}11_surface_${seas}.nc &
-	cdo -L -remap,r180x91,${tmpdir}/weights_tos_unstr_2_r180x91.nc -timstd -selname,tos -setgrid,$gridfile ${tmpdir}/tos_${tmpstr}_${seas}.nc $outdir/tos_${model_name}_${first_year}12-${last_year}11_surface_${seas}.nc &
-	ln -sf $outdir/zos_${model_name}_${first_year}12-${last_year}11_surface_${seas}.nc $outdir/zos_${model_name}_198912-201411_surface_${seas}.nc
-	ln -sf $outdir/tos_${model_name}_${first_year}12-${last_year}11_surface_${seas}.nc $outdir/tos_${model_name}_198912-201411_surface_${seas}.nc
-done
-wait
 
 
 #remap echam data to common grid

@@ -20,4 +20,4 @@ module load netcdf-c
 
 set -e
 
-./noncmore_preprocess_AWI-ESM2.sh /work/bb1029/a270107/esm_tools/awiesm-2.1-wiso/EXP/PI_CTRL/outdata/ /home/a/a270061/cmpitool/cmpitool/input/ AWI-ESM2 0 4975 4999 /home/a/a270061/cmpitool/cmpitool/grid.nc /home/a/a270061/cmpitool/cmpitool/input/tmpdata /home/a/a270061/cmpitool/cmpitool/nz1_variables.dump /home/a/a270061/cmpitool/cmpitool/nz1_data.dump "1"
+./noncmore_preprocess_AWI-ESM2.sh /work/bb1029/a270107/esm_tools/awiesm-2.1-wiso/EXP/PI_CTRL/outdata/ //home/a/a270092/software/cmpitool/input AWI-ESM2 1 5025 5027 /work/ab0246/a270092/input/fesom2/core2/core2_griddes_nodes.nc /home/a/a270092/software/cmpitool/input/tmpdata "01.01"
