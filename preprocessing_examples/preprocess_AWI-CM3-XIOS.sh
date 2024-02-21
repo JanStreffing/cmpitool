@@ -19,7 +19,7 @@ Help()
 	echo "#7    boolean to delete tmp files"
 	echo "#8    Scale fluxes by accumulation period in seconds (needed for pre v3.2)"
 	echo "#################################################"
-	echo "# example: ./preprocess_AWI-CM3-XIOS.sh /p/scratch/chhb19/streffing1/runtime/awicm3-frontiers-xios/test_for_cmip/outdata /p/project/chhb19/streffing1/software/cmpi-tool/input/ AWI-CM3-test 2000 2000 /p/project/chhb19/streffing1/input/fesom2/core2/core2_griddes_nodes.nc"
+	echo "# example: ./preprocess_AWI-CM3-XIOS.sh /work/ab0246/a270092/runtime/awicm3-v3.2/HIST6/outdata/ /work/ab0995/a270251/software/cmpitool/input 3.2.GAUSSHIST 1989 2014 /work/ab0995/a270251/data/meshes/core2/core2_griddes_nodes.nc"
 }
 
 # Check if the script was called with the help option
@@ -43,7 +43,9 @@ fluxscale="${8:-1}"
 
 cd $origdir
 tmpstr="analysis_cmpi_period"
-
+tmpdir=$outdir/tmp
+rm -rf $tmpdir
+mkdir -p $tmpdir
 
 printf "##############################################\n"
 printf "# clean up so cat does not do strange things #\n"
@@ -62,7 +64,7 @@ for i in `seq $starty $endy`;
 do
 	for var in temp salt;
 	do
-		cdo -intlevel,10,100,1000,4000 -setctomiss,0 fesom/${var}.fesom.${i}.nc fesom/${var}.fesom.${i}.int.nc &
+		cdo -intlevel,10,100,1000,4000 -setctomiss,0 fesom/${var}.fesom.${i}.nc $tmpdir/${var}.fesom.${i}.int.nc &
 	done
 	var='u'
 	cdo sellevel,30000 oifs/atm_remapped_1m_pl_${var}_1m_pl_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
@@ -88,7 +90,7 @@ do
 	done
 	for var in temp salt;
 	do
-		cdo cat fesom/${var}.fesom.${i}.int.nc ${outdir}/${var}_${tmpstr}.nc &
+		cdo cat $tmpdir/${var}.fesom.${i}.int.nc ${outdir}/${var}_${tmpstr}.nc &
 	done
 	var='z'
 	cdo cat ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc ${outdir}/${var}_${tmpstr}.nc &
@@ -219,5 +221,5 @@ wait
 
 if $deltmp; then
 	printf "Deleting tmp data\n"
-	rm -rf *${tmpstr}*
+	rm -rf *${tmpstr}* $tmpdir
 fi
