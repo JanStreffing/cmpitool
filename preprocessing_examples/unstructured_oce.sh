@@ -19,7 +19,7 @@ for var in ${vararray[*]}; do
 
     # Manually select domain
     if [[ "$var" = "siconc" ]]; then
-        group="SImon"
+        group="SIday"
     elif [[ "$var" = "tos" ]] || [[ "$var" = "zos" ]] || [[ "$var" = "mlotst" ]] || [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]]; then
         group="Omon"
     else
@@ -79,6 +79,9 @@ for var in ${vararray[*]}; do
             fi
         elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
             cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_ &
+        elif [[ "$var" = "siconc" ]] && [[ "$model" = "AWI-CM-1-1-MR" ]]; then
+            cdo monmean $var ${var}_mon 
+            cdo -remap,r180x91,weights_unstr_2_r180x91_${var}.nc -selname,${var} -setgrid,$oce_gridfile_path -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
         else
             cdo -remap,r180x91,weights_unstr_2_r180x91_${var}.nc -selname,${var} -setgrid,$oce_gridfile_path -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
         fi
