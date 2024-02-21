@@ -38,8 +38,8 @@ for var in ${vararray[*]}; do
     echo "switching to folder:",
     pwd
 
-    # Smart select version
-    versions="v*"
+    # Smart select latest version
+    versions=$(ls -d -v v* | sort -r)
     folders=( $versions )
     cd "${folders[0]}"
     echo "storing file to folder:",
