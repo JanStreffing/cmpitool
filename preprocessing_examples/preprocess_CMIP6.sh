@@ -1,9 +1,20 @@
 #!/bin/bash
+#SBATCH --job-name=cmpitool
+#SBATCH --partition=shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=128
+#SBATCH --time=48:00:00
+#SBATCH --output=output_file.log
+#SBATCH --error=error_file.log
+#SBATCH --account=ab0246
 
 # Outer script for calling cmip6 model preproccessing for cmpitool. 
 # Inner scripts may run in parallel by adding & after call. Requires cdo version > 2.0.5 (https://code.mpimet.mpg.de/projects/cdo/)
 # If you don't add any new variable or layer, consider just downloading
 # the preprocessed cmip6 data from zenodo: 
+
+module load cdo
 
 # Setting up global config
 workfolder=/work/ab0246/a270092/postprocessing/cmip6_cmpitool/
