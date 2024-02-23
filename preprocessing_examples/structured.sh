@@ -79,7 +79,8 @@ for var in ${vararray[*]}; do
     elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
         cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_ &
     elif [[ "$var" = "siconc" ]] || [[ "$var" = "clt" ]]; then
-        max=`cdo -s outputkey,value -fldmax -timmean $var | tail -1 | bc`
+        max=$(cdo -s outputkey,value -timmean $var | awk '$1 != "nan" && $1 > max { max = $1 } END { print max }')
+        echo "Maxval is: $max"
         if (( $(echo "$max <= 1" |bc -l) )); then
             echo "Maximum of $var is: $max, multiplying by 100"
             cdo -remapbil,r180x91 -mulc,100 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
