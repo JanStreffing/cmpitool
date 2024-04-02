@@ -27,14 +27,20 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose)
         
         squared_errors = np.square(predictions - targets)
         weighted_squared_errors = squared_errors * expanded_wgts
-        mean_weighted_squared_errors = np.average(weighted_squared_errors, axis=0)
+        mean_weighted_squared_errors = np.nanmean(weighted_squared_errors, axis=0)
         rmsd_value = np.sqrt(mean_weighted_squared_errors.mean())
         return rmsd_value
     
-    # Mean Deviation weighted
     def md(predictions, targets, wgts):
-        output_errors = np.average((predictions - targets), axis=0, weights=wgts)
-        return (output_errors).mean()
+        # Expand weights to match the shape of predictions and targets
+        expanded_wgts = np.repeat(wgts[:, np.newaxis], predictions.shape[1], axis=1)
+
+        deviations = np.abs(predictions - targets)
+        weighted_deviations = deviations * expanded_wgts
+        mean_weighted_deviations = np.nanmean(weighted_deviations, axis=0)
+        mean_deviation_value = mean_weighted_deviations.mean()
+        return mean_deviation_value
+
 
     from collections import OrderedDict
     from tqdm import tqdm
