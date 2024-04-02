@@ -84,13 +84,15 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose)
                     # Add cyclic point to the data
                     data_to_plot, lon_cyclic = add_cyclic_point(data_diff, coord=lon)
 
-                    #max_abs = np.nanmax(np.abs(data_to_plot))
+                    # Compute levels
                     std = np.nanstd(data_to_plot)
                     limit= std_range_multiplier * std
                     levels = np.linspace(-limit, limit, num_levels)
-
-                    #imf = plt.contourf(lon, lat, data_to_plot[:-1, :], cmap=plt.cm.PuOr_r, levels=levels, extend='both', transform=ccrs.PlateCarree())
-                    imf = plt.contourf(lon_cyclic, lat, data_to_plot, cmap=plt.cm.PuOr_r, levels=levels, extend='both', transform=ccrs.PlateCarree())
+                    try:
+                        imf = plt.contourf(lon_cyclic, lat, data_to_plot, cmap=plt.cm.PuOr_r, levels=levels, extend='both', transform=ccrs.PlateCarree())
+                    except:
+                        print('hit cartopy bug for this plot: https://github.com/SciTools/cartopy/issues/2176, not output for'+var.name, depth, seas, model.name)
+                        continue
                     ax.set_title(model.name + ' ' + var.name + ' ' + str(depth) + ' ' + seas + ' bias vs. '+var.obs, fontweight="bold")
                     plt.tight_layout()
 
