@@ -1,4 +1,4 @@
-def plotting_biasmaps(models, seasons, obs, out_path, verbose):
+def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose):
     '''
     AUTHORS:
     Jan Streffing		2024-04-02	Copied from plotting_heatmaps
@@ -7,6 +7,8 @@ def plotting_biasmaps(models, seasons, obs, out_path, verbose):
     This optional function plots bias maps for every variable and season
     
     INPUT:
+    ds_model                    Ordered dictionary containing loaded model data
+    ds_obs                      Ordered dictionary containing loaded observational data
     models         		List of models to be evaluated
     seasons                     List of seasons to be evaluated
     obs                         List of variables objects for which observations
@@ -17,6 +19,23 @@ def plotting_biasmaps(models, seasons, obs, out_path, verbose):
     RETURN:
     '''
 
+
+    # Root Mean Square Deviation weighted
+    def rmsd(predictions, targets, wgts):
+        # Expand weights to match the shape of predictions and targets
+        expanded_wgts = np.repeat(wgts[:, np.newaxis], predictions.shape[1], axis=1)
+        
+        squared_errors = np.square(predictions - targets)
+        weighted_squared_errors = squared_errors * expanded_wgts
+        mean_weighted_squared_errors = np.average(weighted_squared_errors, axis=0)
+        rmsd_value = np.sqrt(mean_weighted_squared_errors.mean())
+        return rmsd_value
+    
+    # Mean Deviation weighted
+    def md(predictions, targets, wgts):
+        output_errors = np.average((predictions - targets), axis=0, weights=wgts)
+        return (output_errors).mean()
+
     from collections import OrderedDict
     from tqdm import tqdm
     import matplotlib.pyplot as plt
@@ -25,58 +44,74 @@ def plotting_biasmaps(models, seasons, obs, out_path, verbose):
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
     from cartopy.util import add_cyclic_point
-    import cmocean
 
-    print('Plotting biasmap(s)')
-
+    num_levels = 11  # Adjust as needed
+    std_range_multiplier = 3
             
     plt.rcParams.update({'figure.max_open_warning': 0})
-    for model in tqdm(models):
-        for var in obs:
+    for model in models:
+        print('Plotting biasmaps for: ',model.name)
+        for var in tqdm(model.variables):
             for depth in var.depths:
-                for region in regions:
-                    for seas in seasons:
-                        try:
-                            if len(var.depths) == 1:
-                                reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=error_fraction[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0][0]
-                            else:
-                                reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=error_fraction[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0][0][0]
-                            r+=1
-                        except:
-                            reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=np.nan
-        def add_space(input): #Small helper function added spaces in front of season names
-            output = []
-            for string in input:
-                output.append(str(' ')+string)
-            return output
+                for seas in seasons:
+                    if depth == 'surface':
+                        levelname=''
+                    else:
+                        levelname=depth+' '
+                    if var.name == 'zos' or var.name== 'tos':
+                        levelname='st. dev. '
 
-        seasons_plot = add_space(seasons) 
-        a=seasons_plot*len(regions)
-        b=np.repeat(regions_names,len(seasons_plot))
-        coord=[n+str(m) for m,n in zip(a,b)]
-        
-        index_obs=[]
-        for var in obs:
-            for depth in var.depths:
-                if depth == 'surface':
-                    levelname=''
-                else:
-                    levelname=depth+' '
-                if var.name == 'zos' or var.name== 'tos':
-                    levelname='st. dev. '
-                index_obs.append(levelname+var.name)
-        if verbose == 'true':
-            print(model.name,'number of values: ',len(list(reorganized_error_fraction.values())),'; shape:',len(index_obs),'x',len(regions)*len(seasons))
-        collect_frac_reshaped = np.array(list(reorganized_error_fraction.values()) ).reshape(len(index_obs),len(regions)*len(seasons)) # transform to 2D
-        collect_frac_dataframe = pd.DataFrame(data=collect_frac_reshaped, index=index_obs, columns=coord)
+                    plt.figure(figsize=(6, 4.5))
+                    ax = plt.axes(projection=ccrs.PlateCarree())
+                    ax.add_feature(cfeature.COASTLINE, zorder=3)
 
-        fig, ax = plt.subplots(figsize=((len(regions)*len(seasons))/1.5,len(index_obs)/1.5))
-        fig.patch.set_facecolor('white')
-        plt.rcParams['axes.facecolor'] = 'white'
-        ax = sns.heatmap(collect_frac_dataframe, vmin=0.5, vmax=1.5,center=1,annot=True,fmt='.2f',cmap="PiYG_r",cbar=False,linewidths=1)
-        plt.xticks(rotation=90,fontsize=14)
-        plt.yticks(rotation=0, ha='right',fontsize=14)
-        plt.title(model.name+' CMPI: '+str(round(cmpi[model.name],3)), fontsize=18)
-        
-        plt.savefig(out_path+'plot/'+model.name+'.png',dpi=300,bbox_inches='tight')
+                    data = ds_model[var.name, depth, seas, model.name][var.name].values
+                    obsp = np.squeeze(ds_obs[var.name, depth, seas][var.name].values)
+                    data_diff = data - obsp
 
+                    # Grid information from CDO:
+                    xsize = 180
+                    ysize = 91
+                    xfirst = 0
+                    xinc = 2
+                    yfirst = -90
+                    yinc = 2
+
+                    # Create lattitude and longitude vectors
+                    lon = np.arange(xfirst, xfirst + xsize * xinc, xinc)
+                    lat = np.arange(yfirst, yfirst + ysize * yinc, yinc)
+
+                    # Add cyclic point to the data
+                    data_to_plot, lon_cyclic = add_cyclic_point(data_diff, coord=lon)
+
+                    #max_abs = np.nanmax(np.abs(data_to_plot))
+                    std = np.nanstd(data_to_plot)
+                    limit= std_range_multiplier * std
+                    levels = np.linspace(-limit, limit, num_levels)
+
+                    #imf = plt.contourf(lon, lat, data_to_plot[:-1, :], cmap=plt.cm.PuOr_r, levels=levels, extend='both', transform=ccrs.PlateCarree())
+                    imf = plt.contourf(lon_cyclic, lat, data_to_plot, cmap=plt.cm.PuOr_r, levels=levels, extend='both', transform=ccrs.PlateCarree())
+                    ax.set_title(model.name + ' ' + var.name + ' ' + str(depth) + ' ' + seas + ' bias vs. '+var.obs, fontweight="bold")
+                    plt.tight_layout()
+
+                    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+                                      linewidth=1, color='gray', alpha=0.2, linestyle='-')
+                    gl.bottom_labels = False
+
+                    # Add RSMD and mean BIAS to plot
+                    coslat = np.cos(np.deg2rad(lat))
+                    wgts = np.squeeze(np.sqrt(coslat)[..., np.newaxis])
+                    rmsdval = rmsd(data, obsp, wgts)
+                    mdval = md(data, obsp, wgts)
+                    textrsmd='rmsd='+str(round(rmsdval,3))
+                    textbias='bias='+str(round(mdval,3))
+                    props = dict(boxstyle='round,pad=0.1', facecolor='white', alpha=0.5)
+                    ax.text(0.02, 0.35, textrsmd, transform=ax.transAxes, fontsize=13, verticalalignment='top', bbox=props, zorder=4)
+                    ax.text(0.02, 0.25, textbias, transform=ax.transAxes, fontsize=13, verticalalignment='top', bbox=props, zorder=4)
+    
+                    cbar_ax_abs = plt.axes([0.15, 0.11, 0.7, 0.05])
+                    cbar_ax_abs.tick_params(labelsize=12)
+                    cb = plt.colorbar(imf, cax=cbar_ax_abs, orientation='horizontal')
+                    cb.ax.tick_params(labelsize='12')
+
+                    plt.savefig(out_path + 'plot/maps/' + model.name + '_' + var.name + '_' + str(depth) + '_' + seas + '.png', dpi=200, bbox_inches='tight')

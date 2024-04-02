@@ -24,3 +24,4 @@ from .read_errors import *
 from .calculate_fractions import *
 from .write_fractions import *
 from .plotting_heatmaps import *
+from .plotting_biasmaps import *
