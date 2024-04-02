@@ -1,6 +1,6 @@
 def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path='obs/' , reanalysis='ERA5', 
              eval_path=None, time='198912-201411', seasons=['MAM', 'JJA', 'SON', 'DJF'], 
-             maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False):
+             maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False):
     '''
     AUTHORS:
     Jan Streffing		2022-12-01	Split off from main tool
@@ -35,13 +35,14 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
                                 for simple lat/lon boxes (boxes) or continents & ocean
                                 basins (regions)
     verbose                     Boolean to activate verbose output
+    biasmaps                    Boolean to activate bias map plots
 
 
     RETURN:
     '''
 
     from cmpitool import (cmpisetup, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,
-                          write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps)
+                          write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps, plotting_biasmaps)
 
     #Setup safe paths
     obs_path=obs_path+'/'
@@ -149,3 +150,6 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     cmpi =  write_fractions(error_fraction, models, regions, seasons, out_path, verbose)
     
     plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path, verbose)
+    
+    if biasmaps == True:
+        plotting_biasmaps(ds_model, ds_obs , models, seasons, obs, out_path, verbose)

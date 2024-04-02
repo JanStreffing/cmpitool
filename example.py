@@ -12,5 +12,5 @@ models=[
         climate_model(name='EC-Earth3',    variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]),
     ]
 
-cmpitool(model_path, models, verbose=True)
+cmpitool(model_path, models, verbose=True, biasmaps=True)
 

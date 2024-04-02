@@ -14,6 +14,7 @@ dependencies:
   - tqdm
   - xarray
   - netcdf4
+  - cartopy
   - pip:
     - regionmask
     - dask
