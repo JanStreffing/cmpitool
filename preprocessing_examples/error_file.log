@@ -1,0 +1,1058 @@
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdo    remapbil (Warning): Source grid cell center longitudes out of range (min=0.0147/max=1e+30)!
+cdo    remapbil (Warning): Source grid cell center latitudes out of range (min=-79.2/max=1e+30)!
+cdo(3) timmean: Open failed on >uas<
+                No such file or directory
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >uas<
+                    No such file or directory
+terminate called without an active exception
+cdo(3) timmean: Open failed on >vas<
+                No such file or directory
+terminate called without an active exception
+terminate called recursively
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >vas<
+                    No such file or directory
+cdo(1) seltimestep: Open failed on >mlotst<
+                    No such file or directory
+terminate called without an active exception
+structured.sh: line 117: 749116 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+cdo(1) yseasmean: Open failed on >mlotst_SAM0-UNICON_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >uas_SAM0-UNICON_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >vas_SAM0-UNICON_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+structured.sh: line 143: 749542 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 749543 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 749552 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+mv: cannot stat 'uas_SAM0-UNICON_198912-201411_*': No such file or directory
+mv: cannot stat 'vas_SAM0-UNICON_198912-201411_*': No such file or directory
+mv: cannot stat 'mlotst_SAM0-UNICON_198912-201411_*': No such file or directory
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdo    remapbil (Warning): Source grid cell center longitudes out of range (min=0.995/max=1e+30)!
+cdo    remapbil (Warning): Source grid cell center latitudes out of range (min=-78/max=1e+30)!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - >type<
+cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - >height<
+cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - >height<
+cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - >height<
+cdo(2) timmean: Open failed on >pr<
+                No such file or directory
+terminate called without an active exception
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >pr<
+                    No such file or directory
+terminate called without an active exception
+structured.sh: line 92: 750918 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+cdo(5) seltimestep: Open failed on >so<
+                    No such file or directory
+terminate called without an active exception
+cdo(5) seltimestep: Open failed on >thetao<
+                    No such file or directory
+terminate called recursively
+structured.sh: line 117: 750944 Aborted                 cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -expr,'so = ((so < 1000)) ? so : (1e20)' -setmissval,1e20 -seltimestep,$steps $var ${var}_${model}_198912-201411_
+structured.sh: line 117: 750945 Aborted                 cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -expr,'thetao = ((thetao < 1000)) ? thetao : (1e20)' -setmissval,1e20 -seltimestep,$steps $var ${var}_${model}_198912-201411_
+cdo(1) yseasmean: Open failed on >thetao_KIOST-ESM_198912-201411_004000.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >so_KIOST-ESM_198912-201411_000100.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >thetao_KIOST-ESM_198912-201411_000100.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >so_KIOST-ESM_198912-201411_004000.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >pr_KIOST-ESM_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >so_KIOST-ESM_198912-201411_001000.nc<
+                  No such file or directory
+cdo(1) yseasmean: Open failed on >thetao_KIOST-ESM_198912-201411_000010.nc<
+                  No such file or directory
+cdo(1) yseasmean: Open failed on >so_KIOST-ESM_198912-201411_000010.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >thetao_KIOST-ESM_198912-201411_001000.nc<
+                  No such file or directory
+terminate called without an active exception
+terminate called without an active exception
+terminate called without an active exception
+structured.sh: line 143: 750972 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 750975 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 750976 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 750977 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 750978 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 750979 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 750980 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 750981 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 750982 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+mv: cannot stat 'so_KIOST-ESM_198912-201411_000100_MAM.nc': No such file or directory
+mv: cannot stat 'so_KIOST-ESM_198912-201411_000010_MAM.nc': No such file or directory
+mv: cannot stat 'so_KIOST-ESM_198912-201411_000100_JJA.nc': No such file or directory
+mv: cannot stat 'so_KIOST-ESM_198912-201411_000100_SON.nc': No such file or directory
+mv: cannot stat 'so_KIOST-ESM_198912-201411_004000_SON.nc': No such file or directory
+mv: cannot stat 'so_KIOST-ESM_198912-201411_004000_DJF.nc': No such file or directory
+mv: cannot stat 'so_KIOST-ESM_198912-201411_001000_JJA.nc': No such file or directory
+mv: mv: cannot stat 'so_KIOST-ESM_198912-201411_001000_MAM.nc'mv: cannot stat 'so_KIOST-ESM_198912-201411_004000_MAM.nc': No such file or directorycannot stat 'so_KIOST-ESM_198912-201411_000010_JJA.nc'
+: No such file or directory: No such file or directory
+
+mv: cannot stat 'so_KIOST-ESM_198912-201411_001000_SON.nc': No such file or directory
+mv: cannot stat 'so_KIOST-ESM_198912-201411_004000_JJA.nc': No such file or directory
+mv: cannot stat 'so_KIOST-ESM_198912-201411_000100_DJF.nc': No such file or directory
+mv: cannot stat 'so_KIOST-ESM_198912-201411_001000_DJF.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_000010_MAM.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_000100_MAM.nc': No such file or directory
+mv: mv: cannot stat 'so_KIOST-ESM_198912-201411_000010_SON.nc'cannot stat 'so_KIOST-ESM_198912-201411_000010_DJF.nc': No such file or directory: No such file or directory
+
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_004000_MAM.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_000010_JJA.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_000100_JJA.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_001000_JJA.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_004000_JJA.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_000010_SON.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_001000_SON.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_000100_SON.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_004000_SON.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_001000_MAM.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_000100_DJF.nc': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_001000_DJF.nc': No such file or directory
+mv: mv: cannot stat 'thetao_KIOST-ESM_198912-201411_004000_DJF.nc'cannot stat 'thetao_KIOST-ESM_198912-201411_000010_DJF.nc': No such file or directory: No such file or directory
+
+mv: cannot stat 'pr_KIOST-ESM_198912-201411_*': No such file or directory
+mv: cannot stat 'so_KIOST-ESM_198912-201411_*': No such file or directory
+mv: cannot stat 'thetao_KIOST-ESM_198912-201411_*': No such file or directory
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdo(1) seltimestep: Open failed on >mlotst<
+                    No such file or directory
+terminate called without an active exception
+structured.sh: line 117: 762778 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+cdo(1) yseasmean: Open failed on >mlotst_INM-CM5-0_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+structured.sh: line 143: 762858 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+mv: cannot stat 'mlotst_INM-CM5-0_198912-201411_*': No such file or directory
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdo    remapbil (Warning): Source grid cell center longitudes out of range (min=0.0147/max=1e+20)!
+cdo    remapbil (Warning): Source grid cell center latitudes out of range (min=-79.2/max=1e+20)!
+cdo(3) timmean: Open failed on >uas<
+                No such file or directory
+terminate called without an active exception
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >uas<
+                    No such file or directory
+terminate called without an active exception
+cdo(3) timmean: Open failed on >vas<
+                No such file or directory
+terminate called recursively
+structured.sh: line 100: 763513 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >vas<
+                    No such file or directory
+terminate called without an active exception
+cdo(1) seltimestep: Open failed on >mlotst<
+                    No such file or directory
+terminate called without an active exception
+structured.sh: line 117: 763525 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+structured.sh: line 117: 763528 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+cdo(1) yseasmean: Open failed on >vas_FIO-ESM-2-0_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >uas_FIO-ESM-2-0_198912-201411.nc<
+                  No such file or directory
+cdo(1) yseasmean: Open failed on >mlotst_FIO-ESM-2-0_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+terminate called without an active exception
+structured.sh: line 143: 763630 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 763631 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 763640 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+mv: cannot stat 'uas_FIO-ESM-2-0_198912-201411_*': No such file or directory
+mv: cannot stat 'vas_FIO-ESM-2-0_198912-201411_*': No such file or directory
+mv: cannot stat 'mlotst_FIO-ESM-2-0_198912-201411_*': No such file or directory
+cdi  warning (cdfInqContents): Coordinates variable lev can't be assigned!
+cdi  warning (cdfInqContents): Coordinates variable lev can't be assigned!
+cdo    remapbil (Warning): Source grid cell center longitudes out of range (min=0.0147/max=9.97e+36)!
+cdo    remapbil (Warning): Source grid cell center latitudes out of range (min=-79.2/max=9.97e+36)!
+cdo(3) timmean: Open failed on >uas<
+                No such file or directory
+terminate called without an active exception
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >uas<
+                    No such file or directory
+terminate called without an active exception
+cdo(3) timmean: Open failed on >vas<
+                No such file or directory
+terminate called without an active exception
+structured.sh: line 100: 773741 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >vas<
+                    No such file or directory
+terminate called without an active exception
+structured.sh: line 117: 773753 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+cdo(1) yseasmean: Open failed on >uas_CESM2_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >vas_CESM2_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+structured.sh: line 143: 773846 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 773847 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+mv: cannot stat 'uas_CESM2_198912-201411_*': No such file or directory
+mv: cannot stat 'vas_CESM2_198912-201411_*': No such file or directory
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo(1) remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo(1) remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdi  warning (attribute_to_calendar): calendar >julian< unsupported!
+cdo(2) timmean: Open failed on >siconc<
+                No such file or directory
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >siconc<
+                    No such file or directory
+cdo(1) seltimestep: Open failed on >mlotst<
+                    No such file or directory
+terminate called without an active exception
+cdo(5) seltimestep: Open failed on >thetao<
+                    No such file or directory
+terminate called without an active exception
+cdo(5) seltimestep: Open failed on >so<
+                    No such file or directory
+terminate called recursively
+cdo(1) seltimestep: Open failed on >zos<
+                    No such file or directory
+terminate called without an active exception
+structured.sh: line 117: 775046 Aborted                 cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -expr,'so = ((so < 1000)) ? so : (1e20)' -setmissval,1e20 -seltimestep,$steps $var ${var}_${model}_198912-201411_
+structured.sh: line 117: 775047 Aborted                 cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -expr,'thetao = ((thetao < 1000)) ? thetao : (1e20)' -setmissval,1e20 -seltimestep,$steps $var ${var}_${model}_198912-201411_
+structured.sh: line 117: 775048 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+structured.sh: line 117: 775050 Aborted                 cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_
+
+cdo(1) seltimestep (Abort): Timesteps 1680-1979 not found!
+terminate called without an active exception
+structured.sh: line 117: 775049 Aborted                 cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_
+cdo(1) yseasmean: Open failed on >so_IITM-ESM_198912-201411_004000.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) timstd: Open failed on >tos_IITM-ESM_198912-201411_sel_JJA.nc<
+               No such file or directory
+terminate called without an active exception
+cdo(1) timstd: Open failed on >tos_IITM-ESM_198912-201411_sel_DJF.nc<
+               No such file or directory
+cdo(1) yseasmean: Open failed on >mlotst_IITM-ESM_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >so_IITM-ESM_198912-201411_000100.nc<
+                  No such file or directory
+cdo(1) yseasmean: Open failed on >so_IITM-ESM_198912-201411_000010.nc<
+                  No such file or directory
+terminate called without an active exception
+terminate called without an active exception
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >thetao_IITM-ESM_198912-201411_004000.nc<
+                  No such file or directory
+cdo(1) timstd: Open failed on >tos_IITM-ESM_198912-201411_sel_MAM.nc<
+               No such file or directory
+cdo(1) timstd: Open failed on >zos_IITM-ESM_198912-201411_sel_JJA.nc<
+               No such file or directory
+cdo(1) yseasmean: Open failed on >siconc_IITM-ESM_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) timstd: Open failed on >zos_IITM-ESM_198912-201411_sel_DJF.nc<
+               No such file or directory
+terminate called without an active exception
+terminate called without an active exception
+terminate called without an active exception
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >so_IITM-ESM_198912-201411_001000.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) timstd: Open failed on >zos_IITM-ESM_198912-201411_sel_SON.nc<
+               No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >thetao_IITM-ESM_198912-201411_000010.nc<
+                  No such file or directory
+cdo(1) yseasmean: Open failed on >thetao_IITM-ESM_198912-201411_001000.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >thetao_IITM-ESM_198912-201411_000100.nc<
+                  No such file or directory
+cdo(1) timstd: Open failed on >tos_IITM-ESM_198912-201411_sel_SON.nc<
+               No such file or directory
+cdo(1) timstd: Open failed on >zos_IITM-ESM_198912-201411_sel_MAM.nc<
+               No such file or directory
+terminate called without an active exception
+terminate called without an active exception
+terminate called without an active exception
+terminate called without an active exception
+structured.sh: line 143: 775065 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 775074 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 775075 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 775077 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 775081 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 775082 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 775083 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+structured.sh: line 143: 775084 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+structured.sh: line 143: 775086 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+structured.sh: line 143: 775088 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+structured.sh: line 143: 775090 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+structured.sh: line 143: 775076 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 775078 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 775079 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 775080 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_
+structured.sh: line 143: 775085 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+structured.sh: line 143: 775087 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+structured.sh: line 143: 775089 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+mv: cannot stat 'so_IITM-ESM_198912-201411_000010_SON.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_000100_MAM.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_000010_JJA.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_000100_JJA.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_004000_JJA.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_004000_MAM.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_004000_SON.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_001000_SON.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_000010_DJF.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_000010_DJF.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_000100_DJF.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_000010_MAM.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_001000_DJF.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_004000_DJF.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_001000_MAM.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_000010_MAM.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_000100_MAM.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_001000_MAM.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_004000_MAM.nc': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_001000_JJA.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_000010_JJA.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_001000_JJA.nc': No such file or directory
+mv: mv: mv: cannot stat 'so_IITM-ESM_198912-201411_001000_SON.nc'cannot stat 'thetao_IITM-ESM_198912-201411_000100_JJA.nc'cannot stat 'so_IITM-ESM_198912-201411_000100_SON.nc': No such file or directory: No such file or directory
+: No such file or directory
+
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_000010_SON.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_000100_SON.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_004000_SON.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_000100_DJF.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_001000_DJF.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_004000_DJF.nc': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_004000_JJA.nc': No such file or directory
+mv: cannot stat 'siconc_IITM-ESM_198912-201411_*': No such file or directory
+mv: cannot stat 'so_IITM-ESM_198912-201411_*': No such file or directory
+mv: cannot stat 'thetao_IITM-ESM_198912-201411_*': No such file or directory
+mv: cannot stat 'mlotst_IITM-ESM_198912-201411_*': No such file or directory
+mv: cannot stat 'tos_IITM-ESM_198912-201411_*': No such file or directory
+mv: cannot stat 'zos_IITM-ESM_198912-201411_*': No such file or directory
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdo    remap (Warning): Remap weights from weights_unstr_2_r180x91_zg.nc not used, unstructured (20480) grid with mask (13322) not found!
+cdo    remap (Warning): Remap weights from weights_unstr_2_r180x91_ua.nc not used, unstructured (20480) grid with mask (13322) not found!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!Unsupported array structure, skipped variable cell_domain_id!
+
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable cell_domain_id!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdo    remapbil (Warning): Source grid cell center longitudes out of range (min=0.00366/max=1e+20)!
+cdo    remapbil (Warning): Source grid cell center latitudes out of range (min=-79/max=1e+20)!
+cdo(3) timmean: Open failed on >uas<
+                No such file or directory
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >uas<
+                    No such file or directory
+cdo(3) timmean: Open failed on >vas<
+                No such file or directory
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >vas<
+                    No such file or directory
+terminate called without an active exception
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo(1) yseasmean: Open failed on >uas_NorESM2-MM_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >vas_NorESM2-MM_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+structured.sh: line 143: 780631 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 780632 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+cdo    remapbil (Warning): Bilinear interpolation failed for some grid points - used a distance-weighted average instead!
+mv: cannot stat 'uas_NorESM2-MM_198912-201411_*': No such file or directory
+mv: cannot stat 'vas_NorESM2-MM_198912-201411_*': No such file or directory
+cdo(2) timmean: Open failed on >siconc<
+                No such file or directory
+terminate called without an active exception
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >siconc<
+                    No such file or directory
+cdo(1) yseasmean: Open failed on >siconc_GISS-E2-1-G_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+structured.sh: line 143: 781363 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+mv: cannot stat 'siconc_GISS-E2-1-G_198912-201411_*': No such file or directory
+cdi  error (cdf_put_var_double): NetCDF: Numeric conversion not representable
+cdi  warning (cdf_check_variables): Number of time steps undefined, skipped variable siconc!
+cdi  warning (cdfInqContents): No data arrays found!
+cdo(2) timmean: Open failed on >siconc<
+                Unsupported file structure
+terminate called without an active exception
+(standard_in) 1: syntax error
+cdi  warning (cdf_check_variables): Number of time steps undefined, skipped variable siconc!
+cdi  warning (cdfInqContents): No data arrays found!
+cdo(1) seltimestep: Open failed on >siconc<
+                    Unsupported file structure
+terminate called without an active exception
+structured.sh: line 84: 781648 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+cdo(3) timmean: Open failed on >uas<
+                No such file or directory
+terminate called without an active exception
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >uas<
+                    No such file or directory
+terminate called without an active exception
+cdo(3) timmean: Open failed on >vas<
+                No such file or directory
+terminate called without an active exception
+structured.sh: line 100: 781696 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >vas<
+                    No such file or directory
+terminate called without an active exception
+cdo(1) seltimestep: Open failed on >mlotst<
+                    No such file or directory
+terminate called without an active exception
+structured.sh: line 117: 781708 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+structured.sh: line 117: 781711 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+cdo(1) yseasmean: Open failed on >vas_CIESM_198912-201411.nc<
+                  No such file or directory
+cdo(1) yseasmean: Open failed on >siconc_CIESM_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+terminate called without an active exception
+structured.sh: line 143: 781750 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 781758 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+cdo(1) yseasmean: Open failed on >mlotst_CIESM_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >uas_CIESM_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+structured.sh: line 143: 781757 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 781767 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+mv: cannot stat 'siconc_CIESM_198912-201411_*': No such file or directory
+mv: cannot stat 'uas_CIESM_198912-201411_*': No such file or directory
+mv: cannot stat 'vas_CIESM_198912-201411_*': No such file or directory
+mv: cannot stat 'mlotst_CIESM_198912-201411_*': No such file or directory
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdo(2) timmean: Open failed on >siconc<
+                No such file or directory
+(standard_in) 1: syntax error
+cdo(2) timmean: Open failed on >clt<
+                No such file or directory
+cdo(1) seltimestep: Open failed on >siconc<
+                    No such file or directory
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >clt<
+                    No such file or directory
+terminate called without an active exception
+cdo(1) seltimestep: Open failed on >mlotst<
+                    No such file or directory
+terminate called without an active exception
+cdo(1) seltimestep: Open failed on >zos<
+                    No such file or directory
+terminate called without an active exception
+structured.sh: line 117: 784594 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+structured.sh: line 117: 784596 Aborted                 cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_
+cdo(1) yseasmean: Open failed on >mlotst_MCM-UA-1-0_198912-201411.nc<
+                  No such file or directory
+cdo(1) yseasmean: Open failed on >clt_MCM-UA-1-0_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >siconc_MCM-UA-1-0_198912-201411.nc<
+                  No such file or directory
+cdo(1) timstd: Open failed on >zos_MCM-UA-1-0_198912-201411_sel_SON.nc<
+               No such file or directory
+cdo(1) timstd: Open failed on >zos_MCM-UA-1-0_198912-201411_sel_DJF.nc<
+               No such file or directory
+terminate called without an active exception
+terminate called without an active exception
+terminate called without an active exception
+cdo(1) timstd: Open failed on >zos_MCM-UA-1-0_198912-201411_sel_MAM.nc<
+               No such file or directory
+terminate called without an active exception
+structured.sh: line 143: 784612 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+cdo(1) timstd: Open failed on >zos_MCM-UA-1-0_198912-201411_sel_JJA.nc<
+               No such file or directory
+terminate called without an active exception
+structured.sh: line 143: 784613 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 784629 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 784634 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+structured.sh: line 143: 784635 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+structured.sh: line 143: 784636 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+structured.sh: line 143: 784637 Aborted                 cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc
+mv: cannot stat 'siconc_MCM-UA-1-0_198912-201411_*': No such file or directory
+mv: cannot stat 'clt_MCM-UA-1-0_198912-201411_*': No such file or directory
+mv: cannot stat 'mlotst_MCM-UA-1-0_198912-201411_*': No such file or directory
+mv: cannot stat 'zos_MCM-UA-1-0_198912-201411_*': No such file or directory
+
+cdo(1) seltimestep (Abort): Timesteps 1969-1979 not found!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdo    remapbil (Warning): Source grid cell center longitudes out of range (min=0.0147/max=1e+20)!
+cdo    remapbil (Warning): Source grid cell center latitudes out of range (min=-79.2/max=1e+20)!
+cdo(3) timmean: Open failed on >uas<
+                No such file or directory
+terminate called recursively
+(standard_in) 1: syntax error
+cdo(3) timmean: Open failed on >vas<
+                No such file or directory
+terminate called recursively
+cdo(1) seltimestep: Open failed on >uas<
+                    No such file or directory
+terminate called without an active exception
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >vas<
+                    No such file or directory
+terminate called without an active exception
+cdo(1) seltimestep: Open failed on >mlotst<
+                    No such file or directory
+terminate called without an active exception
+structured.sh: line 117: 785799 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+structured.sh: line 117: 785802 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+cdo(1) yseasmean: Open failed on >vas_TaiESM1_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >uas_TaiESM1_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >mlotst_TaiESM1_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+structured.sh: line 143: 785853 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 785854 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 785863 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+mv: cannot stat 'uas_TaiESM1_198912-201411_*': No such file or directory
+mv: cannot stat 'vas_TaiESM1_198912-201411_*': No such file or directory
+mv: cannot stat 'mlotst_TaiESM1_198912-201411_*': No such file or directory
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdi  warning (cdf_set_dimtype): Could not assign all character coordinates to data variable!
+cdo(3) timmean: Open failed on >uas<
+                No such file or directory
+terminate called without an active exception
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >uas<
+                    No such file or directory
+terminate called without an active exception
+cdo(3) timmean: Open failed on >vas<
+                No such file or directory
+terminate called without an active exception
+structured.sh: line 100: 786162 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >vas<
+                    No such file or directory
+terminate called without an active exception
+structured.sh: line 117: 786174 Aborted                 cdo -remapbil,r180x91 -seltimestep,$steps $var ${var}_${model}_198912-201411.nc
+cdo(1) yseasmean: Open failed on >uas_E3SM-1-1_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+cdo(1) yseasmean: Open failed on >vas_E3SM-1-1_198912-201411.nc<
+                  No such file or directory
+terminate called without an active exception
+structured.sh: line 143: 786213 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+structured.sh: line 143: 786214 Aborted                 cdo splitseas -yseasmean ${var}_${model}_198912-201411.nc ${var}_${model}_198912-201411_surface_
+mv: cannot stat 'uas_E3SM-1-1_198912-201411_*': No such file or directory
+mv: cannot stat 'vas_E3SM-1-1_198912-201411_*': No such file or directory
+(standard_in) 1: syntax error
+cdo(1) seltimestep: Open failed on >mlotst<
+                    No such file or directory
+cdo(1) yseasmean: Open failed on >mlotst_GFDL-CM4_198912-201411.nc<
+                  No such file or directory
+mv: cannot stat 'mlotst_GFDL-CM4_198912-201411_*': No such file or directory

@@ -52,7 +52,7 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     else:
         eval_path=eval_path+'/'
 
-    variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+    variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup(reanalysis=reanalysis)
 
     obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]
 
