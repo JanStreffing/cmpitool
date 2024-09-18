@@ -122,10 +122,6 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     # End of user config, start of tool #
     #####################################
     
-    if obs in (alk, co2, zoo, phy):
-        seasons = ['year']
-    else:
-        seasons = ['MAM', 'JJA', 'SON', 'DJF']
     #Function to add masks to the selected regions
     regions = add_masks(regions, verbose)
     
