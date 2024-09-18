@@ -32,7 +32,12 @@ def loading_obs(obs, obs_path, seasons, verbose):
 
     for var in tqdm(obs):
         for depth in var.depths:
-            for seas in seasons:
+            if var.name in ('alk', 'co2', 'zoo', 'phy'):
+                season = ['year']
+            else:
+                season = seasons
+                
+            for seas in season:
                 if verbose:
                     print('loading '+obs_path+var.name+'_'+var.obs+'_'+depth+'_'+seas+'.nc')
 

@@ -1,6 +1,6 @@
 def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path='obs/' , reanalysis='ERA5', 
-             eval_path=None, time='198912-201411', seasons=['MAM', 'JJA', 'SON', 'DJF'], 
-             maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False):
+             eval_path=None, time='198912-201411', seasons=['MAM', 'JJA', 'SON', 'DJF', 'year'], # time changes from time='198912-201411'
+             maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False):
     '''
     AUTHORS:
     Jan Streffing		2022-12-01	Split off from main tool
@@ -12,7 +12,7 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     INPUT:
     model_path                  Path pointing towards the output of your model,
                                 preprocessed to be read in by cmiptool
-    models		        List of climate model objects to be evaluated via cmiptool
+    models		                List of climate model objects to be evaluated via cmiptool
     eval_models                 List of climate model objects used as reference for evaluation
                                 By default this is set to None, which results in a set of 30 CMIP6
                                 being used
@@ -35,14 +35,13 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
                                 for simple lat/lon boxes (boxes) or continents & ocean
                                 basins (regions)
     verbose                     Boolean to activate verbose output
-    biasmaps                    Boolean to activate bias map plots
 
 
     RETURN:
     '''
 
     from cmpitool import (cmpisetup, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,
-                          write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps, plotting_biasmaps)
+                          write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps)
 
     #Setup safe paths
     obs_path=obs_path+'/'
@@ -53,9 +52,9 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     else:
         eval_path=eval_path+'/'
 
-    variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+    variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so, alk, co2, n, o2, p, zoo, phy = cmpisetup()
 
-    obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]
+    obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so, alk, co2, n, o2, p, zoo, phy]
 
     '''
     If you don't add all variables to obs for your analysis, the missing ones will be skipped.
@@ -65,7 +64,7 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     - If you add more variables and generate new .csv files, increase the number 14 accordingly!
     - If you just skip a variable for your analysis, don't change number_of_implemented_variables!
     '''
-    n_implemented_var = 14 
+    n_implemented_var = 21
             
     #The CMIP6 models are set up by default in their own function
     cmip6_models = config_cmip6(climate_model, obs)
@@ -122,7 +121,11 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     #####################################
     # End of user config, start of tool #
     #####################################
-
+    
+    if obs in (alk, co2, zoo, phy):
+        seasons = ['year']
+    else:
+        seasons = ['MAM', 'JJA', 'SON', 'DJF']
     #Function to add masks to the selected regions
     regions = add_masks(regions, verbose)
     
@@ -150,6 +153,3 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     cmpi =  write_fractions(error_fraction, models, regions, seasons, out_path, verbose)
     
     plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path, verbose)
-    
-    if biasmaps == True:
-        plotting_biasmaps(ds_model, ds_obs , models, seasons, obs, out_path, verbose)

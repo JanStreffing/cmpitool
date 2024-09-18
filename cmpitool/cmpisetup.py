@@ -29,6 +29,7 @@ def cmpisetup(reanalysis='ERA5'):
     mlotst                      Variable object for mixed layer depth
     thetao                      Variable object for 3D ocean temperature
     so                          Variable object for 3D ocean salinity
+    o2                          Variable object for 3D oxygen in ocean 
     '''
 
 
@@ -71,6 +72,13 @@ def cmpisetup(reanalysis='ERA5'):
     mlotst = variable(name='mlotst', obs='C-GLORSv7', depths=['surface'], domain='oce')
     thetao = variable(name='thetao', obs='EN4', depths=['10m','100m','1000m'], domain='oce')
     so = variable(name='so', obs='EN4', depths=['10m','100m','1000m'], domain='oce')
-
-    return variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so
+    alk = variable(name='alk', obs='GLODAP', depths=['50m','400m','800m','2000m'], domain='oce')
+    co2 = variable(name='co2', obs='GLODAP', depths=['50m','400m','800m','2000m'], domain='oce')
+    n = variable(name='n', obs='WOA23', depths=['50m','400m','800m'], domain='oce')
+    o2 = variable(name='o2', obs='WOA23', depths=['50m','400m','1000m'], domain='oce')
+    p = variable(name='p', obs='WOA23', depths=['50m','400m','800m'], domain='oce')
+    zoo = variable(name='zoo', obs='MOPS', depths=['50m'], domain='oce')
+    phy = variable(name='phy', obs='MOPS', depths=['50m'], domain='oce')
+    
+    return variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so, alk, co2, n, o2, p, zoo, phy
 

@@ -28,7 +28,12 @@ def loading_models(models, model_path, seasons, time, verbose):
     for model in tqdm(models):
         for var in model.variables:
             for depth in var.depths:
-                for seas in seasons:
+                if var.name in ('alk', 'co2', 'zoo', 'phy'):
+                    season = ['year']
+                else:
+                    season = seasons
+                    
+                for seas in season:
                     if verbose:
                         print('loading '+model_path+var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc')
                     intermediate = xr.open_mfdataset(model_path+var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc')
