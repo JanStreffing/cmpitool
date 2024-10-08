@@ -155,17 +155,19 @@ oce_gridfile_path[TaiESM1]=
 # We call slightly different script for unstructured model components than for structed ones
 for c in "${!basedir[@]}"; do
     printf "Model: $c; Base dir: ${basedir[$c]}; Unit of ocean levels: ${unit_level_oce[$c]}\n"
-    if [ -z ${atm_gridfile_path[$c]} ]; then
+    '''if [ -z ${atm_gridfile_path[$c]} ]; then
         if [ -z ${oce_gridfile_path[$c]} ]; then
             echo "using script for structured atm & oce grids\n"
-            bash structured.sh $workfolder ${basedir[$c]} $c $cleanup ${unit_level_oce[$c]}
+            bash cmip6_subscripts/structured.sh $workfolder ${basedir[$c]} $c $cleanup ${unit_level_oce[$c]}
         else
             echo "using script for structured atm & unstructured oce grids\n"
-            bash unstructured_oce.sh $workfolder ${basedir[$c]} $c $cleanup ${unit_level_oce[$c]} ${oce_gridfile_path[$c]}
+            bash cmip6_subscripts/unstructured_oce.sh $workfolder ${basedir[$c]} $c $cleanup ${unit_level_oce[$c]} ${oce_gridfile_path[$c]}
         fi
     else
         echo "using script for unstructured atm & oce grids\n"
-        bash unstructured_both.sh $workfolder ${basedir[$c]} $c $cleanup ${unit_level_oce[$c]} ${atm_gridfile_path[$c]} ${oce_gridfile_path[$c]}
-    fi
+        bash cmip6_subscripts/unstructured_both.sh $workfolder ${basedir[$c]} $c $cleanup ${unit_level_oce[$c]} ${atm_gridfile_path[$c]} ${oce_gridfile_path[$c]}
+    fi'''
+    echo "adding yearly means"
+    bash cmip6_subscripts/add_yearly.sh  $workfolder $c
 done
 

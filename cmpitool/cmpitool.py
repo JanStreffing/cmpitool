@@ -1,6 +1,6 @@
 def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path='obs/' , reanalysis='ERA5', 
              eval_path=None, time='198912-201411', seasons=['MAM', 'JJA', 'SON', 'DJF', 'year'], # time changes from time='198912-201411'
-             maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False):
+             maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False, obs=None):
     '''
     AUTHORS:
     Jan Streffing		2022-12-01	Split off from main tool
@@ -12,7 +12,7 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     INPUT:
     model_path                  Path pointing towards the output of your model,
                                 preprocessed to be read in by cmiptool
-    models		                List of climate model objects to be evaluated via cmiptool
+    models		        List of climate model objects to be evaluated via cmiptool
     eval_models                 List of climate model objects used as reference for evaluation
                                 By default this is set to None, which results in a set of 30 CMIP6
                                 being used
@@ -53,8 +53,8 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
         eval_path=eval_path+'/'
 
     variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so, alk, co2, n, o2, p, zoo, phy = cmpisetup()
-
-    obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so, alk, co2, n, o2, p, zoo, phy]
+    if obs == None:
+        obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so, alk, co2, n, o2, p, zoo, phy]
 
     '''
     If you don't add all variables to obs for your analysis, the missing ones will be skipped.
