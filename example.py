@@ -11,6 +11,9 @@ models=[
         climate_model(name='AWI-CM-1-1-MR',variables=[        tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]),
         climate_model(name='EC-Earth3',    variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]),
     ]
+obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]
+seasons=['MAM', 'JJA', 'SON', 'DJF']
 
-cmpitool(model_path, models, verbose=True, biasmaps=True)
+cmpitool(model_path, models, obs=obs, seasons=seasons, verbose=True, biasmaps=False, use_for_eval=False, complexity='boxes')
+
 

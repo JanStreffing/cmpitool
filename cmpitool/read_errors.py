@@ -42,7 +42,7 @@ def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, n_imple
     regions_names = []
     for region in regions:
         regions_names.append(region.name)
-        
+       
     collect = np.empty([len(eval_models),n_implemented_var,len(regions),max_depth,len(seasons)])*np.nan
     i=0
     for eval_model in tqdm(eval_models):
@@ -68,18 +68,22 @@ def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, n_imple
                     m=0
                     for seas in seasons:
                         if any(a): # Check if variable appears in csv. If not, skip it.
-                            if regions_csv[r] not in regions_names: # Check if region from csv part of the analysis. Else advance
-                                while True:
-                                    r+=1
-                                    if regions_csv[r] in regions_names:
-                                        break
                             if season_csv[r] not in seasons: # Check if region from csv part of the analysis. Else advance
                                 while True:
+                                    if verbose:
+                                        print('skipping season',season_csv[r],r,m,l,k,j,i)
                                     r+=1
                                     if season_csv[r] in seasons:
                                         break
+                            if regions_csv[r] not in regions_names: # Check if region from csv part of the analysis. Else advance
+                                while True:
+                                    if verbose:
+                                        print('skipping region',regions_csv[r],r,m,l,k,j,i)
+                                    r+=1
+                                    if regions_csv[r] in regions_names:
+                                        break
                             if verbose:
-                                print(eval_model.name,var.name,region.name,depth,seas,values[r])
+                                print('reading',r,m,l,k,j,i,eval_model.name,var.name,region.name,depth,seas,values[r])
                             collect[i,j,k,l,m]=values[r]
                             r+=1
                         m+=1
