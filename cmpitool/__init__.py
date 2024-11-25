@@ -21,7 +21,11 @@ from .loading_models import *
 from .calculate_errors import *
 from .write_errors import *
 from .read_errors import *
+from .read_errors_all import *
 from .calculate_fractions import *
+from .calculate_fractions_rank import *
 from .write_fractions import *
+from .write_ranks import *
 from .plotting_heatmaps import *
+from .plotting_heatmaps_rank import *
 from .plotting_biasmaps import *

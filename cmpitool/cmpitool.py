@@ -42,7 +42,7 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     '''
 
     from cmpitool import (cmpisetup, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,
-                          write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps, plotting_biasmaps)
+                          write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps, plotting_biasmaps, read_errors_all, calculate_fractions_rank, plotting_heatmaps_rank, write_ranks)
 
     #Setup safe paths
     obs_path=obs_path+'/'
@@ -144,10 +144,22 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
     eval_error_mean = read_errors(obs, eval_models, regions, seasons, out_path, eval_path, 
                                   n_implemented_var, verbose)
     
+    eval_error_all = read_errors_all(obs, eval_models, regions, seasons, out_path, eval_path, 
+                                  n_implemented_var, verbose)
+    print('eval_error_all ',eval_error_all)
+
     #Calculate fraction between your model errors and the evaluation model errors
+    error_rank = calculate_fractions_rank(models, regions, seasons, mean_error, eval_error_all, verbose)
+    
     error_fraction = calculate_fractions(models, regions, seasons, mean_error, eval_error_mean, verbose)
     
+    print('error_rank ',error_rank)
+
     cmpi =  write_fractions(error_fraction, models, regions, seasons, out_path, verbose)
+    
+    cmpi_rank =  write_ranks(error_rank, models, regions, seasons, out_path, verbose)
+    
+    plotting_heatmaps_rank(models, regions, seasons, obs, error_rank, cmpi_rank, out_path, verbose)
     
     plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path, verbose)
     
