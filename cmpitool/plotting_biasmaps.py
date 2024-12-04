@@ -5,7 +5,7 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose)
 
     DESCRIPTION:
     This optional function plots bias maps for every variable and season
-    
+
     INPUT:
     ds_model                    Ordered dictionary containing loaded model data
     ds_obs                      Ordered dictionary containing loaded observational data
@@ -24,13 +24,13 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose)
     def rmsd(predictions, targets, wgts):
         # Expand weights to match the shape of predictions and targets
         expanded_wgts = np.repeat(wgts[:, np.newaxis], predictions.shape[1], axis=1)
-        
+
         squared_errors = np.square(predictions - targets)
         weighted_squared_errors = squared_errors * expanded_wgts
         mean_weighted_squared_errors = np.nanmean(weighted_squared_errors, axis=0)
         rmsd_value = np.sqrt(mean_weighted_squared_errors.mean())
         return rmsd_value
-    
+
     def md(predictions, targets, wgts):
         # Expand weights to match the shape of predictions and targets
         expanded_wgts = np.repeat(wgts[:, np.newaxis], predictions.shape[1], axis=1)
@@ -53,7 +53,14 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose)
 
     num_levels = 11  # Adjust as needed
     std_range_multiplier = 3
-            
+
+    def getlimit(var):
+        limits = {
+            'siconc': 60.
+        }
+
+        return limits.get(var, None)
+
     plt.rcParams.update({'figure.max_open_warning': 0})
     for model in models:
         print('Plotting biasmaps for: ',model.name)
@@ -92,7 +99,10 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose)
 
                     # Compute levels
                     std = np.nanstd(data_to_plot)
-                    limit= std_range_multiplier * std
+                    if not getlimit(var.name):
+                        limit = std_range_multiplier * std
+                    else:
+                        limit = getlimit(var.name)
                     levels = np.linspace(-limit, limit, num_levels)
                     try:
                         imf = plt.contourf(lon_cyclic, lat, data_to_plot, cmap=plt.cm.PuOr_r, levels=levels, extend='both', transform=ccrs.PlateCarree())
@@ -116,7 +126,7 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose)
                     props = dict(boxstyle='round,pad=0.1', facecolor='white', alpha=0.5)
                     ax.text(0.02, 0.35, textrsmd, transform=ax.transAxes, fontsize=13, verticalalignment='top', bbox=props, zorder=4)
                     ax.text(0.02, 0.25, textbias, transform=ax.transAxes, fontsize=13, verticalalignment='top', bbox=props, zorder=4)
-    
+
                     cbar_ax_abs = plt.axes([0.15, 0.11, 0.7, 0.05])
                     cbar_ax_abs.tick_params(labelsize=12)
                     cb = plt.colorbar(imf, cax=cbar_ax_abs, orientation='horizontal')
