@@ -16,3 +16,4 @@ Welcome to the documention of the cmpitool. Cmpitool is a simple python library 
    releases
    contribute
    how_to
+   faq
