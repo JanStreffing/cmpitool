@@ -1,27 +1,57 @@
 def write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose):
     '''
-    AUTHORS:
-    Jan Streffing		2022-11-30	Split off from main tool
-
-    DESCRIPTION:
-    This function calculates the pointwise absolute error and the mean absolute error 
-    between your model(s) and the observational data. It does so separatly for each
-    model, region, season, variable and optionally depth.
+    Write calculated error metrics to CSV files for analysis and evaluation.
     
-    INPUT:
-    abs_error		        Ordered dictionary containing fields of absolute error
-                                between model and obs data
-    mean_error                  Ordered dictionary containing fields area weighted mean
-                                of abs_error
-    models                      List of models to be evaluated
-    regions                     List of regions to be evaluated
-    seasons                     List of seasons to be evaluated
-    out_path                    Path to folder containing absolute error csv files
-    eval_path                   Path to folder containing absolute errors of evaluation
-                                experiments
-    verbose                     Boolean for verbose output
-
-    RETURN:
+    This function exports the calculated absolute error metrics to CSV files
+    for each model. These files can be used for further analysis or as reference
+    data for evaluating other models. If use_for_eval is True, files are also
+    copied to the evaluation directory for use as reference data.
+    
+    Parameters
+    ----------
+    abs_error : OrderedDict
+        Dictionary containing fields of absolute error between models and observations
+    mean_error : OrderedDict
+        Dictionary containing area-weighted means of absolute error fields
+    models : list
+        List of climate_model objects being evaluated
+    regions : list
+        List of region objects used in the evaluation
+    seasons : list
+        List of seasons evaluated (e.g., ['DJF', 'MAM', 'JJA', 'SON'])
+    out_path : str
+        Path to directory where output CSV files will be written
+    use_for_eval : bool
+        Whether to copy results to evaluation directory for use as reference data
+    eval_path : str
+        Path to directory where evaluation reference data is stored
+    verbose : bool
+        Whether to print detailed information during execution
+        
+    Returns
+    -------
+    None
+        Files are written to disk at specified locations
+        
+    Notes
+    -----
+    CSV files are organized with columns for:
+    - Variable name
+    - Region name
+    - Level/depth
+    - Season
+    - Absolute mean error value
+    
+    If use_for_eval is True, these files can later be used as reference for
+    evaluating other models via the eval_models parameter in cmpitool.
+    
+    Examples
+    --------
+    >>> write_errors(abs_error, mean_error, models, regions, seasons, 
+    ...              'output/', False, 'eval/ERA5/', verbose=True)
+    
+    AUTHORS:
+    Jan Streffing               2022-11-30      Split off from main tool
     '''
     
     import csv

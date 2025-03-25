@@ -4,7 +4,21 @@ How to
 Cite this tool
 ==============
 
-TBA
+If you use CMPITool in your research, please cite:
+
+.. code-block:: text
+
+   Streffing, J. (2022). CMPITool: A Python framework for Climate Model Performance Indexing.
+   https://github.com/JanStreffing/cmpitool
+   https://doi.org/10.5281/zenodo.xxxxxxx
+
+And the original methodology paper:
+
+.. code-block:: text
+
+   Reichler, T., & Kim, J. (2008). How Well Do Coupled Models Simulate Today's Climate?
+   Bulletin of the American Meteorological Society, 89(3), 303-312.
+   https://doi.org/10.1175/BAMS-89-3-303
 
 Preprocess data for cmpitool
 ============================

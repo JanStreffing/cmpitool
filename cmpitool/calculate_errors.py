@@ -1,26 +1,51 @@
 def calculate_errors(ds_model, ds_obs, models, regions, seasons, verbose):
     '''
-    AUTHORS:
-    Jan Streffing		2022-11-30	Split off from main tool
-
-    DESCRIPTION:
-    This function calculates the pointwise absolute error and the mean absolute error 
-    between your model(s) and the observational data. It does so separatly for each
-    model, region, season, variable and optionally depth.
+    Calculate error metrics between model outputs and observations.
     
-    INPUT:
-    ds_model                      Ordered dictionary containing your model data
-    ds_obs                      Ordered dictionary containing observational data
-    models                      List of models to be evaluated
-    regions                     List of regions to be evaluated
-    seasons                     List of seasons to be evaluated
-    verbose                     Boolean for verbose output
-
-    RETURN:
-    abs_error		        Ordered dictionary containing fields of absolute error
-                                between model and obs data
-    mean_error                  Ordered dictionary containing fields area weighted mean
-                                of abs_error
+    This function calculates the pointwise absolute error and the area-weighted mean 
+    absolute error between climate model outputs and observational data. It performs 
+    calculations separately for each model, variable, depth level, region, and season.
+    
+    Parameters
+    ----------
+    ds_model : OrderedDict
+        Dictionary containing model data, organized by variable, depth, season, and model name
+    ds_obs : OrderedDict
+        Dictionary containing observational data, organized by variable, depth, and season
+    models : list
+        List of climate_model objects to evaluate
+    regions : list
+        List of region objects defining geographical areas for evaluation
+    seasons : list
+        List of seasons to evaluate (e.g., ['DJF', 'MAM', 'JJA', 'SON'])
+    verbose : bool
+        Whether to print detailed information during execution
+        
+    Returns
+    -------
+    abs_error : OrderedDict
+        Dictionary containing fields of absolute error between model and observational data,
+        organized by variable, depth, season, model name, and region name
+    mean_error : OrderedDict
+        Dictionary containing area-weighted mean values of absolute error,
+        organized by variable, depth, season, model name, and region name
+        
+    Notes
+    -----
+    The function calculates the root mean square error (RMSE) between model outputs
+    and observations within each specified region mask. Then it computes the
+    area-weighted mean of these error fields using cosine latitude weighting.
+    
+    Examples
+    --------
+    >>> from collections import OrderedDict
+    >>> from cmpitool import cmpisetup, loading_models, loading_obs, add_masks, calculate_errors
+    >>> variable, region, climate_model, *variables = cmpisetup()
+    >>> # Setup models, load data, and add masks to regions
+    >>> abs_error, mean_error = calculate_errors(ds_model, ds_obs, models, regions, seasons, verbose=True)
+    
+    AUTHORS:
+    Jan Streffing               2022-11-30      Split off from main tool
     '''
 
     from collections import OrderedDict
