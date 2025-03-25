@@ -1,25 +1,47 @@
 def calculate_fractions(models, regions, seasons, mean_error, eval_error_mean, verbose):
     '''
-    AUTHORS:
-    Jan Streffing		2022-11-30	Split off from main tool
-
-    DESCRIPTION:
-    This function calculates the pointwise absolute error and the mean absolute error 
-    between your model(s) and the observational data. It does so separatly for each
-    model, region, season, variable and optionally depth.
+    Calculate performance fractions comparing model errors against reference models.
     
-    INPUT:
-    models                      List of models against which we evaluate
-    regions                     List of regions to be evaluated
-    seasons                     List of seasons to be evaluated
-    mean_error                  Ordered dictionary containing fields area weighted mean
-                                of abs_error
-    eval_error_mean             Weighted area means of evaluation model errors
-    verbose                     Boolean for verbose output
-
-    RETURN:
-    error_fraction              Ordered dictionary containing the fraction of error 
-                                between your model / evaluation model mean
+    This function computes the Climate Model Performance Index (CMPI) fractions by
+    dividing model error metrics by the average error of reference models. These
+    fractions indicate relative model performance where values below 1.0 indicate
+    better performance than the reference models average.
+    
+    Parameters
+    ----------
+    models : list
+        List of climate_model objects being evaluated
+    regions : list
+        List of region objects defining geographical areas for evaluation
+    seasons : list
+        List of seasons evaluated (e.g., ['DJF', 'MAM', 'JJA', 'SON'])
+    mean_error : OrderedDict
+        Dictionary containing area-weighted mean error values for models being evaluated
+    eval_error_mean : dict
+        Dictionary containing error values for reference models
+    verbose : bool
+        Whether to print detailed information during execution
+        
+    Returns
+    -------
+    error_fraction : OrderedDict
+        Dictionary containing performance fractions for each model, variable, 
+        region, and season. Values below 1.0 indicate better than average performance.
+        
+    Notes
+    -----
+    The CMPI value is calculated following the methodology of Reichler and Kim (2008),
+    where the error of a model is divided by the mean error of reference models for
+    the same variable, region, and season. This normalization allows for comparison
+    across different variables with different physical units.
+    
+    Examples
+    --------
+    >>> error_fraction = calculate_fractions(models, regions, seasons, 
+    ...                                     mean_error, eval_error_mean, verbose=True)
+    
+    AUTHORS:
+    Jan Streffing               2022-11-30      Split off from main tool
     '''
 
     from collections import OrderedDict

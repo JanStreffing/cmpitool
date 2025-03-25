@@ -1,29 +1,41 @@
 def add_masks(regions, verbose, maskfixes=True):
     '''
-    AUTHORS:
-    Jan Streffing		2022-11-30	Split off from main tool
-
-    DESCRIPTION:
-    This function set up predefined regions that can be used in cmpitool.
-    These fall into three categories, simple boxes, landmasses, and ocean 
-    basins. 
-    Note: If you modify / overwrite this default, you need to generate new absolute
-    errors and copy them into eval/$reanalysis/. You likely want to set the 
-    optional argument maskfixes=False for you own regions.
+    Add geographical masks to region objects for spatial analysis.
     
-    INPUT:
-    regions	        	List of regions for which the analysis will be done
-    verbose                     Boolean for verbose output
-    maskfixes                   By default we load a set of ocean basins and 
-                                continents that sometimes overlap. This switch
-                                fixes this particular dataset. If you read in
-                                your own masks, you want to turn this off!
-    RETURN:
-    regions		        List of regions for which the analysis will be done,
-                                and which now contain thier mask arguments
+    This function loads pre-defined geographical masks for the specified regions
+    and attaches them to the region objects. Masks are used to restrict analysis
+    to specific geographical areas when calculating model performance.
+    
+    Parameters
+    ----------
+    regions : list
+        List of region objects to which masks will be added
+    verbose : bool
+        Whether to print detailed information during execution
+    maskfixes : bool, optional
+        Whether to apply corrections for overlapping ocean basins and continents (default: True)
+        
+    Returns
+    -------
+    regions : list
+        The input list of region objects, now with mask attributes added
+        
+    Notes
+    -----
+    The function loads mask data from NetCDF files in a specific format and 
+    structure. If maskfixes is True (set in the main cmpitool function), it applies
+    corrections for overlapping ocean basins and continents.
+    
+    Examples
+    --------
+    >>> from cmpitool import cmpisetup
+    >>> variable, region, climate_model, *_ = cmpisetup()
+    >>> regions = [region(name='arctic', domain='mixed'), region(name='Europe', domain='land')]
+    >>> regions = add_masks(regions, verbose=True)
+    
+    AUTHORS:
+    Jan Streffing               2022-11-30      Split off from main tool
     '''
-
-
     import pooch
     import geopandas as gp
     import numpy as np

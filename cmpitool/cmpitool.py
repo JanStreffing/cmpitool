@@ -2,45 +2,79 @@ def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=
              eval_path=None, time='198912-201411', seasons=['MAM', 'JJA', 'SON', 'DJF'], 
              maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False):
     '''
-    AUTHORS:
-    Jan Streffing		2022-12-01	Split off from main tool
-
-    DESCRIPTION:
-    This is the main function of the cmpitool. Here we set up the default configration 
-    and call all subsequent functions.
+    Main function for Climate Model Performance Index calculation and evaluation.
     
-    INPUT:
-    model_path                  Path pointing towards the output of your model,
-                                preprocessed to be read in by cmiptool
-    models		        List of climate model objects to be evaluated via cmiptool
-    eval_models                 List of climate model objects used as reference for evaluation
-                                By default this is set to None, which results in a set of 30 CMIP6
-                                being used
-    out_path                    String pointing to the folder in which results will be stored
-    obs_path                    String pointing to the folder in which observational data
-                                against which the errors will be calculated are stored
-    reanalysis                  String allowing switch between ERA5 and NCEP2 for the 
-                                variables where obs come from atmopsheric reanalysis
-                                systems (tas, uas, vas, ua, zg)
-    eval_path                   String pointing to the folder that contains pre-computed 
-                                error values for 30 CMIP6 models, as well as the default
-                                variables, regions and seasons.
-    time                        String containing anaylsis period.
-    seasons                     List of seasons for which the analysis can be done
-    maskfixes                   By default we load a set of ocean basins and 
-                                continents that sometimes overlap. This switch
-                                fixes this particular dataset. If you read in
-                                your own masks, you want to turn this off!
-    complexity                  String allowing selection of whether cmip shall be calulated
-                                for simple lat/lon boxes (boxes) or continents & ocean
-                                basins (regions)
-    verbose                     Boolean to activate verbose output
-    biasmaps                    Boolean to activate bias map plots
-
-
-    RETURN:
+    This function coordinates the entire workflow of the Climate Model Performance Index (CMPI)
+    tool, from loading data to calculating performance metrics and generating visualizations.
+    It evaluates climate models against observational data and computes normalized performance
+    indices following the methodology of Reichler and Kim (2008).
+    
+    Parameters
+    ----------
+    model_path : str
+        Path to directory containing preprocessed model data files
+    models : list
+        List of climate_model objects to be evaluated
+    eval_models : list, optional
+        List of climate_model objects used as reference for evaluation.
+        If None (default), a set of 30 CMIP6 models will be used.
+    out_path : str, optional
+        Path to directory where output files will be stored (default: 'output/')
+    obs_path : str, optional
+        Path to directory containing observational/reanalysis data (default: 'obs/')
+    reanalysis : str, optional
+        Reanalysis dataset to use ('ERA5' or 'NCEP2') for atmospheric variables 
+        (default: 'ERA5')
+    eval_path : str, optional
+        Path to directory containing pre-computed error values for reference models.
+        If None (default), 'eval/{reanalysis}/' will be used.
+    time : str, optional
+        Time period for analysis in format 'YYYYMM-YYYYMM' (default: '198912-201411')
+    seasons : list, optional
+        List of seasons to analyze (default: ['MAM', 'JJA', 'SON', 'DJF'])
+    maskfixes : bool, optional
+        Whether to apply corrections for overlapping ocean basins and continents 
+        (default: True)
+    use_for_eval : bool, optional
+        Whether to save results for future use as reference data (default: False)
+    complexity : str, optional
+        Geographical complexity level: 'boxes' for lat/lon boxes or 'regions' for 
+        continents & ocean basins (default: 'boxes')
+    verbose : bool, optional
+        Whether to print detailed information during execution (default: False)
+    biasmaps : bool, optional
+        Whether to generate bias map plots (default: False)
+        
+    Returns
+    -------
+    error_fraction : OrderedDict
+        Dictionary containing performance fractions for each model, variable, 
+        region, and season
+    
+    Notes
+    -----
+    The function performs the following steps:
+    1. Sets up predefined variables, regions, and model configurations
+    2. Loads observational data and model outputs
+    3. Calculates absolute errors between models and observations
+    4. Computes performance metrics relative to reference models
+    5. Generates visualizations of results
+    
+    If you add new variables to the tool and generate new reference CSV files, 
+    you'll need to update the n_implemented_var value (currently 14) accordingly.
+    
+    Examples
+    --------
+    >>> from cmpitool import cmpitool, cmpisetup
+    >>> variable, region, climate_model, *_ = cmpisetup()
+    >>> # Create model objects
+    >>> mymodel = climate_model(name='MyModel', variables=[variable[0], variable[1]])
+    >>> # Run the tool
+    >>> result = cmpitool('model_data/', [mymodel], out_path='results/')
+    
+    AUTHORS:
+    Jan Streffing               2022-12-01      Split off from main tool
     '''
-
     from cmpitool import (cmpisetup, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,
                           write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps, plotting_biasmaps)
 

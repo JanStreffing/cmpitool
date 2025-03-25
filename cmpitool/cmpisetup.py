@@ -1,34 +1,76 @@
 def cmpisetup(reanalysis='ERA5'):
     '''
+    Set up core classes and default variables for CMPITool.
+    
+    This function provides the necessary classes and predefined variable objects
+    to facilitate configuration of CMPITool. It creates the main classes (variable,
+    region, climate_model) and initializes common climate variables with appropriate
+    observational datasets, depths, and domains.
+    
+    Parameters
+    ----------
+    reanalysis : str, optional
+        Name of reanalysis dataset to use for atmospheric variables.
+        Options are 'ERA5' (default) or 'NCEP2'
+        
+    Returns
+    -------
+    variable : class
+        Class for creating variable objects
+    region : class
+        Class for creating region objects
+    climate_model : class
+        Class for creating climate model objects
+    siconc : variable
+        Sea ice concentration variable object
+    tas : variable
+        Near-surface air temperature variable object
+    clt : variable
+        Total cloud cover fraction variable object
+    pr : variable
+        Precipitation variable object
+    rlut : variable
+        Outgoing longwave radiation at top of atmosphere variable object
+    uas : variable
+        Eastward near-surface wind variable object
+    vas : variable
+        Northward near-surface wind variable object
+    ua : variable
+        Eastward wind at pressure levels variable object
+    zg : variable
+        Geopotential height variable object
+    zos : variable
+        Sea surface height variable object
+    tos : variable
+        Sea surface temperature variable object
+    mlotst : variable
+        Ocean mixed layer thickness variable object
+    thetao : variable
+        Sea water potential temperature variable object
+    so : variable
+        Sea water salinity variable object
+        
+    Examples
+    --------
+    >>> from cmpitool import cmpisetup
+    >>> variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+    >>> models = [climate_model(name='MODEL-NAME', variables=[tas, pr, ua])]
+    
+    Notes
+    -----
+    Classes created by this function:
+    
+    variable(name, obs, depths, domain='mixed', active=True):
+        Class representing a climate variable for analysis
+        
+    region(name, domain, mask=False, active=False):
+        Class representing a geographical region for analysis
+        
+    climate_model(name, variables):
+        Class representing a climate model with associated variables
+    
     AUTHORS:
     Jan Streffing               2022-12-01      Created to simplify setting up tool
-
-    DESCRIPTION:
-    This function provides classes and the default set of variable objects to 
-    facilitate your configuration of cmpitool.
-    
-    INPUT:
-    reanalysis                  String allowing switch between ERA5 and NCEP2 for the 
-                                variables where obs come from atmopsheric reanalysis
-                                systems (tas, uas, vas, ua, zg)
-    RETURN:
-    variable                    Class for creating variable objects
-    region                      Class for creating region objects
-    climate_model               Class for creating climate model objects
-    siconc                      Variable object for sea ice concentration
-    tas                         Variable object for near surface air temperature
-    clt                         Variable object for total cloud cover fraction 
-    pr                          Variable object for precipitation
-    rlut                        Variable object for residual longwave upward thermal radiation
-    uas                         Variable object for u component of near surface wind
-    vas                         Variable object for v component of near surface wind
-    ua                          Variable object for u component of 3D wind
-    zg                          Variable object for v component of 3D wind
-    zos                         Variable object for sea surface height
-    tos                         Variable object for ocean surface temperature
-    mlotst                      Variable object for mixed layer depth
-    thetao                      Variable object for 3D ocean temperature
-    so                          Variable object for 3D ocean salinity
     '''
 
 
@@ -73,4 +115,3 @@ def cmpisetup(reanalysis='ERA5'):
     so = variable(name='so', obs='EN4', depths=['10m','100m','1000m'], domain='oce')
 
     return variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so
-
