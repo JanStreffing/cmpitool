@@ -1,6 +1,4 @@
-from typing import List, Dict, Any, OrderedDict as OrderedDictType
-
-def loading_obs(obs: List, obs_path: str, seasons: List[str], verbose: bool) -> OrderedDictType[tuple, Any]:
+def loading_obs(obs, obs_path, seasons, verbose):
     '''
     Load observational data for comparison with climate models.
     

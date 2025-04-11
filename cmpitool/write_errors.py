@@ -1,6 +1,4 @@
-from typing import List, Dict, Any, OrderedDict as OrderedDictType, Optional, Union
-
-def write_errors(abs_error: OrderedDictType[tuple, Any], mean_error: OrderedDictType[tuple, Any], models: List, regions: List, seasons: List[str], out_path: str, use_for_eval: bool, eval_path: Optional[str], verbose: bool) -> None:
+def write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose):
     '''
     Write calculated error metrics to CSV files for analysis and evaluation.
     

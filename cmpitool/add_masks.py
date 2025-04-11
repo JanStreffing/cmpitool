@@ -1,6 +1,4 @@
-from typing import List, Dict, Any, Optional, Tuple
-
-def add_masks(regions: List, verbose: bool, maskfixes: bool = True) -> List:
+def add_masks(regions, verbose, maskfixes=True):
     '''
     Add geographical masks to region objects for spatial analysis.
     

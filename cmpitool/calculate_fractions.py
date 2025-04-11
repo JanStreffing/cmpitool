@@ -1,6 +1,4 @@
-from typing import List, Dict, Any, OrderedDict as OrderedDictType
-
-def calculate_fractions(models: List, regions: List, seasons: List[str], mean_error: OrderedDictType[tuple, Any], eval_error_mean: Dict[str, Any], verbose: bool) -> OrderedDictType[tuple, float]:
+def calculate_fractions(models, regions, seasons, mean_error, eval_error_mean, verbose):
     '''
     Calculate performance fractions comparing model errors against reference models.
     

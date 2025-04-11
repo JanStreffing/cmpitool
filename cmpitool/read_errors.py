@@ -1,6 +1,4 @@
-from typing import List, Dict, Any, Optional, Union
-
-def read_errors(obs: List, eval_models: List, regions: List, seasons: List[str], out_path: str, eval_path: str, n_implemented_var: int, verbose: bool) -> Dict[str, Any]:
+def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, n_implemented_var, verbose):
     '''
     Read previously calculated error metrics from CSV files for model evaluation.
     

@@ -1,6 +1,4 @@
-from typing import List, Dict, Tuple, OrderedDict as OrderedDictType, Any
-
-def calculate_errors(ds_model: OrderedDictType[str, Any], ds_obs: OrderedDictType[str, Any], models: List, regions: List, seasons: List[str], verbose: bool) -> Tuple[OrderedDictType[str, Any], OrderedDictType[str, Any]]:
+def calculate_errors(ds_model, ds_obs, models, regions, seasons, verbose):
     '''
     Calculate error metrics between model outputs and observations.
     

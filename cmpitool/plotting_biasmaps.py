@@ -1,7 +1,4 @@
-from typing import List, Dict, Any, OrderedDict as OrderedDictType, Union, Optional, Callable, Tuple, cast
-import numpy as np
-
-def plotting_biasmaps(ds_model: OrderedDictType[tuple, Any], ds_obs: OrderedDictType[tuple, Any], models: List, seasons: List[str], obs: List, out_path: str, verbose: bool) -> None:
+def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose):
     '''
     AUTHORS:
     Jan Streffing		2024-04-02	Copied from plotting_heatmaps
@@ -24,24 +21,24 @@ def plotting_biasmaps(ds_model: OrderedDictType[tuple, Any], ds_obs: OrderedDict
 
 
     # Root Mean Square Deviation weighted
-    def rmsd(predictions: np.ndarray, targets: np.ndarray, wgts: np.ndarray) -> float:
+    def rmsd(predictions, targets, wgts):
         # Expand weights to match the shape of predictions and targets
         expanded_wgts = np.repeat(wgts[:, np.newaxis], predictions.shape[1], axis=1)
         
         squared_errors = np.square(predictions - targets)
         weighted_squared_errors = squared_errors * expanded_wgts
         mean_weighted_squared_errors = np.nanmean(weighted_squared_errors, axis=0)
-        rmsd_value = float(np.sqrt(mean_weighted_squared_errors.mean()))
+        rmsd_value = np.sqrt(mean_weighted_squared_errors.mean())
         return rmsd_value
     
-    def md(predictions: np.ndarray, targets: np.ndarray, wgts: np.ndarray) -> float:
+    def md(predictions, targets, wgts):
         # Expand weights to match the shape of predictions and targets
         expanded_wgts = np.repeat(wgts[:, np.newaxis], predictions.shape[1], axis=1)
 
         deviations = np.abs(predictions - targets)
         weighted_deviations = deviations * expanded_wgts
         mean_weighted_deviations = np.nanmean(weighted_deviations, axis=0)
-        mean_deviation_value = float(mean_weighted_deviations.mean())
+        mean_deviation_value = mean_weighted_deviations.mean()
         return mean_deviation_value
 
 
