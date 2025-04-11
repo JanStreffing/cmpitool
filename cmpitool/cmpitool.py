@@ -1,6 +1,6 @@
-def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path='obs/' , reanalysis='ERA5', 
-             eval_path=None, time='198912-201411', seasons=['MAM', 'JJA', 'SON', 'DJF'], 
-             maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False):
+def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: str = 'output/', obs_path: str = 'obs/' , reanalysis: str = 'ERA5', 
+             eval_path: str = None, time: str = '198912-201411', seasons: list = ['MAM', 'JJA', 'SON', 'DJF'], 
+             maskfixes: bool = True, use_for_eval: bool = False, complexity: str = 'boxes', verbose: bool = False, biasmaps: bool = False) -> dict:
     '''
     Main function for Climate Model Performance Index calculation and evaluation.
     
