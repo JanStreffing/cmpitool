@@ -1,0 +1,404 @@
+%
+% JOURNAL ABBREVIATIONS
+%
+@STRING{AMS 	= "Amer.\ Meteor.\ Soc."}
+@STRING{AGU 	= "Amer.\ Geophys.\ Union"}
+@STRING{AIP 	= "Amer. Inst. Phys."}
+@STRING{ADGEO     = "Adv.\ Geosci."}
+@STRING{AFM       = "Agric.\ For.\ Meteor."}
+@STRING{AM        = "Ann.\ Meteor."}
+@STRING{AN        = "Astrophys.\ Norv."}		% Astrophysica Norvegica
+@STRING{AO        = "Atmos.--Ocean"}			% Atmosphere--Ocean, published by Canadian Meteorological Society (CMOS)
+@STRING{AR        = "Atmos.\ Res."}			% Atmospheric Research
+@STRING{ARFM      = "Annu.\ Rev.\ Fluid Mech."}
+@STRING{AUMET     = "Aust.\ Meteor.\ Mag."}
+@STRING{BAMS      = "Bull.\ Amer.\ Meteor.\ Soc."}
+@STRING{CAP       = "Contrib.\ Atmos.\ Phys."}
+@STRING{CC        = "Climate Change"}      % Climate Change 
+@STRING{CCH       = "Climatic Change"}			% Climatic Change
+@STRING{CDYN      = "Climate Dyn."}
+@STRING{CHAOS     = "Chaos"}
+@STRING{COL       = "Collier's"}
+@STRING{CRS       = "Cont.\ Shelf Res."}
+@STRING{DAO       = "Dyn.\ Atmos.\ Oceans"}
+@STRING{ECO       = "Ecology"}
+@STRING{EI        = "Earth Interact."}
+@STRING{GA        = "Geophysica"}			% Geophysica, published by Geophysical Society of Finland 
+@STRING{GEOMAG    = "Geophys.\ Mag."}
+@STRING{GN        = "Geophys.\ Norv."}			% Geophysica Norvegica
+@STRING{GRL       = "Geophys.\ Res.\ Lett."}
+@STRING{GEOINT    = "Geofis.\ Int."}			% Geofisica Internacional (Mexican journal -- vols. 3--5 contained proceedings from a hurricane conference
+@STRING{GEOPUB    = "Geofys.\ Publ."}
+@STRING{GPC       = "Global Planet.\ Change"}
+@STRING{HP        = "Health Phys."}
+@STRING{IAOP      = "Izv.\ Atmos.\ Ocean.\ Phys.\ (Engl.\ Transl.)"}
+@STRING{IJC       = "Int.\ J.\ Climatol."}
+@STRING{JAM       = "J.\ Appl.\ Meteor."}		% renamed to name below in 2006
+@STRING{JAMC      = "J.\ Appl.\ Meteor.\ Climatol."}  	% Journal of Applied Meteorology and Climatology (this journal used to be called the Journal of Applied Meteorology before 2006)
+@STRING{JAS       = "J.\ Atmos.\ Sci."}
+@STRING{JAOT      = "J.\ Atmos.\ Oceanic Technol."}
+@STRING{JCAM      = "J.\ Climate Appl.\ Meteor."}	% from 1983--87, now JAMC
+@STRING{JCLI      = "J.\ Climate"}
+@STRING{JCR       = "J.\ Coastal Res."}
+@STRING{JFM       = "J.\ Fluid\ Mech."}
+@STRING{JEM       = "J.\ Eng.\ Math."}			% Journal of Engineering Mathematics
+@STRING{JGR       = "J.\ Geophys.\ Res."}
+@STRING{JHM       = "J.\ Hydrometeor."}
+@STRING{JMS       = "J.\ Mar.\ Syst."}
+@STRING{JM        = "J.\ Meteor."}
+@STRING{JMR       = "J.\ Mar.\ Res."}
+@STRING{JMSJ      = "J.\ Meteor.\ Soc.\ Japan"}
+@STRING{JPO       = "J.\ Phys.\ Oceanogr."}
+@STRING{JOCEAN    = "J.\ Oceanogr."}			% Journal of Oceanography
+@STRING{JOSJ      = "J.\ Oceanogr.\ Soc.\ Japan"}
+@STRING{JSE       = "J.\ Struct.\ Eng."}	% Journal of Structural Engineering at ASCE
+@STRING{JTM       = "J.\ Tropical Meteor."}
+@STRING{JWEIA     = "J.\ Wind Eng.\ Ind.\ Aerodyn."}
+@STRING{MA        = "Meteor.\ Appl."}
+@STRING{MAP       = "Meteor.\ Atmos.\ Phys."}
+@STRING{METMON    = "Meteor.\ Monogr."}
+@STRING{METZEIT   = "Meteor.\ Z."}
+@STRING{MWL       = "Mar.\ Wea.\ Log"}
+@STRING{MWR       = "Mon.\ Wea.\ Rev."}
+@STRING{NAT       = "Nature"}
+@STRING{NHR       = "Nat.\ Hazards Rev."}
+@STRING{NWD       = "Natl.\ Weather Dig."}
+@STRING{OA        = "Oceanol. Aeta"}
+@STRING{OCEAN     = "Oceanography"}                	% a quarterly journal of The Oceanography Society
+@STRING{PAG       = "Pure Appl.\ Geophys."}
+@STRING{PF        = "Phys.\ Fluids"}
+@STRING{PHYSD     = "Physica D"}
+@STRING{PMG       = "Pap.\ Meteor.\ Geophys."}	% Papers in Meteorology and Geophysics
+@STRING{PNAS      = "Proc.\ Natl.\ Acad.\ Sci.\ (USA)"}
+@STRING{PRE       = "Phys.\ Rev.\ E"}
+@STRING{PRSA      = "Proc.\ Roy.\ Soc."}
+@STRING{PT        = "Phys.\ Today"}
+@STRING{PTRS      = "Philos.\ Trans.\ Roy.\ Soc.\ London"}
+@STRING{QJRMS     = "Quart.\ J.\ Roy.\ Meteor.\ Soc."}
+@STRING{RGEO      = "Rev. Geophys."}
+@STRING{SCI       = "Science"}
+@STRING{SOLA      = "SOLA"}				% Scientific Online Letters on the Atmosphere
+@STRING{TAGU      = "Eos, Trans.\ Amer.\ Geophys.\ Union"}
+@STRING{TELLUS    = "Tellus"}
+@STRING{TCFD      = "Theor.\ Comput.\ Fluid Dyn."}
+@STRING{WEA       = "Weather"}
+@STRING{WW        = "Weatherwise"}
+@STRING{WF        = "Wea.\ Forecasting"}
+@STRING{WMOB      = "WMO Bull."}
+
+
+@Article{gmd-15-6399-2022,
+AUTHOR = {Streffing, J. and Sidorenko, D. and Semmler, T. and Zampieri, L. and Scholz, P. and Andr\'es-Mart\'{\i}nez, M. and Koldunov, N. and Rackow, T. and Kjellsson, J. and Goessling, H. and Athanase, M. and Wang, Q. and Hegewald, J. and Sein, D. V. and Mu, L. and Fladrich, U. and Barbi, D. and Gierz, P. and Danilov, S. and Juricke, S. and Lohmann, G. and Jung, T.},
+TITLE = {AWI-CM3 coupled climate model: description and evaluation experiments for a prototype post-CMIP6 model},
+JOURNAL = {Geoscientific Model Development},
+VOLUME = {15},
+YEAR = {2022},
+NUMBER = {16},
+PAGES = {6399--6427},
+URL = {https://gmd.copernicus.org/articles/15/6399/2022/},
+DOI = {10.5194/gmd-15-6399-2022}
+}
+
+@article { HowWellDoCoupledModelsSimulateTodaysClimate,
+      author = "Thomas Reichler and Junsu Kim",
+      title = "How Well Do Coupled Models Simulate Today's Climate?",
+      journal = "Bulletin of the American Meteorological Society",
+      year = "2008",
+      publisher = "American Meteorological Society",
+      address = "Boston MA, USA",
+      volume = "89",
+      number = "3",
+      doi = "10.1175/BAMS-89-3-303",
+      pages=      "303 - 312",
+      url = "https://journals.ametsoc.org/view/journals/bams/89/3/bams-89-3-303.xml"
+}
+
+@article{https://doi.org/10.1029/2019MS002009,
+author = {Semmler, Tido and Danilov, Sergey and Gierz, Paul and Goessling, Helge F. and Hegewald, Jan and Hinrichs, Claudia and Koldunov, Nikolay and Khosravi, Narges and Mu, Longjiang and Rackow, Thomas and Sein, Dmitry V. and Sidorenko, Dmitry and Wang, Qiang and Jung, Thomas},
+title = {Simulations for CMIP6 With the AWI Climate Model AWI-CM-1-1},
+journal = {Journal of Advances in Modeling Earth Systems},
+volume = {12},
+number = {9},
+pages = {e2019MS002009},
+keywords = {global climate model, AWI climate model, Coupled Model Intercomparison Project, climate change, unstructured mesh},
+doi = {https://doi.org/10.1029/2019MS002009},
+url = {https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2019MS002009},
+eprint = {https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/2019MS002009},
+note = {e2019MS002009 2019MS002009},
+abstract = {Abstract The Alfred Wegener Institute Climate Model (AWI-CM) participates for the first time in the Coupled Model Intercomparison Project (CMIP), CMIP6. The sea ice-ocean component, FESOM, runs on an unstructured mesh with horizontal resolutions ranging from 8 to 80 km. FESOM is coupled to the Max Planck Institute atmospheric model ECHAM 6.3 at a horizontal resolution of about 100 km. Using objective performance indices, it is shown that AWI-CM performs better than the average of CMIP5 models. AWI-CM shows an equilibrium climate sensitivity of 3.2°C, which is similar to the CMIP5 average, and a transient climate response of 2.1°C which is slightly higher than the CMIP5 average. The negative trend of Arctic sea-ice extent in September over the past 30 years is 20–30\% weaker in our simulations compared to observations. With the strongest emission scenario, the AMOC decreases by 25\% until the end of the century which is less than the CMIP5 average of 40\%. Patterns and even magnitude of simulated temperature and precipitation changes at the end of this century compared to present-day climate under the strong emission scenario SSP585 are similar to the multi-model CMIP5 mean. The simulations show a 11°C warming north of the Barents Sea and around 2°C to 3°C over most parts of the ocean as well as a wetting of the Arctic, subpolar, tropical, and Southern Ocean. Furthermore, in the northern middle latitudes in boreal summer and autumn as well as in the southern middle latitudes, a more zonal atmospheric flow is projected throughout the year.},
+year = {2020}
+}
+
+@article{https://doi.org/10.1029/2007JD008972,
+author = {Gleckler, P. J. and Taylor, K. E. and Doutriaux, C.},
+title = {Performance metrics for climate models},
+journal = {Journal of Geophysical Research: Atmospheres},
+volume = {113},
+number = {D6},
+pages = {},
+keywords = {Performance metrics, climate models, model evaluation},
+doi = {https://doi.org/10.1029/2007JD008972},
+url = {https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2007JD008972},
+eprint = {https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/2007JD008972},
+abstract = {Objective measures of climate model performance are proposed and used to assess simulations of the 20th century, which are available from the Coupled Model Intercomparison Project (CMIP3) archive. The primary focus of this analysis is on the climatology of atmospheric fields. For each variable considered, the models are ranked according to a measure of relative error. Based on an average of the relative errors over all fields considered, some models appear to perform substantially better than others. Forming a single index of model performance, however, can be misleading in that it hides a more complex picture of the relative merits of different models. This is demonstrated by examining individual variables and showing that the relative ranking of models varies considerably from one variable to the next. A remarkable exception to this finding is that the so-called “mean model” consistently outperforms all other models in nearly every respect. The usefulness, limitations and robustness of the metrics defined here are evaluated 1) by examining whether the information provided by each metric is correlated in any way with the others, and 2) by determining how sensitive the metrics are to such factors as observational uncertainty, spatial scale, and the domain considered (e.g., tropics versus extra-tropics). An index that gauges the fidelity of model variability on interannual time-scales is found to be only weakly correlated with an index of the mean climate performance. This illustrates the importance of evaluating a broad spectrum of climate processes and phenomena since accurate simulation of one aspect of climate does not guarantee accurate representation of other aspects. Once a broad suite of metrics has been developed to characterize model performance it may become possible to identify optimal subsets for various applications.},
+year = {2008}
+}
+
+@Article{gmd-8-733-2015,
+AUTHOR = {Righi, M. and Eyring, V. and Gottschaldt, K.-D. and Klinger, C. and Frank, F. and J\"ockel, P. and Cionni, I.},
+TITLE = {Quantitative evaluation of ozone and selected climate parameters in a set of EMAC simulations},
+JOURNAL = {Geoscientific Model Development},
+VOLUME = {8},
+YEAR = {2015},
+NUMBER = {3},
+PAGES = {733--768},
+URL = {https://gmd.copernicus.org/articles/8/733/2015/},
+DOI = {10.5194/gmd-8-733-2015}
+}
+
+@article {p20469,
+	title = {Evaluation of ECMWF forecasts, including the 2021 upgrade},
+	number = {902},
+	year = {2022},
+	month = {09},
+	publisher = {ECMWF},
+	abstract = {<p>
+  This report provides a summary of ECMWF\&rsquo;s forecast performance, covering medium, extended, and seasonal forecast ranges. It includes a short description of the changes implemented as part of the upgrade to model cycle 47r3 in October 2021 and the meteorological impact of the upgrade. There are several so-called headline scores that have been adopted by ECMWF in collaboration with its member states to monitor the evolution of various aspects of forecast skill. The report gives updates on these scores, as well as supplementary scores to help provide a more complete assessment of forecast skill. The primary focus of this summary is the medium range, and specifically the forecast performance for upper-air variables. It is shown that model cycle 47r3 led to an increase in upper-air forecast skill, such that ECMWF\&rsquo;s lead compared to other global centres is being maintained. For surface parameters it is shown that the forecast skill of the Extreme Forecast Index (EFI) has reached a new high point. Over the ocean, where ECMWF has traditionally been leading in terms of significant wave height but not peak wave period, due to 47r3 it now also leads for the latter. On the seasonal timescale, the recent continuation and re-strengthening of La Nina was not predicted well, however the European anomalously warm summer 2022 was indicated in the forecasts with a consistent signal.\&nbsp;</p>
+},
+	doi = {10.21957/xqnu5o3p},
+	url = {https://www.ecmwf.int/node/20469},
+	author = {Thomas Haiden and Martin Janousek and Fr{\'e}d{\'e}ric Vitart and Zied Ben-Bouallegue and Laura Ferranti and Fernando Prates and David Richardson}
+}
+
+@book{haiden2018evaluation,
+  title={Evaluation of ECMWF forecasts, including the 2018 upgrade},
+  author={Haiden, Thomas and Janousek, Martin and Vitart, Frederic and Bouall{\`e}gue, Zied Ben and Ferranti, Laura and Prates, Fernando and Richardson, David},
+  year={2018},
+  publisher={European Centre for Medium Range Weather Forecasts Reading, UK}
+}
+
+
+@article{80865,
+  author = {R. Buizza and Magdalena Alonso-Balmaseda and Andrew Brown and S.J. English and Richard Forbes and Alan Geer and T. Haiden and Martin Leutbecher and L. Magnusson and Mark Rodwell and M. Sleigh and Tim Stockdale and Frédéric Vitart and N. Wedi},
+  title = {The development and evaluation process followed at ECMWF to upgrade the Integrated Forecasting System (IFS)},
+  abstract = {<p>
+  This paper discusses the development and evaluation process followed at ECMWF to upgrade the Integrated Forecasting System (IFS), and illustrates how potential changes, developed and tested by individual scientists, are gradually merged and evaluated prior to their acceptance into the next version of the ECMWF IFS.</p>
+
+<p>
+  It discusses why, and how we are using a hierarchical testing strategy, whereby we test and merge changes stepwise and gradually. Individual changes are tested first in reduced configurations, then if accepted they are merged, and tested in more complete configurations. Finally, all the proposed changes that are deemed acceptable are merged and tested in all the IFS components at operational resolution. Evaluation relies on a use a range of metrics, selected to provide us with meaningful, statistical significant information on the impact of the cycle upgrade.</p>
+
+<p>
+  At the end of the process, a new cycle is judged to be ready for implementation if (a) it brings improvements to the ECMWF forecasts, and/or (b) it improves the realism of the simulated Earth-system, and/or (c) if it includes new forecast products that could improve our service to our users. All three aspects are considered when a final decision is taken. Thus, some model cycles could be implemented even if the impact on forecast quality is small or neutral, provided that new features that could lead to future improvements are implemented.</p>
+
+<p>
+  A focus of the current paper - indeed the primary driver for it - is to review whether the details of the hierarchical testing approach are optimal. Some changes are proposed in response to evolving strategic drivers and the increasing complexity of the full system.</p>
+},
+  year = {2018},
+  journal = {ECMWF Technical Memoranda},
+  number = {829},
+  month = {10/2018},
+  publisher = {ECMWF},
+  url = {https://www.ecmwf.int/node/18658},
+  doi = {10.21957/xzopnhty9},
+  language = {eng},
+}
+
+@article{forbes2016reducing,
+  title={Reducing systematic errors in cold-air outbreaks},
+  author={Forbes, RICHARD and Geer, ALAN and Lonitz, KATRIN and Ahlgrimm, MAIKE},
+  journal={ECMWF newsletter},
+  volume={146},
+  pages={17--22},
+  year={2016},
+  publisher={ECMWF, Reading United Kingdom}
+}
+
+@article { TheArtandScienceofClimateModelTuning,
+      author = "Frédéric Hourdin and Thorsten Mauritsen and Andrew Gettelman and Jean-Christophe Golaz and Venkatramani Balaji and Qingyun Duan and Doris Folini and Duoying Ji and Daniel Klocke and Yun Qian and Florian Rauser and Catherine Rio and Lorenzo Tomassini and Masahiro Watanabe and Daniel Williamson",
+      title = "The Art and Science of Climate Model Tuning",
+      journal = "Bulletin of the American Meteorological Society",
+      year = "2017",
+      publisher = "American Meteorological Society",
+      address = "Boston MA, USA",
+      volume = "98",
+      number = "3",
+      doi = "10.1175/BAMS-D-15-00135.1",
+      pages=      "589 - 602",
+      url = "https://journals.ametsoc.org/view/journals/bams/98/3/bams-d-15-00135.1.xml"
+}
+
+@article{https://doi.org/10.1002/qj.3803,
+author = {Hersbach, Hans and Bell, Bill and Berrisford, Paul and Hirahara, Shoji and Horányi, András and Muñoz-Sabater, Joaquín and Nicolas, Julien and Peubey, Carole and Radu, Raluca and Schepers, Dinand and Simmons, Adrian and Soci, Cornel and Abdalla, Saleh and Abellan, Xavier and Balsamo, Gianpaolo and Bechtold, Peter and Biavati, Gionata and Bidlot, Jean and Bonavita, Massimo and De Chiara, Giovanna and Dahlgren, Per and Dee, Dick and Diamantakis, Michail and Dragani, Rossana and Flemming, Johannes and Forbes, Richard and Fuentes, Manuel and Geer, Alan and Haimberger, Leo and Healy, Sean and Hogan, Robin J. and Hólm, Elías and Janisková, Marta and Keeley, Sarah and Laloyaux, Patrick and Lopez, Philippe and Lupu, Cristina and Radnoti, Gabor and de Rosnay, Patricia and Rozum, Iryna and Vamborg, Freja and Villaume, Sebastien and Thépaut, Jean-Noël},
+title = {The ERA5 global reanalysis},
+journal = {Quarterly Journal of the Royal Meteorological Society},
+volume = {146},
+number = {730},
+pages = {1999-2049},
+keywords = {climate reanalysis, Copernicus Climate Change Service, data assimilation, ERA5, historical observations},
+doi = {https://doi.org/10.1002/qj.3803},
+url = {https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.3803},
+eprint = {https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/qj.3803},
+abstract = {Abstract Within the Copernicus Climate Change Service (C3S), ECMWF is producing the ERA5 reanalysis which, once completed, will embody a detailed record of the global atmosphere, land surface and ocean waves from 1950 onwards. This new reanalysis replaces the ERA-Interim reanalysis (spanning 1979 onwards) which was started in 2006. ERA5 is based on the Integrated Forecasting System (IFS) Cy41r2 which was operational in 2016. ERA5 thus benefits from a decade of developments in model physics, core dynamics and data assimilation. In addition to a significantly enhanced horizontal resolution of 31 km, compared to 80 km for ERA-Interim, ERA5 has hourly output throughout, and an uncertainty estimate from an ensemble (3-hourly at half the horizontal resolution). This paper describes the general set-up of ERA5, as well as a basic evaluation of characteristics and performance, with a focus on the dataset from 1979 onwards which is currently publicly available. Re-forecasts from ERA5 analyses show a gain of up to one day in skill with respect to ERA-Interim. Comparison with radiosonde and PILOT data prior to assimilation shows an improved fit for temperature, wind and humidity in the troposphere, but not the stratosphere. A comparison with independent buoy data shows a much improved fit for ocean wave height. The uncertainty estimate reflects the evolution of the observing systems used in ERA5. The enhanced temporal and spatial resolution allows for a detailed evolution of weather systems. For precipitation, global-mean correlation with monthly-mean GPCP data is increased from 67\% to 77\%. In general, low-frequency variability is found to be well represented and from 10 hPa downwards general patterns of anomalies in temperature match those from the ERA-Interim, MERRA-2 and JRA-55 reanalyses.},
+year = {2020}
+}
+
+
+@article{https://doi.org/10.1002/qj.3674,
+author = {Rackow, Thomas and Juricke, Stephan},
+title = {Flow-dependent stochastic coupling for climate models with high ocean-to-atmosphere resolution ratio},
+journal = {Quarterly Journal of the Royal Meteorological Society},
+volume = {146},
+number = {726},
+pages = {284-300},
+keywords = {air–sea coupling, climate model, climate variability, ENSO, ocean-to-atmosphere, phase locking, resolution ratio, stochastic methods, subgrid distribution, tropical instability waves},
+doi = {https://doi.org/10.1002/qj.3674},
+url = {https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.3674},
+eprint = {https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/qj.3674},
+abstract = {Abstract This study introduces a new flow-dependent distribution sampling (FDDS) scheme for air–sea coupling. The FDDS scheme is implemented in a climate model and used to improve the simulated mean and variability of atmospheric and oceanic surface fields and thus air–sea fluxes. Most coupled circulation models use higher resolutions in the sea ice and ocean compared to the atmospheric model component, thereby explicitly simulating the atmospheric subgrid-scale at the interface. However, the commonly applied averaging of surface fields and air–sea fluxes tends to smooth fine-scale structures, such as oceanic fronts. The stochastic FDDS scheme samples the resolved spatial ocean (and sea ice) subgrid distribution that is usually not visible to a coarser-resolution atmospheric model. Randomly drawn nodal ocean values are passed to the corresponding atmospheric boxes for the calculation of surface fluxes, aiming to enhance surface flux variability. The resulting surface field perturbations of the FDDS scheme are based on resolved dynamics, displaying pronounced seasonality with realistic magnitude. The AWI Climate Model is used to test the scheme on interannual time-scales. Our set-up features a high ocean-to-atmosphere resolution ratio in the Tropics, with grid-point ratios of about 60:1. Compared to the default deterministic averaging, changes are largest in the Tropics leading to an improved spatial distribution of precipitation with bias reductions of up to 50\%. Enhanced sea-surface temperature variability in boreal winter further improves the seasonal phase locking of temperature anomalies associated with the El Niño–Southern Oscillation. Mean 2m temperature, sea ice thickness and concentration react with a contrasting dipole pattern between hemispheres but a joint increase of monthly and interannual variability. This first approach to implement a flow-dependent stochastic coupling scheme shows considerable benefits for simulations of global climate, and various extensions and modifications of the scheme are possible.},
+year = {2020}
+}
+
+
+@Article{gmd-13-3383-2020,
+AUTHOR = {Eyring, V. and Bock, L. and Lauer, A. and Righi, M. and Schlund, M. and Andela, B. and Arnone, E. and Bellprat, O. and Br\"otz, B. and Caron, L.-P. and Carvalhais, N. and Cionni, I. and Cortesi, N. and Crezee, B. and Davin, E. L. and Davini, P. and Debeire, K. and de Mora, L. and Deser, C. and Docquier, D. and Earnshaw, P. and Ehbrecht, C. and Gier, B. K. and Gonzalez-Reviriego, N. and Goodman, P. and Hagemann, S. and Hardiman, S. and Hassler, B. and Hunter, A. and Kadow, C. and Kindermann, S. and Koirala, S. and Koldunov, N. and Lejeune, Q. and Lembo, V. and Lovato, T. and Lucarini, V. and Massonnet, F. and M\"uller, B. and Pandde, A. and P\'erez-Zan\'on, N. and Phillips, A. and Predoi, V. and Russell, J. and Sellar, A. and Serva, F. and Stacke, T. and Swaminathan, R. and Torralba, V. and Vegas-Regidor, J. and von Hardenberg, J. and Weigel, K. and Zimmermann, K.},
+TITLE = {Earth System Model Evaluation Tool (ESMValTool) v2.0 -- an extended set of
+large-scale diagnostics for quasi-operational and comprehensive evaluation
+of Earth system models in CMIP},
+JOURNAL = {Geoscientific Model Development},
+VOLUME = {13},
+YEAR = {2020},
+NUMBER = {7},
+PAGES = {3383--3438},
+URL = {https://gmd.copernicus.org/articles/13/3383/2020/},
+DOI = {10.5194/gmd-13-3383-2020}
+}
+
+
+@Article{gmd-15-2973-2022,
+AUTHOR = {D\"oscher, R. and Acosta, M. and Alessandri, A. and Anthoni, P. and Arsouze, T. and Bergman, T. and Bernardello, R. and Boussetta, S. and Caron, L.-P. and Carver, G. and Castrillo, M. and Catalano, F. and Cvijanovic, I. and Davini, P. and Dekker, E. and Doblas-Reyes, F. J. and Docquier, D. and Echevarria, P. and Fladrich, U. and Fuentes-Franco, R. and Gr\"oger, M. and v. Hardenberg, J. and Hieronymus, J. and Karami, M. P. and Keskinen, J.-P. and Koenigk, T. and Makkonen, R. and Massonnet, F. and M\'en\'egoz, M. and Miller, P. A. and Moreno-Chamarro, E. and Nieradzik, L. and van Noije, T. and Nolan, P. and O'Donnell, D. and Ollinaho, P. and van den Oord, G. and Ortega, P. and Prims, O. T. and Ramos, A. and Reerink, T. and Rousset, C. and Ruprich-Robert, Y. and Le Sager, P. and Schmith, T. and Schr\"odner, R. and Serva, F. and Sicardi, V. and Sloth Madsen, M. and Smith, B. and Tian, T. and Tourigny, E. and Uotila, P. and Vancoppenolle, M. and Wang, S. and W{\aa}rlind, D. and Will\'en, U. and Wyser, K. and Yang, S. and Yepes-Arb\'os, X. and Zhang, Q.},
+TITLE = {The EC-Earth3 Earth system model for the Coupled Model Intercomparison
+Project 6},
+JOURNAL = {Geoscientific Model Development},
+VOLUME = {15},
+YEAR = {2022},
+NUMBER = {7},
+PAGES = {2973--3020},
+URL = {https://gmd.copernicus.org/articles/15/2973/2022/},
+DOI = {10.5194/gmd-15-2973-2022}
+}
+
+@Article{gmd-9-4185-2016,
+AUTHOR = {Haarsma, R. J. and Roberts, M. J. and Vidale, P. L. and Senior, C. A. and Bellucci, A. and Bao, Q. and Chang, P. and Corti, S. and Fu\v{c}kar, N. S. and Guemas, V. and von Hardenberg, J. and Hazeleger, W. and Kodama, C. and Koenigk, T. and Leung, L. R. and Lu, J. and Luo, J.-J. and Mao, J. and Mizielinski, M. S. and Mizuta, R. and Nobre, P. and Satoh, M. and Scoccimarro, E. and Semmler, T. and Small, J. and von Storch, J.-S.},
+TITLE = {High Resolution Model Intercomparison Project (HighResMIP~v1.0) for CMIP6},
+JOURNAL = {Geoscientific Model Development},
+VOLUME = {9},
+YEAR = {2016},
+NUMBER = {11},
+PAGES = {4185--4208},
+URL = {https://gmd.copernicus.org/articles/9/4185/2016/},
+DOI = {10.5194/gmd-9-4185-2016}
+}
+
+@article { AFrameworkforEvaluatingClimateModelPerformanceMetrics,
+      author = "Noel C. Baker and Patrick C. Taylor",
+      title = "A Framework for Evaluating Climate Model Performance Metrics",
+      journal = "Journal of Climate",
+      year = "2016",
+      publisher = "American Meteorological Society",
+      address = "Boston MA, USA",
+      volume = "29",
+      number = "5",
+      doi = "10.1175/JCLI-D-15-0114.1",
+      pages=      "1773 - 1782",
+      url = "https://journals.ametsoc.org/view/journals/clim/29/5/jcli-d-15-0114.1.xml"
+}
+
+@techreport{nadeau2018climate,
+  title={Climate Model Output Rewriter (CMOR version 3.3)},
+  author={Nadeau, Denis and Doutriaux, C and Taylor, K},
+  year={2018},
+  institution={Tech. rep., Lawrence Livermore National Laboratory, available at: https~…}
+}
+
+@misc{ASDC2019CERES,
+	publisher={NASA Langley Atmospheric Science Data Center DAAC},
+	title={CERES Energy Balanced and Filled (EBAF) TOA Monthly means data in netCDF Edition4.1},
+    URL = {https://doi.org/10.5067/TERRA-AQUA/CERES/EBAF\-TOA\_L3B004.1},
+	author={NASA/LARC/SD/ASDC},
+	date={2019-06-12},
+	year=2019,
+	month=6,
+	day=12,
+}
+
+@article{storto2016evaluation,
+  title={Evaluation of the CMCC eddy-permitting global ocean physical reanalysis system (C-GLORS, 1982--2012) and its assimilation components},
+  author={Storto, Andrea and Masina, Simona and Navarra, Antonio},
+  journal={Quarterly Journal of the Royal Meteorological Society},
+  volume={142},
+  number={695},
+  pages={738--758},
+  year={2016},
+  publisher={Wiley Online Library}
+}
+
+@article{https://doi.org/10.1002/2013JC009067,
+author = {Good, Simon A. and Martin, Matthew J. and Rayner, Nick A.},
+title = {EN4: Quality controlled ocean temperature and salinity profiles and monthly objective analyses with uncertainty estimates},
+journal = {Journal of Geophysical Research: Oceans},
+volume = {118},
+number = {12},
+pages = {6704-6716},
+keywords = {ocean observations, quality control, objective analysis, uncertainty estimation},
+doi = {https://doi.org/10.1002/2013JC009067},
+url = {https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1002/2013JC009067},
+eprint = {https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1002/2013JC009067},
+abstract = {We present version 4 of the Met Office Hadley Centre “EN” series of data sets of global quality controlled ocean temperature and salinity profiles and monthly objective analyses, which covers the period 1900 to present. We briefly describe the EN4 data sources, processing, quality control procedures, and the method of generating the analyses. In particular, we highlight improvements relative to previous versions, which include a new duplicate profile removal procedure and the inclusion of three new quality control checks. We discuss in detail a novel method for providing uncertainty estimates for the objective analyses and improving the background error variance estimates used by the analysis system. These were calculated using an iterative method that is relatively robust to initial misspecification of background error variances. We also show how the method can be used to identify issues with the analyses such as those caused by misspecification of error variances and demonstrate the impact of changes in the observing system on the uncertainty in the analyses.},
+year = {2013}
+}
+
+@article{adler2018global,
+  title={The Global Precipitation Climatology Project (GPCP) monthly analysis (new version 2.3) and a review of 2017 global precipitation},
+  author={Adler, Robert F and Sapiano, Mathew RP and Huffman, George J and Wang, Jian-Jian and Gu, Guojun and Bolvin, David and Chiu, Long and Schneider, Udo and Becker, Andreas and Nelkin, Eric and others},
+  journal={Atmosphere},
+  volume={9},
+  number={4},
+  pages={138},
+  year={2018},
+  publisher={MDPI}
+}
+
+@article{titchner2014met,
+  title={The Met Office Hadley Centre sea ice and sea surface temperature data set, version 2: 1. Sea ice concentrations},
+  author={Titchner, Holly A and Rayner, Nick A},
+  journal={Journal of Geophysical Research: Atmospheres},
+  volume={119},
+  number={6},
+  pages={2864--2889},
+  year={2014},
+  publisher={Wiley Online Library}
+}
+
+@misc{modis,
+	publisher={NASA Goddard Space Flight Center},
+	title={MODIS Atmosphere L3 Daily Product. NASA MODIS Adaptive Processing System},
+	url={http://dx.doi.org/10.5067/MODIS/MOD08\_D3.061},
+	author={Platnick, S., et al.},
+	year=2017,
+}
+
+@misc{noaa-lsa,
+	publisher={Laboratory for Satellite Altimetry (LSA)},
+	title={MODIS Atmosphere L3 Daily Product. NASA MODIS Adaptive Processing System},
+	url={http://dx.doi.org/10.5067/MODIS/MOD08\_D3.061},
+	author={Platnick, S., et al.},
+	year=2017,
+}
+
+@misc{osi-saf,
+	publisher={EUMETSAT SAF on Ocean and Sea Ice},
+	title={Global sea ice concentration [interim] climate data record 1979-2015 (v2.0, 2017) [2016-2022]},
+	url={http://dx.doi.org/10.15770/EUM\_SAF\_OSI\_0008},
+ 	author={OSISAF},
+	year=2017,
+}
