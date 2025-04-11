@@ -1,4 +1,6 @@
-def config_cmip6(climate_model, obs):
+from typing import List, Type, Any, Callable, TypeVar
+
+def config_cmip6(climate_model: Type, obs: List) -> List:
     '''
     AUTHORS:
     Jan Streffing		2022-11-30	Split off from main tool

@@ -1,4 +1,6 @@
-def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path, verbose):
+from typing import List, Dict, Any, OrderedDict as OrderedDictType, Union, Optional
+
+def plotting_heatmaps(models: List, regions: List, seasons: List[str], obs: List, error_fraction: OrderedDictType[tuple, Any], cmpi: List[float], out_path: str, verbose: bool) -> None:
     '''
     AUTHORS:
     Jan Streffing		2022-11-30	Split off from main tool

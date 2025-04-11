@@ -1,4 +1,6 @@
-def cmpisetup(reanalysis='ERA5'):
+from typing import Tuple, Type, List
+
+def cmpisetup(reanalysis: str = 'ERA5') -> Tuple[Type, Type, Type, object, object, object, object, object, object, object, object, object, object, object, object, object, object]:
     '''
     Set up core classes and default variables for CMPITool.
     
@@ -76,26 +78,26 @@ def cmpisetup(reanalysis='ERA5'):
 
     # Setup variables (turn off variables for analysis by instancing with optional argument active=False)
     class variable:
-        def __init__ (self, name, obs, depths, domain='mixed', active=True):
-            self.name = name
-            self.obs = obs
-            self.depths = depths
-            self.domain = domain
-            self.active = active
+        def __init__(self, name: str, obs: str, depths: List[str], domain: str = 'mixed', active: bool = True) -> None:
+            self.name: str = name
+            self.obs: str = obs
+            self.depths: List[str] = depths
+            self.domain: str = domain
+            self.active: bool = active
 
     #Setting up the region class:
     class region:
-        def __init__ (self, name, domain, mask=False, active=False):
-            self.name = name
-            self.domain = domain
-            self.mask = mask
-            self.active = active
+        def __init__(self, name: str, domain: str, mask: bool = False, active: bool = False) -> None:
+            self.name: str = name
+            self.domain: str = domain
+            self.mask: bool = mask
+            self.active: bool = active
 
     # Some models don't have all variables available. Thus set give each model a name and a variable dictionary
     class climate_model:
-        def __init__ (self, name, variables):
-            self.name = name
-            self.variables = variables
+        def __init__(self, name: str, variables: List['variable']) -> None:
+            self.name: str = name
+            self.variables: List['variable'] = variables
 
     
 

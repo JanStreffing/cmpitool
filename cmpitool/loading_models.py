@@ -1,4 +1,6 @@
-def loading_models(models, model_path, seasons, time, verbose):
+from typing import List, Dict, Any, OrderedDict as OrderedDictType
+
+def loading_models(models: List, model_path: str, seasons: List[str], time: str, verbose: bool) -> OrderedDictType[tuple, Any]:
     '''
     Load model data for comparison with observations.
     

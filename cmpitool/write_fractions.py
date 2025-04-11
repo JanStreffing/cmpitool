@@ -1,4 +1,6 @@
-def write_fractions(error_fraction, models, regions, seasons, out_path, verbose):
+from typing import List, Dict, Any, OrderedDict as OrderedDictType, Union
+
+def write_fractions(error_fraction: OrderedDictType[tuple, Any], models: List, regions: List, seasons: List[str], out_path: str, verbose: bool) -> Dict[str, float]:
     '''
     AUTHORS:
     Jan Streffing		2022-11-31	Split off from main tool
