@@ -20,7 +20,7 @@ affiliations:
    index: 1
  - name: Constructor University Bremen, Campus Ring 1, 28759 Bremen, Germany
    index: 2
- - name: Met Éireann, Meteorological Centre, 65–67 Glasnevin Hill, Dublin 9, D09 Y921
+ - name: Met Éireann, the Irish Meteorological Service, 65–67 Glasnevin Hill, Dublin 9, D09 Y921
    index: 3
 date: 11 April 2025
 bibliography: references.bib
