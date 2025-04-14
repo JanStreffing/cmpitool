@@ -6,14 +6,22 @@
 from cmpitool import (cmpitool ,cmpisetup)
 
 variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
-model_path='/work/ab0246/a270092/postprocessing/cmip6_cmpitool/'
+model_path='/work/ab0246/a270092/software/cmpitool/input/'
+eval_models=[    
+        climate_model(name='BASE',    variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]),
+    ]
 models=[    
-        climate_model(name='AWI-CM-1-1-MR',variables=[        tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]),
-        climate_model(name='EC-Earth3',    variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]),
+        climate_model(name='BASE',variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst]),
+        climate_model(name='RNF+ALB',variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst]),
+        climate_model(name='RNF+ALB+CALV',variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst]),
+        climate_model(name='RNF+ALB+CALV+IMASK',variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst]),
+        climate_model(name='RNF+ALB+PCRIT',variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst]),
+        climate_model(name='RNF+ALB+DEP',variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst]),
+        climate_model(name='RNF+ALB+DEP+PCRIT',variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst]),
     ]
 
 # Example 1: Using default dynamic bias map limits (calculated from data standard deviation)
-cmpitool(model_path, models, verbose=True, biasmaps=True)
+#cmpitool(model_path, models, eval_models=eval_models, verbose=True, biasmaps=False)
 
 # Example 2: Using custom fixed bias map limits for specific variables
 # Define reasonable fixed limits for each variable
