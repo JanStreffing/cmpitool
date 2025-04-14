@@ -1,6 +1,6 @@
 def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: str = 'output/', obs_path: str = 'obs/' , reanalysis: str = 'ERA5', 
              eval_path: str = None, time: str = '198912-201411', seasons: list = ['MAM', 'JJA', 'SON', 'DJF'], 
-             maskfixes: bool = True, use_for_eval: bool = False, complexity: str = 'boxes', verbose: bool = False, biasmaps: bool = False) -> dict:
+             maskfixes: bool = True, use_for_eval: bool = False, complexity: str = 'boxes', verbose: bool = False, biasmaps: bool = False, biasmap_limits: dict = None) -> dict:
     '''
     Main function for Climate Model Performance Index calculation and evaluation.
     
@@ -44,6 +44,9 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
         Whether to print detailed information during execution (default: False)
     biasmaps : bool, optional
         Whether to generate bias map plots (default: False)
+    biasmap_limits : dict, optional
+        Dictionary of fixed plot limits for bias maps using variable names as keys and float values as limits.
+        If not provided, limits will be calculated dynamically based on data standard deviation (default: None)
         
     Returns
     -------
@@ -186,4 +189,4 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path, verbose)
     
     if biasmaps == True:
-        plotting_biasmaps(ds_model, ds_obs , models, seasons, obs, out_path, verbose)
+        plotting_biasmaps(ds_model, ds_obs , models, seasons, obs, out_path, verbose, biasmap_limits)

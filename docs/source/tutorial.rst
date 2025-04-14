@@ -81,6 +81,34 @@ Create a Python script (or Jupyter notebook) with the following structure:
        verbose=True,        # Print detailed output
        biasmaps=True        # Generate bias maps
    )
+   
+   # Optional: Using fixed biasmap plot limits
+   # Create a dictionary of limits for bias map variables
+   fixed_limits = {
+       'siconc': 60.0,     # Sea ice concentration (percent)
+       'tas': 5.0,         # Surface air temperature (K)
+       'clt': 30.0,        # Cloud fraction (percent)
+       'pr': 5.0,          # Precipitation (mm/day)
+       'rlut': 20.0,       # Outgoing longwave radiation (W/m²)
+       'uas': 3.0,         # Eastward near-surface wind (m/s)
+       'vas': 3.0,         # Northward near-surface wind (m/s)
+       'ua': 5.0,          # Eastward wind (m/s)
+       'zg': 100.0,        # Geopotential height (m)
+       'zos': 0.3,         # Sea surface height (m)
+       'tos': 3.0,         # Sea surface temperature (K)
+       'mlotst': 100.0,    # Ocean mixed layer thickness (m)
+       'thetao': 3.0,      # Sea water potential temperature (K)
+       'so': 1.0           # Sea water salinity (psu)
+   }
+   
+   # Run the analysis with fixed biasmap limits
+   cmpitool(
+       model_path=model_path,
+       models=models,
+       out_path='output_fixed_limits/',
+       biasmaps=True,
+       biasmap_limits=fixed_limits  # Pass the dictionary of fixed limits
+   )
 
 Step 4: Run the Analysis
 -----------------------
