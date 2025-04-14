@@ -13,7 +13,7 @@ cmpitool
 
    def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path='obs/' , reanalysis='ERA5', 
                 eval_path=None, time='198912-201411', seasons=['MAM', 'JJA', 'SON', 'DJF'], 
-                maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False)
+                maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False, biasmap_limits=None)
 
 The main function of CMPITool that performs climate model performance analysis.
 
@@ -32,6 +32,7 @@ Parameters:
    - **complexity** (*str*, optional): String allowing selection of whether CMPI shall be calculated for simple lat/lon boxes ('boxes') or continents & ocean basins ('regions')
    - **verbose** (*bool*, optional): Boolean to activate verbose output
    - **biasmaps** (*bool*, optional): Boolean to activate bias map plots
+   - **biasmap_limits** (*dict*, optional): Dictionary of fixed plot limits for bias maps using variable names as keys and float values as limits. If not provided, limits will be calculated dynamically based on data standard deviation
 
 Returns:
    None. Results are saved to the specified output directory.
@@ -196,9 +197,19 @@ plotting_biasmaps
 
 .. code-block:: python
 
-   def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose)
+   def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose, biasmap_limits=None)
 
 Generates spatial maps showing model biases relative to observations.
+
+Parameters:
+   - **ds_model** (*OrderedDict*): Dictionary containing loaded model data
+   - **ds_obs** (*OrderedDict*): Dictionary containing loaded observational data
+   - **models** (*list*): List of climate model objects to be evaluated
+   - **seasons** (*list*): List of seasons to be evaluated
+   - **obs** (*list*): List of variable objects for which observations will be loaded
+   - **out_path** (*str*): Path to directory where output files will be stored
+   - **verbose** (*bool*): Whether to print detailed information during execution
+   - **biasmap_limits** (*dict*, optional): Dictionary with variable names as keys and float values representing fixed plot limits. If provided, these fixed limits will be used instead of dynamically calculated limits based on data standard deviation
 
 Configuration Functions
 ---------------------

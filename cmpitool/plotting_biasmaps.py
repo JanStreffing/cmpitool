@@ -1,4 +1,4 @@
-def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose):
+def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose, biasmap_limits=None):
     '''
     AUTHORS:
     Jan Streffing		2024-04-02	Copied from plotting_heatmaps
@@ -55,11 +55,16 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose)
     std_range_multiplier = 3
 
     def getlimit(var):
-        limits = {
+        # Default limits dictionary
+        default_limits = {
             'siconc': 60.
         }
-
-        return limits.get(var, None)
+        
+        # If custom limits are provided, use those; otherwise use defaults
+        if biasmap_limits is not None and var in biasmap_limits:
+            return biasmap_limits.get(var)
+            
+        return default_limits.get(var, None)
 
     plt.rcParams.update({'figure.max_open_warning': 0})
     for model in models:
