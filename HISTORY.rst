@@ -2,6 +2,11 @@
 History
 =======
 
+1.1.2 (2025-04-15)
+------------------
+
+* Fixed issue #27: Added explicit version constraint for netCDF4 dependency to ensure it's properly installed
+
 1.1.1 (2025-04-15)
 ------------------
 

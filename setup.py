@@ -14,6 +14,7 @@ with open("HISTORY.rst") as history_file:
 requirements = [
     "geopandas",
     "matplotlib",
+    "netCDF4>=1.6.0",
     "numpy",
     "pandas >=1.0.0",
     "pooch",
@@ -53,7 +54,7 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/JanStreffing/cmpitool",
-    download_url="https://github.com/JanStreffing/cmpitool/archive/refs/tags/v1.1.1.tar.gz",
-    version="1.1.1",
+    download_url="https://github.com/JanStreffing/cmpitool/archive/refs/tags/v1.1.2.tar.gz",
+    version="1.1.2",
     zip_safe=False,
 )
