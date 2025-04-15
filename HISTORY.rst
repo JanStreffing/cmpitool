@@ -2,6 +2,11 @@
 History
 =======
 
+1.1.1 (2025-04-15)
+------------------
+
+* Version bump for official release with all fixes
+
 1.1.0 (2025-04-15)
 ------------------
 

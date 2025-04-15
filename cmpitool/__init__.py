@@ -26,7 +26,7 @@ For more information, see the documentation at: https://cmpitool.readthedocs.io/
 
 __author__ = """Jan Streffing"""
 __email__ = "j.streffing1988@gmail.com"
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 __credits__ = "Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research"
 
 
