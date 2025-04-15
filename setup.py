@@ -14,6 +14,7 @@ with open("HISTORY.rst") as history_file:
 requirements = [
     "geopandas",
     "matplotlib",
+    "netCDF4",
     "numpy",
     "pandas >=1.0.0",
     "pooch",
