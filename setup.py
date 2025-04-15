@@ -46,6 +46,9 @@ setup(
     keywords="cmpitool",
     name="cmpitool",
     packages=["cmpitool"],
+    package_data={
+        'cmpitool': ['data/*.geojson'],
+    },
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,
