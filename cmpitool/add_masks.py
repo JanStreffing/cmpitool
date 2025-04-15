@@ -45,6 +45,8 @@ def add_masks(regions, verbose, maskfixes=True):
     import copy
     import matplotlib.pyplot as plt
     from matplotlib import colors as mplc
+    import os
+    import pkg_resources
 
 
     # Retrieve Polygons; Read them; Interpolate to 2° x 2° masks; Concat into one DataArray 
@@ -53,7 +55,26 @@ def add_masks(regions, verbose, maskfixes=True):
     )
 
     continents = gp.read_file("zip://" + file)
-    ocean_basins = gp.read_file("geojson/ocean_basins.geojson")
+    
+    # Find the ocean_basins.geojson file regardless of installation method
+    try:
+        # Method 1: Try pkg_resources for installed package
+        ocean_basins_path = pkg_resources.resource_filename('cmpitool', 'data/ocean_basins.geojson')
+        if not os.path.exists(ocean_basins_path):
+            # Method 2: Try relative path for development
+            ocean_basins_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
+                                           'geojson', 'ocean_basins.geojson')
+            if not os.path.exists(ocean_basins_path):
+                # Method 3: Last resort - try direct relative path
+                ocean_basins_path = "geojson/ocean_basins.geojson"
+    except (ImportError, FileNotFoundError):
+        # Fallback for older versions of Python/pkg_resources
+        ocean_basins_path = "geojson/ocean_basins.geojson"
+        
+    if verbose:
+        print(f"Loading ocean basins from: {ocean_basins_path}")
+        
+    ocean_basins = gp.read_file(ocean_basins_path)
 
     lon = np.arange(0, 360, 2)
     lat = np.arange(-90, 90, 2)

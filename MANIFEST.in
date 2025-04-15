@@ -3,5 +3,10 @@ graft geojson
 graft obs
 graft eval
 graft preprocessing_examples
+graft cmpitool/data
 include example.py
 include HISTORY.rst
+include *.rst
+include LICENSE
+include meta.yaml
+include environment.yaml
