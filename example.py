@@ -25,21 +25,26 @@ models=[
 
 # Example 2: Using custom fixed bias map limits for specific variables
 # Define reasonable fixed limits for each variable
+# The CMOR (Climate Model Output Rewriter) standard defines specific variable names and their
+# associated long names for climate model outputs. These standardized names ensure consistency
+# across different climate models and datasets.
+
 fixed_limits = {
-    'siconc': 60.0,     # Sea ice concentration (percent)
-    'tas': 5.0,         # Surface air temperature (K)
-    'clt': 30.0,        # Cloud fraction (percent)
-    'pr': 5.0,          # Precipitation (mm/day)
-    'rlut': 20.0,       # Outgoing longwave radiation (W/m²)
-    'uas': 3.0,         # Eastward near-surface wind (m/s)
-    'vas': 3.0,         # Northward near-surface wind (m/s)
-    'ua': 5.0,          # Eastward wind (m/s)
-    'zg': 100.0,        # Geopotential height (m)
-    'zos': 0.3,         # Sea surface height (m)
-    'tos': 3.0,         # Sea surface temperature (K)
-    'mlotst': 100.0,    # Ocean mixed layer thickness (m)
-    'thetao': 3.0,      # Sea water potential temperature (K)
-    'so': 1.0           # Sea water salinity (psu)
+    # CMOR short name: limit value    # Long name (standard unit)
+    'siconc': 60.0,     # Sea Ice Area Fraction (percent)
+    'tas': 5.0,         # Near-Surface Air Temperature (K)
+    'clt': 30.0,        # Total Cloud Area Fraction (percent)
+    'pr': 5.0,          # Precipitation Rate (mm/day)
+    'rlut': 20.0,       # TOA Outgoing Longwave Radiation (W/m²)
+    'uas': 3.0,         # Eastward Near-Surface Wind Speed (m/s)
+    'vas': 3.0,         # Northward Near-Surface Wind Speed (m/s)
+    'ua': 5.0,          # Eastward Wind Component (m/s)
+    'zg': 100.0,        # Geopotential Height (m)
+    'zos': 0.3,         # Sea Surface Height Above Geoid (m)
+    'tos': 3.0,         # Sea Surface Temperature (K)
+    'mlotst': 100.0,    # Ocean Mixed Layer Thickness Defined by Sigma T (m)
+    'thetao': 3.0,      # Sea Water Potential Temperature (K)
+    'so': 1.0           # Sea Water Practical Salinity (psu)
 }
 
 cmpitool(model_path, models, verbose=True, biasmaps=True, biasmap_limits=fixed_limits, out_path='output_fixed_limits/')
