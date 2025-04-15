@@ -2,6 +2,12 @@
 History
 =======
 
+1.1.0 (2025-04-15)
+------------------
+
+* Added fixed biasmap plot limits option to enable consistent visualizations across model runs
+* Updated documentation to reflect new feature
+
 0.1.5 (2023-12-08)
 ------------------
 * Test for conda installation
