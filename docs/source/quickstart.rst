@@ -88,7 +88,7 @@ Here's a minimal example script:
    
    # Define models and variables to analyze
    models = [
-       climate_model(name='YOUR-MODEL-NAME', variables=[tas, pr, uas, vas, tos])
+       climate_model(name='SAME_EXPERIMENT_NAME_AS_SET_DURING_PREPROCESSING', variables=[tas, pr, uas, vas, tos])
    ]
    
    # Run analysis
