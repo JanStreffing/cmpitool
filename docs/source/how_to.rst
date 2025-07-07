@@ -10,7 +10,7 @@ If you use CMPITool in your research, please cite:
 
    Streffing, J. (2022). CMPITool: A Python framework for Climate Model Performance Indexing.
    https://github.com/JanStreffing/cmpitool
-   https://doi.org/10.5281/zenodo.xxxxxxx
+   https://doi.org/10.5281/zenodo.7689792
 
 And the original methodology paper:
 
