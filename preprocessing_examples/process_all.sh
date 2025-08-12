@@ -1,0 +1,3 @@
+./preprocess_AWI-CM3-XIOS.sh /work/ab0246/a270092/runtime/awicm3-v3.4/BASE/outdata/ /work/ab0246/a270092/software/cmpitool/input BASE 1995 1999 /work/ab0995/a270251/data/meshes/core2/core2_griddes_nodes.nc true 21600
+./preprocess_AWI-CM3-XIOS.sh /work/ab0246/a270092/runtime/awicm3-v3.4/BASE_SP/outdata/ /work/ab0246/a270092/software/cmpitool/input BASE_SP 1995 1999 /work/ab0995/a270251/data/meshes/core2/core2_griddes_nodes.nc true 21600
+./preprocess_AWI-CM3-XIOS.sh /work/ab0246/a270092/runtime/awicm3-v3.4/FIX_ALB_SCALE/outdata/ /work/ab0246/a270092/software/cmpitool/input FIX_ALB_SCALE 1995 1999 /work/ab0995/a270251/data/meshes/core2/core2_griddes_nodes.nc true 21600

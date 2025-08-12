@@ -76,7 +76,7 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
                         levelname=''
                     else:
                         levelname=depth+' '
-                    if var.name == 'zos' or var.name== 'tos':
+                    if var.name == 'zos':
                         levelname='st. dev. '
 
                     plt.figure(figsize=(6, 4.5))

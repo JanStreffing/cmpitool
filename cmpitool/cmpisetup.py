@@ -41,8 +41,7 @@ def cmpisetup(reanalysis='ERA5'):
         Geopotential height variable object
     zos : variable
         Sea surface height variable object
-    tos : variable
-        Sea surface temperature variable object
+
     mlotst : variable
         Ocean mixed layer thickness variable object
     thetao : variable
@@ -53,7 +52,7 @@ def cmpisetup(reanalysis='ERA5'):
     Examples
     --------
     >>> from cmpitool import cmpisetup
-    >>> variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+    >>> variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
     >>> models = [climate_model(name='MODEL-NAME', variables=[tas, pr, ua])]
     
     Notes
@@ -109,9 +108,9 @@ def cmpisetup(reanalysis='ERA5'):
     ua = variable(name='ua', obs=reanalysis, depths=['300hPa'])
     zg = variable(name='zg', obs=reanalysis, depths=['500hPa'])
     zos = variable(name='zos', obs='NESDIS', depths=['surface'], domain='oce')
-    tos = variable(name='tos', obs='HadISST2', depths=['surface'], domain='oce')
+
     mlotst = variable(name='mlotst', obs='C-GLORSv7', depths=['surface'], domain='oce')
     thetao = variable(name='thetao', obs='EN4', depths=['10m','100m','1000m'], domain='oce')
     so = variable(name='so', obs='EN4', depths=['10m','100m','1000m'], domain='oce')
 
-    return variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so
+    return variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so

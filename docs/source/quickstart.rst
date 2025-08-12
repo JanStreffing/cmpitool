@@ -81,14 +81,14 @@ Here's a minimal example script:
    from cmpitool import cmpitool, cmpisetup
    
    # Setup variables and models
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
    
    # Specify model data path
    model_path = '/path/to/your/processed/model/data/'
    
    # Define models and variables to analyze
    models = [
-       climate_model(name='YOUR-MODEL-NAME', variables=[tas, pr, uas, vas, tos])
+       climate_model(name='YOUR-MODEL-NAME', variables=[tas, pr, uas, vas])
    ]
    
    # Run analysis

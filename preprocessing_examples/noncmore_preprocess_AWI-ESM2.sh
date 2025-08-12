@@ -150,14 +150,14 @@ done
 
 
 cdo -L -splitseas -chname,ssh,zos -setmissval,0 ${tmpdir}/ssh_${tmpstr}.nc zos_${tmpstr}_ &
-cdo -L -splitseas -chname,sst,tos ${tmpdir}/sst_${tmpstr}.nc tos_${tmpstr}_ &
+# Removed 'tos' reference as requested
 wait
 cdo genycon,r180x91 -selname,zos -setgrid,$gridfile ${outdir}/zos_${tmpstr}_DJF.nc ${tmpdir}/weights_zos_unstr_2_r180x91.nc
-cdo genycon,r180x91 -selname,tos -setgrid,$gridfile ${outdir}/tos_${tmpstr}_DJF.nc ${tmpdir}/weights_tos_unstr_2_r180x91.nc
+# Removed 'tos' reference as requested
 for seas in DJF MAM JJA SON;
 do
   cdo -L -remap,r180x91,${tmpdir}/weights_zos_unstr_2_r180x91.nc -timstd -selname,zos -setgrid,$gridfile zos_${tmpstr}_${seas}.nc zos_${model_name}_198912-201411_surface_${seas}.nc &
-  cdo -L -remap,r180x91,${tmpdir}/weights_tos_unstr_2_r180x91.nc -timstd -selname,tos -setgrid,$gridfile tos_${tmpstr}_${seas}.nc tos_${model_name}_198912-201411_surface_${seas}.nc &
+  # Removed 'tos' reference as requested
 done
 wait
 

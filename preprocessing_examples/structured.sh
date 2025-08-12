@@ -8,7 +8,7 @@ unit_level_oce=${5:-m}
 mkdir -p $workfolder/$model
 
 seasons=('MAM' 'JJA' 'SON' 'DJF')
-vararray=("siconc" "clt" "rlut" "tas" "zg" "ua" "pr" "uas" "vas" "so" "thetao" "mlotst" "tos" "zos")
+vararray=("siconc" "clt" "rlut" "tas" "zg" "ua" "pr" "uas" "vas" "so" "thetao" "mlotst" "zos")
 
 echo "=============================="
 for var in ${vararray[*]}; do
@@ -19,7 +19,7 @@ for var in ${vararray[*]}; do
     # Manually select domain
     if [[ "$var" = "siconc" ]]; then
         group="SImon"
-    elif [[ "$var" = "tos" ]] || [[ "$var" = "zos" ]] || [[ "$var" = "mlotst" ]] || [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]]; then
+    elif [[ "$var" = "zos" ]] || [[ "$var" = "mlotst" ]] || [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]]; then
         group="Omon"
     else
         group="Amon"
@@ -76,7 +76,7 @@ for var in ${vararray[*]}; do
         else
             cdo -splitlevel -remapbil,r180x91 -intlevel,10,100,1000,4000 -expr,'so = ((so < 1000)) ? so : (1e20)' -setmissval,1e20 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
         fi
-    elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
+    elif [[ "$var" = "zos" ]]; then
         cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_ &
     elif [[ "$var" = "siconc" ]] || [[ "$var" = "clt" ]]; then
         max=$(cdo -s outputkey,value -timmean $var | awk '$1 != "nan" && $1 > max { max = $1 } END { print max }')
@@ -133,7 +133,7 @@ for var in ${vararray[*]}; do
         for i in "${levels[@]}"; do
             cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_ &
         done
-    elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
+    elif [[ "$var" = "zos" ]]; then
         for seas in  ${seasons[*]}; do
             cdo -remapbil,r180x91 -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc &
         done

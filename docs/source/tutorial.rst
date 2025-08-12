@@ -53,7 +53,7 @@ Create a Python script (or Jupyter notebook) with the following structure:
    from cmpitool import cmpitool, cmpisetup
 
    # Initialize variables, regions, and model classes
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
 
    # Define the path to your processed model data
    model_path = '/path/to/your/processed/model/data/'
@@ -95,7 +95,6 @@ Create a Python script (or Jupyter notebook) with the following structure:
        'ua': 5.0,          # Eastward wind (m/s)
        'zg': 100.0,        # Geopotential height (m)
        'zos': 0.3,         # Sea surface height (m)
-       'tos': 3.0,         # Sea surface temperature (K)
        'mlotst': 100.0,    # Ocean mixed layer thickness (m)
        'thetao': 3.0,      # Sea water potential temperature (K)
        'so': 1.0           # Sea water salinity (psu)
@@ -157,7 +156,7 @@ Let's say you're particularly interested in model performance in the Arctic regi
    # Focus on Arctic analysis
    from cmpitool import cmpitool, cmpisetup
    
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
    
    # Create a model list with Arctic-relevant variables
    models = [
