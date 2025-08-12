@@ -69,7 +69,7 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
                     levelname=''
                 else:
                     levelname=depth+' '
-                if var.name == 'zos' or var.name== 'tos':
+                if var.name == 'zos':
                     levelname='st. dev. '
                 index_obs.append(levelname+var.name)
         if verbose == 'true':

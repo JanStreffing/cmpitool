@@ -53,7 +53,7 @@ Returns:
    - **variable** (*class*): Class for creating variable objects
    - **region** (*class*): Class for creating region objects
    - **climate_model** (*class*): Class for creating climate model objects
-   - **siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so** (*variable objects*): Predefined variable objects for common climate variables
+   - **siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so** (*variable objects*): Predefined variable objects for common climate variables
 
 Classes
 -------
@@ -234,7 +234,7 @@ Example 1: Basic Analysis
    from cmpitool import cmpitool, cmpisetup
    
    # Setup
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
    
    # Define models
    models = [
@@ -256,7 +256,7 @@ Example 2: Custom Regions
    from cmpitool import cmpitool, cmpisetup
    
    # Setup
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
    
    # Define custom regions
    custom_regions = [
@@ -285,7 +285,7 @@ Example 3: Custom Evaluation Models
    from cmpitool import cmpitool, cmpisetup
    
    # Setup
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
    
    # Define evaluation models
    eval_models = [

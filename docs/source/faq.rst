@@ -44,6 +44,4 @@ The tool tires to cover as much as possible the last 25 years worth of fully ava
      - 1989/11/01 to 2014/11/30
    * - thetao_EN4
      - 1989/11/01 to 2014/11/30
-   * - tos_HadISST2
-     - 1989/11/01 to 2014/11/30
 

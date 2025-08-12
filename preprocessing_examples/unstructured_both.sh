@@ -10,7 +10,7 @@ oce_gridfile_path=${7:-}
 mkdir -p $workfolder/$model
 
 seasons=('MAM' 'JJA' 'SON' 'DJF')
-vararray=("siconc" "clt" "rlut" "tas" "zg" "ua" "pr" "uas" "vas" "so" "thetao" "mlotst" "tos" "zos")
+vararray=("siconc" "clt" "rlut" "tas" "zg" "ua" "pr" "uas" "vas" "so" "thetao" "mlotst" "zos")
 
 echo "=============================="
 for var in ${vararray[*]}; do
@@ -21,7 +21,7 @@ for var in ${vararray[*]}; do
     # Manually select domain
     if [[ "$var" = "siconc" ]]; then
         group="SImon"
-    elif [[ "$var" = "tos" ]] || [[ "$var" = "zos" ]] || [[ "$var" = "mlotst" ]] || [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]]; then
+    elif [[ "$var" = "zos" ]] || [[ "$var" = "mlotst" ]] || [[ "$var" = "thetao" ]] || [[ "$var" = "so" ]]; then
         group="Omon"
     else
         group="Amon"
@@ -79,7 +79,7 @@ for var in ${vararray[*]}; do
             else
                 cdo -splitlevel -remap,r180x91,weights_unstr_2_r180x91_${var}.nc -selname,${var} -setgrid,$oce_gridfile_path -intlevel,10,100,1000,4000 -seltimestep,$steps $var ${var}_${model}_198912-201411_ &
             fi
-        elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
+        elif [[ "$var" = "zos" ]]; then
             cdo -splitseas -seltimestep,$steps $var ${var}_${model}_198912-201411_sel_ &
         else
             cdo -remap,r180x91,weights_unstr_2_r180x91_${var}.nc -selname,${var} -setgrid,$oce_gridfile_path -seltimestep,$steps $var ${var}_${model}_198912-201411.nc &
@@ -105,7 +105,7 @@ for var in ${vararray[*]}; do
         for i in "${levels[@]}"; do
             cdo splitseas -yseasmean ${var}_${model}_198912-201411_${i}.nc ${var}_${model}_198912-201411_${i}_ &
         done
-    elif [[ "$var" = "zos" ]] || [[ "$var" = "tos" ]]; then
+    elif [[ "$var" = "zos" ]]; then
         for seas in  ${seasons[*]}; do
             cdo -remap,r180x91,weights_unstr_2_r180x91_${var}.nc -selname,${var} -setgrid,$oce_gridfile_path -timstd ${var}_${model}_198912-201411_sel_${seas}.nc ${var}_${model}_198912-201411_surface_${seas}.nc &
         done

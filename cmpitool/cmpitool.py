@@ -90,9 +90,9 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     else:
         eval_path=eval_path+'/'
 
-    variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so = cmpisetup()
+    variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
 
-    obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, tos, mlotst, thetao, so]
+    obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]
 
     '''
     If you don't add all variables to obs for your analysis, the missing ones will be skipped.
