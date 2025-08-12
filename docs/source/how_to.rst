@@ -10,7 +10,7 @@ If you use CMPITool in your research, please cite:
 
    Streffing, J. (2022). CMPITool: A Python framework for Climate Model Performance Indexing.
    https://github.com/JanStreffing/cmpitool
-   https://doi.org/10.5281/zenodo.xxxxxxx
+   https://doi.org/10.5281/zenodo.7689792
 
 And the original methodology paper:
 
@@ -28,6 +28,39 @@ As a first time user, for non-CMORized model output, preparing the raw output fo
 - Data is provided in one file netcdf file per variable, model, timeperiod, level/depth, and season.
 - The file name format is: ``${variable}_${modelname}_${timeperiod}_${level}_${season}.nc``. Example: ``pr_EC-Earth3_198912-201411_surface_DJF.nc``
 - Variable names and units have to follow the CMOR standard. 
+
+Understanding CMOR Variable Names
+-----------------------------
+
+CMOR (Climate Model Output Rewriter) standardizes variables used in climate modeling to ensure consistency across different models and datasets. Each variable has:
+
+- **Short name**: A concise identifier (e.g., 'tas', 'pr')
+- **Long name**: A descriptive full name of the variable
+- **Standard unit**: The unit in which the variable should be expressed
+
+Below is a reference table of common CMOR variables used in CMPITool:
+
+===========  =============================================  ==========
+Short Name   Long Name                                     Unit
+===========  =============================================  ==========
+siconc       Sea Ice Area Fraction                         percent
+tas          Near-Surface Air Temperature                  K
+clt          Total Cloud Area Fraction                     percent
+pr           Precipitation Rate                            mm/day
+rlut         TOA Outgoing Longwave Radiation              W/m²
+uas          Eastward Near-Surface Wind Speed              m/s
+vas          Northward Near-Surface Wind Speed             m/s
+ua           Eastward Wind Component                       m/s
+zg           Geopotential Height                           m
+zos          Sea Surface Height Above Geoid                m
+tos          Sea Surface Temperature                       K
+mlotst       Ocean Mixed Layer Thickness Defined by Sigma T m
+thetao       Sea Water Potential Temperature               K
+so           Sea Water Practical Salinity                  psu
+===========  =============================================  ==========
+
+For a complete reference of all CMOR standard variables, please refer to the official CMOR documentation.
+
 - Masked regions must use a recognized NAN value.
 - The format as output by cdo griddes is:
 
