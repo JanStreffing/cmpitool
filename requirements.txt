@@ -1,2 +1,2 @@
-urllib3==1.26.19
+urllib3>=2.6.0
 sphinx_rtd_theme
