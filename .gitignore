@@ -7,3 +7,7 @@ dist/
 cmpitool.egg-info
 .eggs
 cmpitool/__pycache__
+.claude/
+*.err
+*.out
+*.log
