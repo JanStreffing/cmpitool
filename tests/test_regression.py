@@ -42,6 +42,10 @@ CASES = {
     "eval_subset": {"complexity": "boxes", "eval": ["ACCESS-CM2", "CIESM", "IITM-ESM", "KIOST-ESM"]},
     # A model without some variables exercises the NaN path of the heatmap.
     "partial_model": {"complexity": "boxes", "drop": ["siconc", "mlotst"]},
+    # NCEP2 obs for tas, uas, vas, ua and zg, against the eval/NCEP2 references.
+    "ncep2": {"complexity": "boxes", "reanalysis": "NCEP2"},
+    # Without the Southern Ocean and Arctic basin fixes in add_masks.
+    "regions_nomaskfixes": {"complexity": "regions", "maskfixes": False},
 }
 
 
@@ -64,7 +68,7 @@ def run_case(case, setup, synth_model_path, out_path):
         models,
         out_path=str(out_path),
         obs_path=str(OBS_PATH),
-        eval_path=str(EVAL_ERA5),
+        eval_path=str(REPO / "eval" / kwargs.get("reanalysis", "ERA5")),
         **kwargs,
     )
 
@@ -115,7 +119,7 @@ def test_regression(case, setup, synth_model_path, tmp_path, update_golden):
         assert_same_table(out / rel, expected)
 
 
-# --- Known bugs ------------------------------------------------------------
+# --- Arguments reach the functions that use them ---------------------------
 
 class _Stop(Exception):
     """Raised by spies to end a cmpitool() run once the call of interest is seen."""
@@ -125,7 +129,6 @@ def _no_masks(regions, verbose, *args, **kwargs):
     return regions
 
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="cmpitool() calls cmpisetup() without reanalysis; fixed in PR 1")
 def test_reanalysis_selects_obs(setup, monkeypatch, tmp_path):
     seen = {}
 
@@ -141,7 +144,6 @@ def test_reanalysis_selects_obs(setup, monkeypatch, tmp_path):
     assert {seen[v] for v in ["tas", "uas", "vas", "ua", "zg"]} == {"NCEP2"}
 
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="cmpitool() does not pass maskfixes to add_masks; fixed in PR 1")
 def test_maskfixes_passed(monkeypatch, tmp_path):
     seen = {}
 
@@ -155,6 +157,8 @@ def test_maskfixes_passed(monkeypatch, tmp_path):
                  eval_path=str(EVAL_ERA5), maskfixes=False)
     assert seen["maskfixes"] is False
 
+
+# --- Known bugs ------------------------------------------------------------
 
 def _reference_value(model, variable, region, level, season):
     df = pd.read_csv(EVAL_ERA5 / f"{model}.csv", sep=" ").set_index(KEYS)

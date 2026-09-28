@@ -90,7 +90,7 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     else:
         eval_path=eval_path+'/'
 
-    variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
+    variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup(reanalysis)
 
     obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]
 
@@ -161,7 +161,7 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     #####################################
 
     #Function to add masks to the selected regions
-    regions = add_masks(regions, verbose)
+    regions = add_masks(regions, verbose, maskfixes)
     
     #Loading observational data
     ds_obs = loading_obs(obs, obs_path, seasons, verbose)

@@ -71,6 +71,9 @@ def loading_obs(obs, obs_path, seasons, verbose):
                     ds_obs[var.name,depth,seas]=ds_obs[var.name,depth,seas].drop('depth')
                 except:
                     pass
+                # The NCEP2 files carry a size-1 level dimension that the ERA5 files do not
+                if 'level' in ds_obs[var.name,depth,seas].dims:
+                    ds_obs[var.name,depth,seas]=ds_obs[var.name,depth,seas].squeeze('level', drop=True)
 
 
     return ds_obs
