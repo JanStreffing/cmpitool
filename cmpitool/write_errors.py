@@ -1,4 +1,4 @@
-def write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose):
+def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose):
     '''
     Write calculated error metrics to CSV files for analysis and evaluation.
     
@@ -9,10 +9,8 @@ def write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_
     
     Parameters
     ----------
-    abs_error : OrderedDict
-        Dictionary containing fields of absolute error between models and observations
-    mean_error : OrderedDict
-        Dictionary containing area-weighted means of absolute error fields
+    mean_error : xarray.DataArray
+        Area-weighted mean absolute error (model, field, season, region), see calculate_errors
     models : list
         List of Model objects being evaluated
     regions : list
@@ -47,7 +45,7 @@ def write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_
     
     Examples
     --------
-    >>> write_errors(abs_error, mean_error, models, regions, seasons, 
+    >>> write_errors(mean_error, models, regions, seasons, 
     ...              'output/', False, 'eval/ERA5/', verbose=True)
     
     AUTHORS:
@@ -56,7 +54,6 @@ def write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_
     
     import csv
     from tqdm import tqdm
-    import numpy as np
     import shutil
 
     print('Writing field mean of errors into csv files')
@@ -71,6 +68,7 @@ def write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_
                         for seas in seasons:
                             if verbose:
                                 print(seas, depth, region.name, var.name, model.name)
-                            writer.writerow([var.name,region.name,depth,seas,np.squeeze(mean_error[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0])])
+                            value = float(mean_error.loc[model.name, var.name+'/'+depth, seas, region.name])
+                            writer.writerow([var.name,region.name,depth,seas,value])
         if use_for_eval:
              shutil.copyfile(out_path+'abs/'+model.name+'.csv', eval_path+model.name+'.csv')   

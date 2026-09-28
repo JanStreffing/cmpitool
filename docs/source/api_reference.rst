@@ -35,7 +35,7 @@ Parameters:
    - **biasmap_limits** (*dict*, optional): Colour ranges for the bias maps by variable name, overriding ``Variable.default_limit``. A value of None gives a range of 3 standard deviations of the bias
 
 Returns:
-   The error fractions by (variable, level, season, model, region). Results are also saved to the output directory.
+   The error fractions as an xarray DataArray (model, field, season, region), where a field is a variable at one level such as ``'thetao/100m'``. Results are also saved to the output directory.
 
 Variables and models
 --------------------
@@ -123,7 +123,7 @@ calculate_errors
 
 .. code-block:: python
 
-   def calculate_errors(ds_model, ds_obs, models, regions, seasons, verbose)
+   def calculate_errors(ds_model, ds_obs, models, regions, obs, seasons, verbose)
 
 Calculates the pointwise absolute error and the mean absolute error between models and observations.
 
@@ -132,7 +132,7 @@ write_errors
 
 .. code-block:: python
 
-   def write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose)
+   def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose)
 
 Writes error statistics to CSV files.
 
@@ -150,7 +150,7 @@ calculate_fractions
 
 .. code-block:: python
 
-   def calculate_fractions(models, regions, seasons, mean_error, eval_error_mean, verbose)
+   def calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_mean, verbose)
 
 Calculates performance fractions comparing model errors against reference model errors.
 

@@ -51,9 +51,10 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
         
     Returns
     -------
-    error_fraction : OrderedDict
-        Dictionary containing performance fractions for each model, variable, 
-        region, and season
+    error_fraction : xarray.DataArray
+        Performance fractions with dimensions (model, field, season, region). A field
+        is a variable at one level, e.g. 'thetao/100m'; the coordinates variable and
+        level run along it. Fields a model does not provide are NaN.
     
     Notes
     -----
@@ -123,19 +124,19 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     #Loading model data
     ds_model = loading_models(models, model_path, seasons, time, verbose)
         
-    #Calculate model absolute error fields and area weighted means
-    abs_error, mean_error = calculate_errors(ds_model, ds_obs, models, regions, seasons, verbose)
+    #Area weighted mean absolute error, DataArray (model, field, season, region)
+    mean_error = calculate_errors(ds_model, ds_obs, models, regions, obs, seasons, verbose)
     
     #Writing errors into csv files that can be:
     # a) read in for further cmip calculation
     # b) placed into eval/ subfolder to read as evaluation data
-    write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose)
+    write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose)
 
     #Reading in previously written absolute errors
     eval_error_mean = read_errors(obs, eval_models, regions, seasons, out_path, eval_path, verbose)
     
     #Calculate fraction between your model errors and the evaluation model errors
-    error_fraction = calculate_fractions(models, regions, seasons, mean_error, eval_error_mean, verbose)
+    error_fraction = calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_mean, verbose)
     
     cmpi =  write_fractions(error_fraction, models, regions, seasons, out_path, verbose)
     

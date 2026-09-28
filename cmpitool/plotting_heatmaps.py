@@ -12,8 +12,8 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
     seasons                     List of seasons to be evaluated
     obs                         List of variables objects for which observations
                                 will be loaded
-    error_fraction              Ordered dictionary containing the fraction of error 
-                                between your model / evaluation model mean
+    error_fraction              DataArray (model, field, season, region) of the ratio of
+                                your model's error to the evaluation models' mean error
     cmpi                        List of climate model overall performance indices
                                 one per model
     out_path                    String pointing to the folder in which results will be stored
@@ -22,7 +22,6 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
     RETURN:
     '''
 
-    from collections import OrderedDict
     from tqdm import tqdm
     import matplotlib.pyplot as plt
     import numpy as np
@@ -35,21 +34,12 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
     for region in regions:
         regions_names.append(region.name)
             
-    reorganized_error_fraction = OrderedDict()
     for model in tqdm(models):
-        r=0
-        for var in obs:
-            for depth in var.depths:
-                for region in regions:
-                    for seas in seasons:
-                        try:
-                            if len(var.depths) == 1:
-                                reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=error_fraction[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0][0]
-                            else:
-                                reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=error_fraction[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0][0][0]
-                            r+=1
-                        except KeyError: # variable not provided by this model
-                            reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=np.nan
+        # One row per field (variable and level), one column per region and season;
+        # fields the model does not provide are NaN
+        values = error_fraction.sel(model=model.name).transpose('field', 'region', 'season').values
+        collect_frac_reshaped = values.reshape(values.shape[0], len(regions)*len(seasons))
+
         def add_space(input): #Small helper function added spaces in front of season names
             output = []
             for string in input:
@@ -66,8 +56,7 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
             for depth in var.depths:
                 index_obs.append(var.row_label(depth))
         if verbose:
-            print(model.name,'number of values: ',len(list(reorganized_error_fraction.values())),'; shape:',len(index_obs),'x',len(regions)*len(seasons))
-        collect_frac_reshaped = np.array(list(reorganized_error_fraction.values()) ).reshape(len(index_obs),len(regions)*len(seasons)) # transform to 2D
+            print(model.name,'shape:',len(index_obs),'x',len(regions)*len(seasons))
         collect_frac_dataframe = pd.DataFrame(data=collect_frac_reshaped, index=index_obs, columns=coord)
 
         fig, ax = plt.subplots(figsize=((len(regions)*len(seasons))/1.5,len(index_obs)/1.5))

@@ -95,7 +95,8 @@ def test_regression(case, synth_model_path, tmp_path, update_golden):
     out = tmp_path / "out"
     error_fraction = run_case(case, synth_model_path, out)
 
-    assert error_fraction and {key[3] for key in error_fraction} == {SYNTH}
+    assert error_fraction.dims == ("model", "field", "season", "region")
+    assert list(error_fraction.model.values) == [SYNTH]
     assert plt.get_fignums() == [], "figures left open"
 
     outputs = [Path("abs") / f"{SYNTH}.csv", Path("frac") / f"{SYNTH}_fraction.csv"]
