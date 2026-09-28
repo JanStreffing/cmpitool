@@ -32,9 +32,10 @@ def calculate_errors(ds_model, ds_obs, models, regions, seasons, verbose):
         
     Notes
     -----
-    The function calculates the root mean square error (RMSE) between model outputs
+    The function calculates the pointwise absolute error between model outputs
     and observations within each specified region mask. Then it computes the
-    area-weighted mean of these error fields using cosine latitude weighting.
+    area-weighted mean of these error fields (mean absolute error) using cosine
+    latitude weighting. Masked (NaN) points are excluded from the weights.
     
     Examples
     --------
@@ -58,8 +59,7 @@ def calculate_errors(ds_model, ds_obs, models, regions, seasons, verbose):
     def fldmean(ds):
         weights = np.cos(np.deg2rad(ds.lat))
         weights.name = "weights"
-        ds_weighted = ds.weighted(weights)
-        return ds.mean(("lon", "lat"))
+        return ds.weighted(weights).mean(("lon", "lat"))
 
 
     abs_error = OrderedDict()
