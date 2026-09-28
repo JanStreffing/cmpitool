@@ -1,3 +1,31 @@
+def bias_statistics(model, obs):
+    '''
+    AUTHORS:
+    Jan Streffing		2026-09-28	Replaces rmsd() and md() in plotting_biasmaps
+
+    DESCRIPTION:
+    Area-weighted bias, mean absolute error and root-mean-square deviation
+    of model minus obs, with the same cos(lat) weights as the fldmean in
+    calculate_errors. Grid points where either field is NaN are left out.
+
+    INPUT:
+    model, obs                  DataArrays on the same lat/lon grid; size-1
+                                dimensions such as time are ignored
+
+    RETURN:
+    bias, mae, rmsd             Floats in the units of the variable
+    '''
+    import numpy as np
+
+    diff = (model - obs).squeeze(drop=True)
+    weights = np.cos(np.deg2rad(diff.lat))
+
+    def fldmean(field):
+        return float(field.weighted(weights).mean(("lon", "lat")))
+
+    return fldmean(diff), fldmean(abs(diff)), float(np.sqrt(fldmean(diff**2)))
+
+
 def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose, biasmap_limits=None):
     '''
     AUTHORS:
@@ -18,28 +46,6 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
 
     RETURN:
     '''
-
-
-    # Root Mean Square Deviation weighted
-    def rmsd(predictions, targets, wgts):
-        # Expand weights to match the shape of predictions and targets
-        expanded_wgts = np.repeat(wgts[:, np.newaxis], predictions.shape[1], axis=1)
-
-        squared_errors = np.square(predictions - targets)
-        weighted_squared_errors = squared_errors * expanded_wgts
-        mean_weighted_squared_errors = np.nanmean(weighted_squared_errors, axis=0)
-        rmsd_value = np.sqrt(mean_weighted_squared_errors.mean())
-        return rmsd_value
-
-    def md(predictions, targets, wgts):
-        # Expand weights to match the shape of predictions and targets
-        expanded_wgts = np.repeat(wgts[:, np.newaxis], predictions.shape[1], axis=1)
-
-        deviations = np.abs(predictions - targets)
-        weighted_deviations = deviations * expanded_wgts
-        mean_weighted_deviations = np.nanmean(weighted_deviations, axis=0)
-        mean_deviation_value = mean_weighted_deviations.mean()
-        return mean_deviation_value
 
 
     from collections import OrderedDict
@@ -66,7 +72,6 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
             
         return default_limits.get(var, None)
 
-    plt.rcParams.update({'figure.max_open_warning': 0})
     for model in models:
         print('Plotting biasmaps for: ',model.name)
         for var in tqdm(model.variables):
@@ -79,7 +84,7 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
                     if var.name == 'zos':
                         levelname='st. dev. '
 
-                    plt.figure(figsize=(6, 4.5))
+                    fig = plt.figure(figsize=(6, 4.5))
                     ax = plt.axes(projection=ccrs.PlateCarree())
                     ax.add_feature(cfeature.COASTLINE, zorder=3)
 
@@ -111,8 +116,9 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
                     levels = np.linspace(-limit, limit, num_levels)
                     try:
                         imf = plt.contourf(lon_cyclic, lat, data_to_plot, cmap=plt.cm.PuOr_r, levels=levels, extend='both', transform=ccrs.PlateCarree())
-                    except:
+                    except Exception:
                         print('hit cartopy bug for this plot: https://github.com/SciTools/cartopy/issues/2176, not output for'+var.name, depth, seas, model.name)
+                        plt.close(fig)
                         continue
                     ax.set_title(model.name + ' ' + var.name + ' ' + str(depth) + ' ' + seas + ' bias vs. '+var.obs, fontweight="bold")
                     plt.tight_layout()
@@ -121,16 +127,14 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
                                       linewidth=1, color='gray', alpha=0.2, linestyle='-')
                     gl.bottom_labels = False
 
-                    # Add RSMD and mean BIAS to plot
-                    coslat = np.cos(np.deg2rad(lat))
-                    wgts = np.squeeze(np.sqrt(coslat)[..., np.newaxis])
-                    rmsdval = rmsd(data, obsp, wgts)
-                    mdval = md(data, obsp, wgts)
-                    textrsmd='rmsd='+str(round(rmsdval,3))
-                    textbias='bias='+str(round(mdval,3))
+                    # Add area-weighted bias, MAE and RMSD to plot. Three significant
+                    # digits, since pr in kg m-2 s-1 rounds to 0.0 at three decimals.
+                    biasval, maeval, rmsdval = bias_statistics(ds_model[var.name, depth, seas, model.name][var.name],
+                                                               ds_obs[var.name, depth, seas][var.name])
                     props = dict(boxstyle='round,pad=0.1', facecolor='white', alpha=0.5)
-                    ax.text(0.02, 0.35, textrsmd, transform=ax.transAxes, fontsize=13, verticalalignment='top', bbox=props, zorder=4)
-                    ax.text(0.02, 0.25, textbias, transform=ax.transAxes, fontsize=13, verticalalignment='top', bbox=props, zorder=4)
+                    ax.text(0.02, 0.35, f'bias={biasval:.3g}', transform=ax.transAxes, fontsize=13, verticalalignment='top', bbox=props, zorder=4)
+                    ax.text(0.02, 0.25, f'mae={maeval:.3g}', transform=ax.transAxes, fontsize=13, verticalalignment='top', bbox=props, zorder=4)
+                    ax.text(0.02, 0.15, f'rmsd={rmsdval:.3g}', transform=ax.transAxes, fontsize=13, verticalalignment='top', bbox=props, zorder=4)
 
                     cbar_ax_abs = plt.axes([0.15, 0.11, 0.7, 0.05])
                     cbar_ax_abs.tick_params(labelsize=12)
@@ -138,3 +142,4 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
                     cb.ax.tick_params(labelsize='12')
 
                     plt.savefig(out_path + 'plot/maps/' + model.name + '_' + var.name + '_' + str(depth) + '_' + seas + '.png', dpi=200, bbox_inches='tight')
+                    plt.close(fig)

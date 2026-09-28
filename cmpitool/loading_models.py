@@ -57,15 +57,8 @@ def loading_models(models, model_path, seasons, time, verbose):
                 for seas in seasons:
                     if verbose:
                         print('loading '+model_path+var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc')
-                    intermediate = xr.open_mfdataset(model_path+var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc')
-                    intermediate = intermediate.squeeze(drop=True)
-                    ds_model[var.name,depth,seas,model.name] = intermediate.compute()
-                    try:
-                        ds_model[var.name,depth,seas,model.name]=ds_model[var.name,depth,seas,model.name].drop('time_bnds')
-                    except:
-                        pass
-                    try:
-                        ds_model[var.name,depth,seas,model.name]=ds_model[var.name,depth,seas,model.name].drop('depth')
-                    except:
-                        pass
+                    with xr.open_dataset(model_path+var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc') as intermediate:
+                        # Keep only the variable itself, not time_bnds, area or other extras
+                        intermediate = intermediate[[var.name]].squeeze(drop=True).compute()
+                    ds_model[var.name,depth,seas,model.name] = intermediate.drop_vars('depth', errors='ignore')
     return ds_model

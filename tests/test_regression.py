@@ -16,6 +16,7 @@ fixes a bug has to remove its marker.
 import shutil
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pytest
@@ -23,7 +24,7 @@ import pytest
 import cmpitool as pkg
 from cmpitool import cmpitool, config_cmip6, read_errors
 
-from conftest import GOLDEN, OBS_PATH, REPO, SYNTH, make_out_path
+from conftest import GOLDEN, OBS_PATH, REPO, SYNTH
 
 EVAL_ERA5 = REPO / "eval" / "ERA5"
 KEYS = ["Variable", "Region", "Level", "Season"]
@@ -42,6 +43,10 @@ CASES = {
     "eval_subset": {"complexity": "boxes", "eval": ["ACCESS-CM2", "CIESM", "IITM-ESM", "KIOST-ESM"]},
     # A model without some variables exercises the NaN path of the heatmap.
     "partial_model": {"complexity": "boxes", "drop": ["siconc", "mlotst"]},
+    # NCEP2 obs for tas, uas, vas, ua and zg, against the eval/NCEP2 references.
+    "ncep2": {"complexity": "boxes", "reanalysis": "NCEP2"},
+    # Without the Southern Ocean and Arctic basin fixes in add_masks.
+    "regions_nomaskfixes": {"complexity": "regions", "maskfixes": False},
 }
 
 
@@ -59,12 +64,12 @@ def run_case(case, setup, synth_model_path, out_path):
     if eval_names is not None:
         kwargs["eval_models"] = [m for m in cmip6_models(setup) if m.name in eval_names]
 
-    cmpitool(
+    return cmpitool(
         str(synth_model_path),
         models,
         out_path=str(out_path),
         obs_path=str(OBS_PATH),
-        eval_path=str(EVAL_ERA5),
+        eval_path=str(REPO / "eval" / kwargs.get("reanalysis", "ERA5")),
         **kwargs,
     )
 
@@ -94,8 +99,12 @@ def assert_same_table(actual, expected):
 
 @pytest.mark.parametrize("case", list(CASES))
 def test_regression(case, setup, synth_model_path, tmp_path, update_golden):
-    out = make_out_path(tmp_path)
-    run_case(case, setup, synth_model_path, out)
+    # A directory that does not exist yet: cmpitool has to create its output folders.
+    out = tmp_path / "out"
+    error_fraction = run_case(case, setup, synth_model_path, out)
+
+    assert error_fraction and {key[3] for key in error_fraction} == {SYNTH}
+    assert plt.get_fignums() == [], "figures left open"
 
     outputs = [Path("abs") / f"{SYNTH}.csv", Path("frac") / f"{SYNTH}_fraction.csv"]
     assert (out / "plot" / f"{SYNTH}.png").is_file()
@@ -115,7 +124,7 @@ def test_regression(case, setup, synth_model_path, tmp_path, update_golden):
         assert_same_table(out / rel, expected)
 
 
-# --- Known bugs ------------------------------------------------------------
+# --- Arguments reach the functions that use them ---------------------------
 
 class _Stop(Exception):
     """Raised by spies to end a cmpitool() run once the call of interest is seen."""
@@ -125,7 +134,6 @@ def _no_masks(regions, verbose, *args, **kwargs):
     return regions
 
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="cmpitool() calls cmpisetup() without reanalysis; fixed in PR 1")
 def test_reanalysis_selects_obs(setup, monkeypatch, tmp_path):
     seen = {}
 
@@ -141,7 +149,6 @@ def test_reanalysis_selects_obs(setup, monkeypatch, tmp_path):
     assert {seen[v] for v in ["tas", "uas", "vas", "ua", "zg"]} == {"NCEP2"}
 
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="cmpitool() does not pass maskfixes to add_masks; fixed in PR 1")
 def test_maskfixes_passed(monkeypatch, tmp_path):
     seen = {}
 
@@ -155,6 +162,8 @@ def test_maskfixes_passed(monkeypatch, tmp_path):
                  eval_path=str(EVAL_ERA5), maskfixes=False)
     assert seen["maskfixes"] is False
 
+
+# --- Known bugs ------------------------------------------------------------
 
 def _reference_value(model, variable, region, level, season):
     df = pd.read_csv(EVAL_ERA5 / f"{model}.csv", sep=" ").set_index(KEYS)

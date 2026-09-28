@@ -57,20 +57,14 @@ def loading_obs(obs, obs_path, seasons, verbose):
                 if verbose:
                     print('loading '+obs_path+var.name+'_'+var.obs+'_'+depth+'_'+seas+'.nc')
 
-                intermediate = xr.open_dataset(obs_path+var.name+'_'+var.obs+'_'+depth+'_'+seas+'.nc')
-                ds_obs[var.name,depth,seas] = intermediate.compute()
-                try:
-                    ds_obs[var.name,depth,seas]=ds_obs[var.name,depth,seas].drop('time_bnds')
-                except:
-                    pass
-                try:
-                    ds_obs[var.name,depth,seas]=ds_obs[var.name,depth,seas].drop('time_bnds_2')
-                except:
-                    pass
-                try:
-                    ds_obs[var.name,depth,seas]=ds_obs[var.name,depth,seas].drop('depth')
-                except:
-                    pass
+                with xr.open_dataset(obs_path+var.name+'_'+var.obs+'_'+depth+'_'+seas+'.nc') as intermediate:
+                    # Keep only the variable itself, not time_bnds or other extras
+                    intermediate = intermediate[[var.name]].compute()
+                intermediate = intermediate.drop_vars('depth', errors='ignore')
+                # The NCEP2 files carry a size-1 level dimension that the ERA5 files do not
+                if 'level' in intermediate.dims:
+                    intermediate = intermediate.squeeze('level', drop=True)
+                ds_obs[var.name,depth,seas] = intermediate
 
 
     return ds_obs
