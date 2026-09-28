@@ -10,7 +10,7 @@ dependencies:
   - pip
   - pooch
   - python=3.9
-  - seaborn
+  - seaborn>=0.13
   - tqdm
   - xarray
   - netcdf4
