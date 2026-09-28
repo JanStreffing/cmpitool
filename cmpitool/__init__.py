@@ -31,7 +31,7 @@ __credits__ = "Alfred Wegener Institute, Helmholtz Centre for Polar and Marine R
 
 
 from .cmpitool import *
-from .cmpisetup import *
+from .registry import *
 from .config_cmip6 import *
 from .add_masks import *
 from .loading_obs import *

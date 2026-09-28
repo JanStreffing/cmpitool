@@ -12,7 +12,7 @@ def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, verbose
     obs : list
         List of variable objects representing observations
     eval_models : list
-        List of climate_model objects used as reference for evaluation
+        List of Model objects used as reference for evaluation
     regions : list
         List of region objects defining geographical areas for evaluation
     seasons : list

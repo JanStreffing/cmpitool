@@ -19,8 +19,8 @@ The main function of CMPITool that performs climate model performance analysis.
 
 Parameters:
    - **model_path** (*str*): Path pointing towards the output of your model, preprocessed to be read in by CMPITool
-   - **models** (*list*): List of climate model objects to be evaluated via CMPITool
-   - **eval_models** (*list*, optional): List of climate model objects used as reference for evaluation. By default this is set to None, which results in a set of 30 CMIP6 being used
+   - **models** (*list*): List of ``Model`` objects to be evaluated via CMPITool
+   - **eval_models** (*list*, optional): List of ``Model`` objects used as reference for evaluation. By default this is set to None, which results in a set of 30 CMIP6 being used
    - **out_path** (*str*, optional): String pointing to the folder in which results will be stored
    - **obs_path** (*str*, optional): String pointing to the folder in which observational data against which the errors will be calculated are stored
    - **reanalysis** (*str*, optional): String allowing switch between ERA5 and NCEP2 for the variables where obs come from atmospheric reanalysis systems (tas, uas, vas, ua, zg)
@@ -32,78 +32,60 @@ Parameters:
    - **complexity** (*str*, optional): String allowing selection of whether CMPI shall be calculated for simple lat/lon boxes ('boxes') or continents & ocean basins ('regions')
    - **verbose** (*bool*, optional): Boolean to activate verbose output
    - **biasmaps** (*bool*, optional): Boolean to activate bias map plots
-   - **biasmap_limits** (*dict*, optional): Dictionary of fixed plot limits for bias maps using variable names as keys and float values as limits. If not provided, limits will be calculated dynamically based on data standard deviation
+   - **biasmap_limits** (*dict*, optional): Colour ranges for the bias maps by variable name, overriding ``Variable.default_limit``. A value of None gives a range of 3 standard deviations of the bias
 
 Returns:
-   None. Results are saved to the specified output directory.
+   The error fractions by (variable, level, season, model, region). Results are also saved to the output directory.
 
-cmpisetup
+Variables and models
+--------------------
+
+.. code-block:: python
+
+   from cmpitool import VARIABLES, Variable, Model, Region, make_variables
+
+VARIABLES
 ^^^^^^^^^
 
-.. code-block:: python
+The variables cmpitool knows, by name, in the order of the reference files: siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so. ``make_variables(reanalysis)`` returns the same set with the observations of tas, uas, vas, ua and zg taken from ``'ERA5'`` or ``'NCEP2'``; ``cmpitool()`` does this itself from its ``reanalysis`` argument.
 
-   def cmpisetup(reanalysis='ERA5')
-
-This function provides classes and the default set of variable objects to facilitate configuration of CMPITool.
-
-Parameters:
-   - **reanalysis** (*str*, optional): String allowing switch between ERA5 and NCEP2 for the variables where obs come from atmospheric reanalysis systems (tas, uas, vas, ua, zg)
-
-Returns:
-   - **variable** (*class*): Class for creating variable objects
-   - **region** (*class*): Class for creating region objects
-   - **climate_model** (*class*): Class for creating climate model objects
-   - **siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so** (*variable objects*): Predefined variable objects for common climate variables
-
-Classes
--------
-
-variable
-^^^^^^^
+Variable
+^^^^^^^^
 
 .. code-block:: python
 
-   class variable:
-       def __init__ (self, name, obs, depths, domain='mixed', active=True)
-
-Class for defining climate variables for analysis.
+   Variable(name, obs, depths, domain='mixed', label=None, default_limit=None)
 
 Parameters:
-   - **name** (*str*): Name of the variable (must match CMOR naming conventions)
-   - **obs** (*str*): Name of the observation dataset to use for this variable
-   - **depths** (*list*): List of depth/height levels to analyze
-   - **domain** (*str*, optional): Domain of the variable ('mixed', 'land', or 'ocean')
-   - **active** (*bool*, optional): Whether to include this variable in the analysis
+   - **name** (*str*): CMOR short name, also the first part of the file names
+   - **obs** (*str*): Observational dataset, the second part of the obs file names
+   - **depths** (*list*): Levels, as they appear in the file names
+   - **domain** (*str*, optional): ``'oce'`` for ocean variables, which get no value over land regions; ``'mixed'`` otherwise
+   - **label** (*str*, optional): Replaces the level in the heatmap row name, e.g. ``'st. dev. '`` for zos
+   - **default_limit** (*float*, optional): Bias-map colour range, in the units of the variable. None gives 3 standard deviations of the bias
 
-region
+Model
+^^^^^
+
+.. code-block:: python
+
+   Model(name, variables='all')
+
+Parameters:
+   - **name** (*str*): Model name, the middle part of its file names
+   - **variables**: ``'all'``, or a list of variable names or ``Variable`` objects, e.g. ``Model('MY-MODEL', ['tas', 'pr'])``
+
+Region
 ^^^^^^
 
 .. code-block:: python
 
-   class region:
-       def __init__ (self, name, domain, mask=False, active=False)
-
-Class for defining geographical regions for analysis.
+   Region(name, domain, mask=None, active=False)
 
 Parameters:
-   - **name** (*str*): Name of the region
-   - **domain** (*str*): Domain of the region ('mixed', 'land', or 'ocean')
-   - **mask** (*bool*, optional): Mask data for this region
-   - **active** (*bool*, optional): Whether to include this region in the analysis
-
-climate_model
-^^^^^^^^^^^
-
-.. code-block:: python
-
-   class climate_model:
-       def __init__ (self, name, variables)
-
-Class for defining climate models for evaluation.
-
-Parameters:
-   - **name** (*str*): Name of the climate model
-   - **variables** (*list*): List of variable objects to analyze for this model
+   - **name** (*str*): Name of a box, ocean basin or continent known to ``add_masks``
+   - **domain** (*str*): ``'land'``, ``'ocean'`` or ``'mixed'``
+   - **mask**, **active**: filled in by ``add_masks``
 
 Processing Functions
 ------------------
@@ -209,7 +191,7 @@ Parameters:
    - **obs** (*list*): List of variable objects for which observations will be loaded
    - **out_path** (*str*): Path to directory where output files will be stored
    - **verbose** (*bool*): Whether to print detailed information during execution
-   - **biasmap_limits** (*dict*, optional): Dictionary with variable names as keys and float values representing fixed plot limits. If provided, these fixed limits will be used instead of dynamically calculated limits based on data standard deviation
+   - **biasmap_limits** (*dict*, optional): Colour ranges by variable name, overriding ``Variable.default_limit``. None gives a range of 3 standard deviations of the bias
 
 Configuration Functions
 ---------------------
@@ -219,7 +201,7 @@ config_cmip6
 
 .. code-block:: python
 
-   def config_cmip6(climate_model, obs)
+   def config_cmip6()
 
 Configures the default set of 30 CMIP6 models used for evaluation.
 
@@ -231,14 +213,11 @@ Example 1: Basic Analysis
 
 .. code-block:: python
 
-   from cmpitool import cmpitool, cmpisetup
-   
-   # Setup
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
-   
+   from cmpitool import cmpitool, Model
+
    # Define models
    models = [
-       climate_model(name='YOUR-MODEL', variables=[tas, pr, rlut])
+       Model('YOUR-MODEL', ['tas', 'pr', 'rlut'])
    ]
    
    # Run analysis
@@ -248,32 +227,22 @@ Example 1: Basic Analysis
        verbose=True
    )
 
-Example 2: Custom Regions
-^^^^^^^^^^^^^^^^^^^^^^^
+Example 2: Choosing the Regions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
-   from cmpitool import cmpitool, cmpisetup
-   
-   # Setup
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
-   
-   # Define custom regions
-   custom_regions = [
-       region(name='My_Region1', domain='land'),
-       region(name='My_Region2', domain='ocean')
-   ]
-   
-   # Define models
-   models = [
-       climate_model(name='YOUR-MODEL', variables=[tas, pr])
-   ]
-   
-   # Run analysis with custom regions
+   from cmpitool import cmpitool, Model
+
+   # complexity selects a preset list of regions:
+   #   'boxes'     arctic, northmid, tropics, nino34, southmid, antarctic (default)
+   #   'boxes_all' the boxes plus glob and innertropics
+   #   'regions'   six ocean basins and eight continents
+   #   'all'       all of the above
    cmpitool(
        model_path='/path/to/your/data/',
-       models=models,
-       regions=custom_regions,
+       models=[Model('YOUR-MODEL', ['tas', 'pr'])],
+       complexity='regions',
        verbose=True
    )
 
@@ -282,20 +251,17 @@ Example 3: Custom Evaluation Models
 
 .. code-block:: python
 
-   from cmpitool import cmpitool, cmpisetup
-   
-   # Setup
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
-   
+   from cmpitool import cmpitool, Model
+
    # Define evaluation models
    eval_models = [
-       climate_model(name='EVAL-MODEL-1', variables=[tas, pr]),
-       climate_model(name='EVAL-MODEL-2', variables=[tas, pr])
+       Model('EVAL-MODEL-1', ['tas', 'pr']),
+       Model('EVAL-MODEL-2', ['tas', 'pr'])
    ]
    
    # Define models to evaluate
    models = [
-       climate_model(name='TEST-MODEL', variables=[tas, pr])
+       Model('TEST-MODEL', ['tas', 'pr'])
    ]
    
    # Run analysis with custom evaluation models

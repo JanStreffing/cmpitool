@@ -14,9 +14,9 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     model_path : str
         Path to directory containing preprocessed model data files
     models : list
-        List of climate_model objects to be evaluated
+        List of Model objects to be evaluated
     eval_models : list, optional
-        List of climate_model objects used as reference for evaluation.
+        List of Model objects used as reference for evaluation.
         If None (default), a set of 30 CMIP6 models will be used.
     out_path : str, optional
         Path to directory where output files will be stored (default: 'output/')
@@ -45,8 +45,8 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     biasmaps : bool, optional
         Whether to generate bias map plots (default: False)
     biasmap_limits : dict, optional
-        Dictionary of fixed plot limits for bias maps using variable names as keys and float values as limits.
-        If not provided, limits will be calculated dynamically based on data standard deviation (default: None)
+        Colour ranges for the bias maps by variable name, overriding Variable.default_limit.
+        A value of None gives a range of 3 standard deviations of the bias (default: None)
         
     Returns
     -------
@@ -65,17 +65,14 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     
     Examples
     --------
-    >>> from cmpitool import cmpitool, cmpisetup
-    >>> variable, region, climate_model, *_ = cmpisetup()
-    >>> # Create model objects
-    >>> mymodel = climate_model(name='MyModel', variables=[variable[0], variable[1]])
-    >>> # Run the tool
+    >>> from cmpitool import cmpitool, Model
+    >>> mymodel = Model('MyModel', ['tas', 'pr'])     # or Model('MyModel', 'all')
     >>> result = cmpitool('model_data/', [mymodel], out_path='results/')
     
     AUTHORS:
     Jan Streffing               2022-12-01      Split off from main tool
     '''
-    from cmpitool import (cmpisetup, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,
+    from cmpitool import (make_variables, Model, Region, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,
                           write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps, plotting_biasmaps)
 
     #Setup safe paths
@@ -92,43 +89,49 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     for subdir in ['abs', 'frac', 'plot', 'plot/maps']:
         os.makedirs(out_path+subdir, exist_ok=True)
 
-    variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup(reanalysis)
-
-    obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]
-
-    #The CMIP6 models are set up by default in their own function
-    cmip6_models = config_cmip6(climate_model, obs)
+    #Variables with the observations of this reanalysis
+    variables = make_variables(reanalysis)
+    obs = list(variables.values())
 
     #The use can define their own set of evaluation models. If they don't we use cmip6 by default.
     if eval_models == None:
-        eval_models = cmip6_models
+        eval_models = config_cmip6()
+
+    #Use this run's variables for every model, whichever reanalysis its variables were made with
+    def with_run_variables(model):
+        unknown = [var.name for var in model.variables if var.name not in variables]
+        if unknown:
+            raise ValueError('Unknown variables for model '+model.name+': '+', '.join(unknown))
+        return Model(model.name, [variables[var.name] for var in model.variables])
+    models = [with_run_variables(model) for model in models]
+    eval_models = [with_run_variables(model) for model in eval_models]
 
     #Instancing default regions:
     #Boxes:
-    glob = region(name='glob', domain='mixed')
-    arctic = region(name='arctic', domain='mixed')
-    northmid = region(name='northmid', domain='mixed')
-    tropics = region(name='tropics', domain='mixed')
-    innertropics = region(name='innertropics', domain='mixed')
-    nino34 = region(name='nino34', domain='mixed')
-    southmid = region(name='southmid', domain='mixed')
-    antarctic = region(name='antarctic', domain='mixed')
+    glob = Region(name='glob', domain='mixed')
+    arctic = Region(name='arctic', domain='mixed')
+    northmid = Region(name='northmid', domain='mixed')
+    tropics = Region(name='tropics', domain='mixed')
+    innertropics = Region(name='innertropics', domain='mixed')
+    nino34 = Region(name='nino34', domain='mixed')
+    southmid = Region(name='southmid', domain='mixed')
+    antarctic = Region(name='antarctic', domain='mixed')
     #Ocean basins:
-    Atlantic_Basin = region(name='Atlantic_Basin', domain='ocean')
-    Pacific_Basin = region(name='Pacific_Basin', domain='ocean')
-    Indian_Basin = region(name='Indian_Basin', domain='ocean')
-    Arctic_Basin = region(name='Arctic_Basin', domain='ocean')
-    Southern_Ocean_Basin = region(name='Southern_Ocean_Basin', domain='ocean')
-    Mediterranean_Basin = region(name='Mediterranean_Basin', domain='ocean')
+    Atlantic_Basin = Region(name='Atlantic_Basin', domain='ocean')
+    Pacific_Basin = Region(name='Pacific_Basin', domain='ocean')
+    Indian_Basin = Region(name='Indian_Basin', domain='ocean')
+    Arctic_Basin = Region(name='Arctic_Basin', domain='ocean')
+    Southern_Ocean_Basin = Region(name='Southern_Ocean_Basin', domain='ocean')
+    Mediterranean_Basin = Region(name='Mediterranean_Basin', domain='ocean')
     #Landmasses:
-    Asia = region(name='Asia', domain='land')
-    North_America = region(name='North_America', domain='land')
-    Europe = region(name='Europe', domain='land')
-    Africa = region(name='Africa', domain='land')
-    South_America = region(name='South_America', domain='land')
-    Oceania = region(name='Oceania', domain='land')
-    Australia = region(name='Australia', domain='land')
-    Antarctica = region(name='Antarctica', domain='land')
+    Asia = Region(name='Asia', domain='land')
+    North_America = Region(name='North_America', domain='land')
+    Europe = Region(name='Europe', domain='land')
+    Africa = Region(name='Africa', domain='land')
+    South_America = Region(name='South_America', domain='land')
+    Oceania = Region(name='Oceania', domain='land')
+    Australia = Region(name='Australia', domain='land')
+    Antarctica = Region(name='Antarctica', domain='land')
 
     #Select which of the above you actually want to use by added them to the list of regions.
     #complexity allows choosing from some premade lists.

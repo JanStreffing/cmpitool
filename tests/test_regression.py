@@ -20,7 +20,7 @@ import pandas as pd
 import pytest
 
 import cmpitool as pkg
-from cmpitool import cmpitool, config_cmip6, read_errors
+from cmpitool import VARIABLES, Model, Region, cmpitool, config_cmip6, read_errors
 
 from conftest import GOLDEN, OBS_PATH, REPO, SYNTH
 
@@ -47,19 +47,14 @@ CASES = {
 }
 
 
-def cmip6_models(setup):
-    return config_cmip6(setup["climate_model"], list(setup["variables"].values()))
-
-
-def run_case(case, setup, synth_model_path, out_path):
+def run_case(case, synth_model_path, out_path):
     kwargs = dict(CASES[case])
     eval_names = kwargs.pop("eval", None)
     drop = kwargs.pop("drop", [])
 
-    variables = [v for name, v in setup["variables"].items() if name not in drop]
-    models = [setup["climate_model"](name=SYNTH, variables=variables)]
+    models = [Model(SYNTH, [name for name in VARIABLES if name not in drop])]
     if eval_names is not None:
-        kwargs["eval_models"] = [m for m in cmip6_models(setup) if m.name in eval_names]
+        kwargs["eval_models"] = [m for m in config_cmip6() if m.name in eval_names]
 
     return cmpitool(
         str(synth_model_path),
@@ -95,10 +90,10 @@ def assert_same_table(actual, expected):
 
 
 @pytest.mark.parametrize("case", list(CASES))
-def test_regression(case, setup, synth_model_path, tmp_path, update_golden):
+def test_regression(case, synth_model_path, tmp_path, update_golden):
     # A directory that does not exist yet: cmpitool has to create its output folders.
     out = tmp_path / "out"
-    error_fraction = run_case(case, setup, synth_model_path, out)
+    error_fraction = run_case(case, synth_model_path, out)
 
     assert error_fraction and {key[3] for key in error_fraction} == {SYNTH}
     assert plt.get_fignums() == [], "figures left open"
@@ -131,7 +126,7 @@ def _no_masks(regions, verbose, *args, **kwargs):
     return regions
 
 
-def test_reanalysis_selects_obs(setup, monkeypatch, tmp_path):
+def test_reanalysis_selects_obs(monkeypatch, tmp_path):
     seen = {}
 
     def spy(obs, *args, **kwargs):
@@ -167,19 +162,18 @@ def _reference_value(model, variable, region, level, season):
     return df.loc[(variable, region, level, season), "AbsMeanError"]
 
 
-def _read_one_model(setup, seasons, eval_path=EVAL_ERA5, name="ACCESS-CM2"):
-    region = setup["region"]
-    regions = [region(name="arctic", domain="mixed"), region(name="tropics", domain="mixed")]
-    eval_models = [setup["climate_model"](name=name, variables=[])]
-    return read_errors(list(setup["variables"].values()), eval_models, regions, seasons,
+def _read_one_model(seasons, eval_path=EVAL_ERA5, name="ACCESS-CM2"):
+    regions = [Region(name="arctic", domain="mixed"), Region(name="tropics", domain="mixed")]
+    eval_models = [Model(name, [])]
+    return read_errors(list(VARIABLES.values()), eval_models, regions, seasons,
                        "unused/", str(eval_path) + "/", False)
 
 
 @pytest.mark.parametrize("seasons", [["JJA", "DJF"], ["DJF", "JJA"], ["SON", "MAM", "DJF", "JJA"]])
-def test_read_errors_matches_csv(setup, seasons):
+def test_read_errors_matches_csv(seasons):
     # Any season order: the cursor this replaced swapped values unless the
     # seasons came in the order of the CSV rows.
-    got = _read_one_model(setup, seasons)
+    got = _read_one_model(seasons)
     for season in seasons:
         for level in ["10m", "100m", "1000m"]:
             assert got["thetao", "arctic", level, season] == \
@@ -188,21 +182,21 @@ def test_read_errors_matches_csv(setup, seasons):
             _reference_value("ACCESS-CM2", "tas", "tropics", "surface", season)
 
 
-def test_read_errors_row_order_does_not_matter(setup, tmp_path):
+def test_read_errors_row_order_does_not_matter(tmp_path):
     # Shuffle the text lines, so that every value stays byte for byte the same.
     header, *rows = (EVAL_ERA5 / "ACCESS-CM2.csv").read_text().splitlines()
     random.Random(0).shuffle(rows)
     (tmp_path / "SHUFFLED.csv").write_text("\n".join([header, *rows]) + "\n")
     seasons = ["MAM", "JJA", "SON", "DJF"]
-    shuffled = _read_one_model(setup, seasons, tmp_path, "SHUFFLED")
-    original = _read_one_model(setup, seasons)
+    shuffled = _read_one_model(seasons, tmp_path, "SHUFFLED")
+    original = _read_one_model(seasons)
     assert list(shuffled) == list(original)
     np.testing.assert_array_equal(list(shuffled.values()), list(original.values()))
 
 
-def test_read_errors_names_a_missing_row(setup, tmp_path):
+def test_read_errors_names_a_missing_row(tmp_path):
     df = pd.read_csv(EVAL_ERA5 / "ACCESS-CM2.csv", sep=" ")
     df = df[~((df.Variable == "tas") & (df.Region == "tropics"))]
     df.to_csv(tmp_path / "INCOMPLETE.csv", sep=" ", index=False)
     with pytest.raises(KeyError, match="INCOMPLETE.csv has tas but no row for region tropics"):
-        _read_one_model(setup, ["DJF"], tmp_path, "INCOMPLETE")
+        _read_one_model(["DJF"], tmp_path, "INCOMPLETE")

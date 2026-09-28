@@ -28,9 +28,8 @@ def add_masks(regions, verbose, maskfixes=True):
     
     Examples
     --------
-    >>> from cmpitool import cmpisetup
-    >>> variable, region, climate_model, *_ = cmpisetup()
-    >>> regions = [region(name='arctic', domain='mixed'), region(name='Europe', domain='land')]
+    >>> from cmpitool import Region
+    >>> regions = [Region(name='arctic', domain='mixed'), Region(name='Europe', domain='land')]
     >>> regions = add_masks(regions, verbose=True)
     
     AUTHORS:

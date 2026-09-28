@@ -14,7 +14,7 @@ def write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_
     mean_error : OrderedDict
         Dictionary containing area-weighted means of absolute error fields
     models : list
-        List of climate_model objects being evaluated
+        List of Model objects being evaluated
     regions : list
         List of region objects used in the evaluation
     seasons : list

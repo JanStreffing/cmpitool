@@ -34,7 +34,7 @@ Run your first analysis:
 
 - Prepare your model output by following the `guide to preprocessing <how_to.rst#preprocess-data-for-cmpitool>`_
 - Open the ``example.py`` and/or integrate cmpitool into your existing python script/notebook. 
-- Configure cmpitool using cmpisetup and the optional arguments for cmpitool.  
+- Configure cmpitool with ``Model('YOUR-MODEL', 'all')`` (or a list of variable names) and the optional arguments of ``cmpitool()``.
 - You can now run an analysis against CMIP6 model performance.
 
 Understanding the Output:
@@ -78,17 +78,14 @@ Here's a minimal example script:
 
 .. code-block:: python
 
-   from cmpitool import cmpitool, cmpisetup
-   
-   # Setup variables and models
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
-   
+   from cmpitool import cmpitool, Model
+
    # Specify model data path
    model_path = '/path/to/your/processed/model/data/'
    
    # Define models and variables to analyze
    models = [
-       climate_model(name='SAME_EXPERIMENT_NAME_AS_SET_DURING_PREPROCESSING', variables=[tas, pr, uas, vas])
+       Model('SAME_EXPERIMENT_NAME_AS_SET_DURING_PREPROCESSING', ['tas', 'pr', 'uas', 'vas'])
    ]
    
    # Run analysis

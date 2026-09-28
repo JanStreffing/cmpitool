@@ -34,9 +34,8 @@ def loading_obs(obs, obs_path, seasons, verbose):
     
     Examples
     --------
-    >>> from cmpitool import cmpisetup, loading_obs
-    >>> variable, region, climate_model, *variables = cmpisetup()
-    >>> obs = [variables[0], variables[1]]  # Select specific variables
+    >>> from cmpitool import VARIABLES, loading_obs
+    >>> obs = [VARIABLES['tas'], VARIABLES['pr']]  # Select specific variables
     >>> ds_obs = loading_obs(obs, 'path/to/obs/', ['DJF', 'JJA'], verbose=True)
     
     AUTHORS:

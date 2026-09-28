@@ -10,7 +10,7 @@ def calculate_fractions(models, regions, seasons, mean_error, eval_error_mean, v
     Parameters
     ----------
     models : list
-        List of climate_model objects being evaluated
+        List of Model objects being evaluated
     regions : list
         List of region objects defining geographical areas for evaluation
     seasons : list

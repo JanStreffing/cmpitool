@@ -9,7 +9,7 @@ def loading_models(models, model_path, seasons, time, verbose):
     Parameters
     ----------
     models : list
-        List of climate_model objects to be evaluated
+        List of Model objects to be evaluated
     model_path : str
         Path to directory containing preprocessed model data files
     seasons : list
@@ -33,9 +33,8 @@ def loading_models(models, model_path, seasons, time, verbose):
     Examples
     --------
     >>> from collections import OrderedDict
-    >>> from cmpitool import cmpisetup, loading_models
-    >>> variable, region, climate_model, *variables = cmpisetup()
-    >>> models = [climate_model(name='MODEL', variables=[variables[0]])]
+    >>> from cmpitool import Model, loading_models
+    >>> models = [Model('MODEL', ['siconc'])]
     >>> seasons = ['DJF', 'JJA']
     >>> ds_model = loading_models(models, '/path/to/data/', seasons, '198912-201411', True)
     

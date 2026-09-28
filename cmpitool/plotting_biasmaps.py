@@ -61,29 +61,16 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
     std_range_multiplier = 3
 
     def getlimit(var):
-        # Default limits dictionary
-        default_limits = {
-            'siconc': 60.
-        }
-        
-        # If custom limits are provided, use those; otherwise use defaults
-        if biasmap_limits is not None and var in biasmap_limits:
-            return biasmap_limits.get(var)
-            
-        return default_limits.get(var, None)
+        # Limits passed in override the variable's default; None means 3 standard deviations
+        if biasmap_limits is not None and var.name in biasmap_limits:
+            return biasmap_limits[var.name]
+        return var.default_limit
 
     for model in models:
         print('Plotting biasmaps for: ',model.name)
         for var in tqdm(model.variables):
             for depth in var.depths:
                 for seas in seasons:
-                    if depth == 'surface':
-                        levelname=''
-                    else:
-                        levelname=depth+' '
-                    if var.name == 'zos':
-                        levelname='st. dev. '
-
                     fig = plt.figure(figsize=(6, 4.5))
                     ax = plt.axes(projection=ccrs.PlateCarree())
                     ax.add_feature(cfeature.COASTLINE, zorder=3)
@@ -109,10 +96,9 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
 
                     # Compute levels
                     std = np.nanstd(data_to_plot)
-                    if not getlimit(var.name):
+                    limit = getlimit(var)
+                    if not limit:
                         limit = std_range_multiplier * std
-                    else:
-                        limit = getlimit(var.name)
                     levels = np.linspace(-limit, limit, num_levels)
                     try:
                         imf = plt.contourf(lon_cyclic, lat, data_to_plot, cmap=plt.cm.PuOr_r, levels=levels, extend='both', transform=ccrs.PlateCarree())

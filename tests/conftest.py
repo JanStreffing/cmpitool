@@ -11,7 +11,7 @@ import numpy as np
 import pytest
 import xarray as xr
 
-from cmpitool import cmpisetup
+from cmpitool import VARIABLES
 
 REPO = Path(__file__).resolve().parent.parent
 OBS_PATH = REPO / "obs"
@@ -36,18 +36,6 @@ def update_golden(request):
     return request.config.getoption("--update-golden")
 
 
-@pytest.fixture(scope="session")
-def setup():
-    """Classes and variable objects as cmpisetup() returns them, by name."""
-    variable, region, climate_model, *variables = cmpisetup()
-    return {
-        "variable": variable,
-        "region": region,
-        "climate_model": climate_model,
-        "variables": {v.name: v for v in variables},
-    }
-
-
 def _perturb(field, season_index):
     """Add a smooth pattern scaled to 20 % of the field's spatial std.
 
@@ -63,10 +51,10 @@ def _perturb(field, season_index):
 
 
 @pytest.fixture(scope="session")
-def synth_model_path(tmp_path_factory, setup):
+def synth_model_path(tmp_path_factory):
     """Write SYNTH model files for every variable, level and season."""
     path = tmp_path_factory.mktemp("synth_input")
-    for var in setup["variables"].values():
+    for var in VARIABLES.values():
         for depth in var.depths:
             for k, seas in enumerate(SEASONS):
                 src = OBS_PATH / f"{var.name}_{var.obs}_{depth}_{seas}.nc"

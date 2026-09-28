@@ -64,13 +64,7 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
         index_obs=[]
         for var in obs:
             for depth in var.depths:
-                if depth == 'surface':
-                    levelname=''
-                else:
-                    levelname=depth+' '
-                if var.name == 'zos':
-                    levelname='st. dev. '
-                index_obs.append(levelname+var.name)
+                index_obs.append(var.row_label(depth))
         if verbose:
             print(model.name,'number of values: ',len(list(reorganized_error_fraction.values())),'; shape:',len(index_obs),'x',len(regions)*len(seasons))
         collect_frac_reshaped = np.array(list(reorganized_error_fraction.values()) ).reshape(len(index_obs),len(regions)*len(seasons)) # transform to 2D

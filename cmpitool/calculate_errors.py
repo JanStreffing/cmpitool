@@ -13,7 +13,7 @@ def calculate_errors(ds_model, ds_obs, models, regions, seasons, verbose):
     ds_obs : OrderedDict
         Dictionary containing observational data, organized by variable, depth, and season
     models : list
-        List of climate_model objects to evaluate
+        List of Model objects to evaluate
     regions : list
         List of region objects defining geographical areas for evaluation
     seasons : list
@@ -40,8 +40,7 @@ def calculate_errors(ds_model, ds_obs, models, regions, seasons, verbose):
     Examples
     --------
     >>> from collections import OrderedDict
-    >>> from cmpitool import cmpisetup, loading_models, loading_obs, add_masks, calculate_errors
-    >>> variable, region, climate_model, *variables = cmpisetup()
+    >>> from cmpitool import loading_models, loading_obs, add_masks, calculate_errors
     >>> # Setup models, load data, and add masks to regions
     >>> abs_error, mean_error = calculate_errors(ds_model, ds_obs, models, regions, seasons, verbose=True)
     

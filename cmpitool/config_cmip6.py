@@ -1,67 +1,54 @@
-def config_cmip6(climate_model, obs):
+def config_cmip6():
     '''
     AUTHORS:
     Jan Streffing		2022-11-30	Split off from main tool
+    Jan Streffing		2026-09-29	Models listed by the variables they lack
 
     DESCRIPTION:
-    This function defines a default set of climate models that are contained 
+    This function defines a default set of climate models that are contained
     in CMIP6 and are used as the default set against which CMIP-Tool evaluates
-    your model. It furthermore contains the information which variables are 
+    your model. It furthermore contains the information which variables are
     available for each model.
     Note: If you modify / overwrite this default, you need to generate new absolute
     errors and copy them into eval/$reanalysis/
-    
-    INPUT:
-    climate_model		Class that creates climate model objects
-    obs                         Sorted list of observation variable objects
+
     RETURN:
-    cmip6_models		List of climate model objects
+    cmip6_models		List of Model objects
     '''
-    siconc = obs[0]
-    tas = obs[1]
-    clt = obs[2]
-    pr = obs[3]
-    rlut = obs[4]
-    uas = obs[5]
-    vas = obs[6]
-    ua = obs[7]
-    zg = obs[8]
-    zos = obs[9]
+    from cmpitool.registry import Model, VARIABLES
 
-    mlotst = obs[10]
-    thetao = obs[11]
-    so = obs[12]
-    cmip6_models = [
-        climate_model(name='ACCESS-CM2',   variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='AWI-CM-1-1-MR',variables=[        tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='BCC-SM2-MR',   variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='CAMS-CSM1-0',  variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='CanESM5',      variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='CAS-ESM2-0',   variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='CESM2',        variables=[siconc, tas, clt, pr, rlut,           ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='CIESM',        variables=[        tas, clt, pr, rlut,           ua, zg, zos,         thetao, so]),
-        climate_model(name='CMCC-CM2-SR5', variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='CNRM-CM6-1-HR',variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='E3SM-1-1',     variables=[siconc, tas, clt, pr, rlut,           ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='EC-Earth3',    variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='FGOALS-f3-L',  variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='FIO-ESM-2-0',  variables=[siconc, tas, clt, pr, rlut,           ua, zg, zos,         thetao, so]),
-        climate_model(name='GISS-E2-1-G',  variables=[        tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='GFDL-CM4',     variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos,         thetao, so]),
-        climate_model(name='HadGEM3MM',    variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='ICON-ESM-LR',  variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='IITM-ESM',     variables=[        tas, clt, pr, rlut, uas, vas, ua, zg,                             ]),
-        climate_model(name='INM-CM5-0',    variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg,                   thetao, so]),
-        climate_model(name='IPSL-CM6A-LR', variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='KIOST-ESM',    variables=[siconc, tas, clt,     rlut, uas, vas, ua, zg, zos, mlotst,           ]),
-        climate_model(name='MCM-UA-1-0',   variables=[        tas,        pr, rlut, uas, vas, ua, zg,             thetao, so]),
-        climate_model(name='MIROC6',       variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos,                   ]),
-        climate_model(name='MPI-ESM1-2-HR',variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='MRI-ESM2-0',   variables=[siconc, tas, clt, pr, rlut, uas, vas,         zos, mlotst, thetao, so]),
-        climate_model(name='NESM3',        variables=[siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='NorESM2-MM',   variables=[siconc, tas, clt, pr, rlut,           ua, zg, zos, mlotst, thetao, so]),
-        climate_model(name='SAM0-UNICON',  variables=[siconc, tas, clt, pr, rlut,           ua, zg, zos,         thetao, so]),
-        climate_model(name='TaiESM1',      variables=[siconc, tas, clt, pr, rlut,           ua, zg, zos,         thetao, so]),
+    def all_but(*missing):
+        return [name for name in VARIABLES if name not in missing]
+
+    return [
+        Model('ACCESS-CM2',    'all'),
+        Model('AWI-CM-1-1-MR', all_but('siconc')),
+        Model('BCC-SM2-MR',    'all'),
+        Model('CAMS-CSM1-0',   'all'),
+        Model('CanESM5',       'all'),
+        Model('CAS-ESM2-0',    'all'),
+        Model('CESM2',         all_but('uas', 'vas')),
+        Model('CIESM',         all_but('siconc', 'uas', 'vas', 'mlotst')),
+        Model('CMCC-CM2-SR5',  'all'),
+        Model('CNRM-CM6-1-HR', 'all'),
+        Model('E3SM-1-1',      all_but('uas', 'vas')),
+        Model('EC-Earth3',     'all'),
+        Model('FGOALS-f3-L',   'all'),
+        Model('FIO-ESM-2-0',   all_but('uas', 'vas', 'mlotst')),
+        Model('GISS-E2-1-G',   all_but('siconc')),
+        Model('GFDL-CM4',      all_but('mlotst')),
+        Model('HadGEM3MM',     'all'),
+        Model('ICON-ESM-LR',   'all'),
+        Model('IITM-ESM',      all_but('siconc', 'zos', 'mlotst', 'thetao', 'so')),
+        Model('INM-CM5-0',     all_but('zos', 'mlotst')),
+        Model('IPSL-CM6A-LR',  'all'),
+        Model('KIOST-ESM',     all_but('pr', 'thetao', 'so')),
+        Model('MCM-UA-1-0',    all_but('siconc', 'clt', 'zos', 'mlotst')),
+        Model('MIROC6',        all_but('mlotst', 'thetao', 'so')),
+        Model('MPI-ESM1-2-HR', 'all'),
+        Model('MRI-ESM2-0',    all_but('ua', 'zg')),
+        Model('NESM3',         'all'),
+        Model('NorESM2-MM',    all_but('uas', 'vas')),
+        Model('SAM0-UNICON',   all_but('uas', 'vas', 'mlotst')),
+        Model('TaiESM1',       all_but('uas', 'vas', 'mlotst')),
     ]
-
-    return cmip6_models
