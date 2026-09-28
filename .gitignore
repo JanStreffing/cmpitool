@@ -7,3 +7,5 @@ dist/
 cmpitool.egg-info
 .eggs
 cmpitool/__pycache__
+__pycache__/
+.pytest_cache/

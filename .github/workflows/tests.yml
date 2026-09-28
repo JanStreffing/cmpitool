@@ -1,0 +1,57 @@
+name: tests
+
+on:
+  # No branch filter: in a stack, PRs above the bottom one target the branch
+  # below them, not main, and still need CI (fesom2 had to fix this in #1091).
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: tests/environment-ci.yml
+          cache-environment: true
+
+      # add_masks downloads the USGS continents with pooch at runtime, but
+      # pubs.usgs.gov answers GitHub runners with 502. Put the same file
+      # (md5 b9e827dbc172fa90aab4670a1a786f56, identical to the live one on
+      # 2026-09-28) where pooch looks first.
+      - name: Seed the USGS continents download
+        run: |
+          python - <<'EOF'
+          import shutil, pooch, pooch.utils
+          url = "https://pubs.usgs.gov/of/2006/1187/basemaps/continents/continents.zip"
+          cache = pooch.os_cache("pooch")
+          cache.mkdir(parents=True, exist_ok=True)
+          shutil.copyfile("tests/data/usgs_continents.zip", cache / pooch.utils.unique_file_name(url))
+          EOF
+
+      # cartopy downloads the Natural Earth coastlines for the bias maps.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.local/share/cartopy
+          key: cartopy-v1
+
+      - name: Install cmpitool
+        run: pip install --no-deps -e .
+
+      - name: Run tests
+        run: |
+          set -o pipefail
+          pytest -rxXs --tb=short 2>&1 | tee pytest.log
+
+      # Put the failure lines on the PR page, so nobody has to open the log.
+      - name: Report failures
+        if: failure()
+        run: |
+          lines=$(grep -E '^(FAILED|ERROR) |^E  ' pytest.log | head -60 | sed -e ':a;N;$!ba;s/%/%25/g;s/\n/%0A/g')
+          echo "::error title=pytest failures::${lines:-see the log of the Run tests step}"
