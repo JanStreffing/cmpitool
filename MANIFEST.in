@@ -5,6 +5,7 @@ graft eval
 graft preprocessing_examples
 graft cmpitool/data
 include example.py
+include example.yaml
 include HISTORY.rst
 include *.rst
 include LICENSE

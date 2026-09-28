@@ -34,6 +34,7 @@ Run your first analysis:
 
 - Prepare your model output by following the `guide to preprocessing <how_to.rst#preprocess-data-for-cmpitool>`_
 - Open the ``example.py`` and/or integrate cmpitool into your existing python script/notebook. 
+- Or copy ``example.yaml``, set your paths and models, and run ``cmpitool run example.yaml``.
 - Configure cmpitool with ``Model('YOUR-MODEL', 'all')`` (or a list of variable names) and the optional arguments of ``cmpitool()``.
 - You can now run an analysis against CMIP6 model performance.
 

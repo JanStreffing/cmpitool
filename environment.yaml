@@ -9,6 +9,7 @@ dependencies:
   - pandas>=1.0.0
   - pip
   - pooch
+  - pyyaml
   - python=3.9
   - seaborn>=0.13
   - tqdm
