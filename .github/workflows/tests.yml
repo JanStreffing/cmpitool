@@ -33,4 +33,13 @@ jobs:
         run: pip install --no-deps -e .
 
       - name: Run tests
-        run: pytest -rxXs
+        run: |
+          set -o pipefail
+          pytest -rxXs --tb=short 2>&1 | tee pytest.log
+
+      # Put the failure lines on the PR page, so nobody has to open the log.
+      - name: Report failures
+        if: failure()
+        run: |
+          lines=$(grep -E '^(FAILED|ERROR) |^E  ' pytest.log | head -60 | sed -e ':a;N;$!ba;s/%/%25/g;s/\n/%0A/g')
+          echo "::error title=pytest failures::${lines:-see the log of the Run tests step}"
