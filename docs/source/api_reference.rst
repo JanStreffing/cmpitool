@@ -11,7 +11,7 @@ cmpitool
 
 .. code-block:: python
 
-   def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path='obs/' , reanalysis='ERA5', 
+   def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=None, reanalysis='ERA5', 
                 eval_path=None, time='198912-201411', seasons=['MAM', 'JJA', 'SON', 'DJF'], 
                 maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False, biasmap_limits=None)
 
@@ -22,9 +22,9 @@ Parameters:
    - **models** (*list*): List of ``Model`` objects to be evaluated via CMPITool
    - **eval_models** (*list*, optional): List of ``Model`` objects used as reference for evaluation. By default this is set to None, which results in a set of 30 CMIP6 being used
    - **out_path** (*str*, optional): String pointing to the folder in which results will be stored
-   - **obs_path** (*str*, optional): String pointing to the folder in which observational data against which the errors will be calculated are stored
+   - **obs_path** (*str*, optional): Folder with the observational data. By default the ``obs/`` folder of the cmpitool checkout, whatever the working directory
    - **reanalysis** (*str*, optional): String allowing switch between ERA5 and NCEP2 for the variables where obs come from atmospheric reanalysis systems (tas, uas, vas, ua, zg)
-   - **eval_path** (*str*, optional): String pointing to the folder that contains pre-computed error values for 30 CMIP6 models, as well as the default variables, regions and seasons
+   - **eval_path** (*str*, optional): Folder with the pre-computed errors of the reference models. By default ``eval/<reanalysis>/`` of the cmpitool checkout
    - **time** (*str*, optional): String containing analysis period
    - **seasons** (*list*, optional): List of seasons for which the analysis can be done
    - **maskfixes** (*bool*, optional): By default we load a set of ocean basins and continents that sometimes overlap. This switch fixes this particular dataset. If you read in your own masks, you want to turn this off

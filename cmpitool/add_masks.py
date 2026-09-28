@@ -7,11 +7,10 @@ Jan Streffing               2026-09-29      One DataArray of masks, fixes select
 '''
 
 import logging
-import os
+from importlib.resources import as_file, files
 
 import geopandas as gp
 import numpy as np
-import pkg_resources
 import pooch
 import regionmask
 import xarray as xr
@@ -38,20 +37,6 @@ BOXES = {
 CONTINENTS_URL = "https://pubs.usgs.gov/of/2006/1187/basemaps/continents/continents.zip"
 
 
-def _ocean_basins_path():
-    '''Find ocean_basins.geojson for an installed package or a checkout.'''
-    try:
-        path = pkg_resources.resource_filename('cmpitool', 'data/ocean_basins.geojson')
-        if not os.path.exists(path):
-            path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                                'geojson', 'ocean_basins.geojson')
-            if not os.path.exists(path):
-                path = "geojson/ocean_basins.geojson"
-    except (ImportError, FileNotFoundError):
-        path = "geojson/ocean_basins.geojson"
-    return path
-
-
 def build_masks(maskfixes=True):
     '''
     Masks of all boxes, ocean basins and continents on the 2 degree grid.
@@ -74,9 +59,9 @@ def build_masks(maskfixes=True):
         return masks.drop_vars(['abbrevs', 'names'], errors='ignore').assign_coords(region=names)
 
     continents = gp.read_file("zip://" + pooch.retrieve(CONTINENTS_URL, None))
-    ocean_basins_path = _ocean_basins_path()
-    logger.debug('Loading ocean basins from: %s', ocean_basins_path)
-    ocean_basins = gp.read_file(ocean_basins_path)
+    with as_file(files('cmpitool') / 'data' / 'ocean_basins.geojson') as ocean_basins_path:
+        logger.debug('Loading ocean basins from: %s', ocean_basins_path)
+        ocean_basins = gp.read_file(ocean_basins_path)
 
     boxes = xr.DataArray(
         np.stack([np.outer((lat > lat_min) & (lat < lat_max), (lon > lon_min) & (lon < lon_max))

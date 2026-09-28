@@ -21,6 +21,18 @@ from .write_fractions import write_fractions
 __all__ = ['cmpitool']
 
 
+def _data_path(*parts):
+    '''
+    A folder with the shipped obs or reference data, next to the package in the
+    cmpitool checkout, so the defaults do not depend on the working directory.
+    '''
+    path = Path(__file__).resolve().parent.parent.joinpath(*parts)
+    if not path.is_dir():
+        raise FileNotFoundError(str(path)+' does not exist. cmpitool ships its obs and reference data '
+                                'in the git repository, not in the package; pass obs_path and eval_path.')
+    return path
+
+
 def _configure_logging(verbose):
     '''
     Show cmpitool's progress messages, and with verbose its details too. A handler
@@ -35,7 +47,7 @@ def _configure_logging(verbose):
         logger.addHandler(handler)
 
 
-def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: str = 'output/', obs_path: str = 'obs/' , reanalysis: str = 'ERA5', 
+def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: str = 'output/', obs_path: str = None, reanalysis: str = 'ERA5', 
              eval_path: str = None, time: str = '198912-201411', seasons: list = ('MAM', 'JJA', 'SON', 'DJF'), 
              maskfixes: bool = True, use_for_eval: bool = False, complexity: str = 'boxes', verbose: bool = False, biasmaps: bool = False, biasmap_limits: dict = None):
     '''
@@ -58,13 +70,14 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     out_path : str, optional
         Path to directory where output files will be stored (default: 'output/')
     obs_path : str, optional
-        Path to directory containing observational/reanalysis data (default: 'obs/')
+        Path to directory containing observational/reanalysis data (default: the obs/
+        folder of the cmpitool checkout, wherever Python is started)
     reanalysis : str, optional
         Reanalysis dataset to use ('ERA5' or 'NCEP2') for atmospheric variables 
         (default: 'ERA5')
     eval_path : str, optional
         Path to directory containing pre-computed error values for reference models.
-        If None (default), 'eval/{reanalysis}/' will be used.
+        If None (default), eval/{reanalysis}/ of the cmpitool checkout will be used.
     time : str, optional
         Time period for analysis in format 'YYYYMM-YYYYMM' (default: '198912-201411')
     seasons : list, optional
@@ -116,10 +129,10 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     _configure_logging(verbose)
     seasons = list(seasons)
 
-    obs_path = Path(obs_path)
+    obs_path = _data_path('obs') if obs_path is None else Path(obs_path)
     model_path = Path(model_path)
     out_path = Path(out_path)
-    eval_path = Path('eval', reanalysis) if eval_path is None else Path(eval_path)
+    eval_path = _data_path('eval', reanalysis) if eval_path is None else Path(eval_path)
 
     #Create the output folders
     for subdir in ['abs', 'frac', 'plot', 'plot/maps']:

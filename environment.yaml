@@ -16,5 +16,4 @@ dependencies:
   - netcdf4
   - cartopy
   - pip:
-    - regionmask
-    - dask
+    - regionmask>=0.11

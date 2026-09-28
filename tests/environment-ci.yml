@@ -10,7 +10,6 @@ dependencies:
   - numpy=1.26.4
   - pandas=2.2.0
   - xarray=2024.2.0
-  - dask=2024.2.0
   - scipy=1.12.0
   - netcdf4=1.6.5
   - regionmask=0.11.0
@@ -23,6 +22,6 @@ dependencies:
   - seaborn=0.13.2
   - pooch=1.8.1
   - tqdm
-  - setuptools=69.1.0  # add_masks still uses pkg_resources
+  - setuptools=69.1.0
   - pip
   - pytest
