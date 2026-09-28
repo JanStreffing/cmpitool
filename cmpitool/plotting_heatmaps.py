@@ -2,9 +2,11 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
     '''
     AUTHORS:
     Jan Streffing		2022-11-30	Split off from main tool
+    Jan Streffing		2026-09-29	Table straight from the fraction array
 
     DESCRIPTION:
-    This function loads the model data against that is compared against obs data.
+    This function plots a heatmap of the error fractions per model, with one row per
+    variable and level and one column per region and season.
     
     INPUT:
     models         		List of models to be evaluated
@@ -24,49 +26,29 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
 
     from tqdm import tqdm
     import matplotlib.pyplot as plt
-    import numpy as np
     import pandas as pd
     import seaborn as sns
 
     print('Plotting heatmap(s)')
 
-    regions_names = []
-    for region in regions:
-        regions_names.append(region.name)
-            
+    # One row per field (variable and level), one column per region and season
+    rows = [var.row_label(depth) for var in obs for depth in var.depths]
+    columns = [region.name+' '+seas for region in regions for seas in seasons]
+
     for model in tqdm(models):
-        # One row per field (variable and level), one column per region and season;
-        # fields the model does not provide are NaN
+        # Fields the model does not provide are NaN and stay empty
         values = error_fraction.sel(model=model.name).transpose('field', 'region', 'season').values
-        collect_frac_reshaped = values.reshape(values.shape[0], len(regions)*len(seasons))
-
-        def add_space(input): #Small helper function added spaces in front of season names
-            output = []
-            for string in input:
-                output.append(str(' ')+string)
-            return output
-
-        seasons_plot = add_space(seasons) 
-        a=seasons_plot*len(regions)
-        b=np.repeat(regions_names,len(seasons_plot))
-        coord=[n+str(m) for m,n in zip(a,b)]
-        
-        index_obs=[]
-        for var in obs:
-            for depth in var.depths:
-                index_obs.append(var.row_label(depth))
+        table = pd.DataFrame(values.reshape(len(rows), len(columns)), index=rows, columns=columns)
         if verbose:
-            print(model.name,'shape:',len(index_obs),'x',len(regions)*len(seasons))
-        collect_frac_dataframe = pd.DataFrame(data=collect_frac_reshaped, index=index_obs, columns=coord)
+            print(model.name, 'shape:', table.shape)
 
-        fig, ax = plt.subplots(figsize=((len(regions)*len(seasons))/1.5,len(index_obs)/1.5))
+        fig, ax = plt.subplots(figsize=(len(columns)/1.5, len(rows)/1.5))
         fig.patch.set_facecolor('white')
-        plt.rcParams['axes.facecolor'] = 'white'
-        ax = sns.heatmap(collect_frac_dataframe, vmin=0.5, vmax=1.5,center=1,annot=True,fmt='.2f',cmap="PiYG_r",cbar=False,linewidths=1)
-        plt.xticks(rotation=90,fontsize=14)
-        plt.yticks(rotation=0, ha='right',fontsize=14)
-        plt.title(model.name+' CMPI: '+str(round(cmpi[model.name],3)), fontsize=18)
-        
-        plt.savefig(out_path+'plot/'+model.name+'.png',dpi=300,bbox_inches='tight')
-        plt.close(fig)
+        ax.set_facecolor('white')
+        sns.heatmap(table, vmin=0.5, vmax=1.5, center=1, annot=True, fmt='.2f', cmap="PiYG_r", cbar=False, linewidths=1, ax=ax)
+        plt.setp(ax.get_xticklabels(), rotation=90, fontsize=14)
+        plt.setp(ax.get_yticklabels(), rotation=0, ha='right', fontsize=14)
+        ax.set_title(model.name+' CMPI: '+str(round(cmpi[model.name],3)), fontsize=18)
 
+        fig.savefig(out_path+'plot/'+model.name+'.png', dpi=300, bbox_inches='tight')
+        plt.close(fig)
