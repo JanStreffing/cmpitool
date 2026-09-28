@@ -19,7 +19,7 @@ requirements = [
     "pandas >=1.0.0",
     "pooch",
     "regionmask",
-    "seaborn",
+    "seaborn>=0.13",
     "tqdm",
     "xarray",
 ]

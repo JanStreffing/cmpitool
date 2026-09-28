@@ -23,7 +23,7 @@ requirements:
     - pooch
     - python
     - regionmask
-    - seaborn
+    - seaborn >=0.13
     - tqdm
     - xarray
     - netcdf4
@@ -36,7 +36,7 @@ requirements:
     - pooch
     - python
     - regionmask
-    - seaborn
+    - seaborn >=0.13
     - tqdm
     - xarray
     - netcdf4
