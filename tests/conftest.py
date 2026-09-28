@@ -75,10 +75,3 @@ def synth_model_path(tmp_path_factory, setup):
                 ds[var.name] = _perturb(ds[var.name], k)
                 ds.to_netcdf(path / f"{var.name}_{SYNTH}_{TIME}_{depth}_{seas}.nc")
     return path
-
-
-def make_out_path(tmp_path):
-    """cmpitool does not create its output directories (fixed in PR 2)."""
-    for sub in ["abs", "frac", "plot", "plot/maps"]:
-        (tmp_path / sub).mkdir(parents=True, exist_ok=True)
-    return tmp_path

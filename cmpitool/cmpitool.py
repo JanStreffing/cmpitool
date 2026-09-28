@@ -90,6 +90,11 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     else:
         eval_path=eval_path+'/'
 
+    #Create the output folders
+    import os
+    for subdir in ['abs', 'frac', 'plot', 'plot/maps']:
+        os.makedirs(out_path+subdir, exist_ok=True)
+
     variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup(reanalysis)
 
     obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]
@@ -190,3 +195,5 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     
     if biasmaps == True:
         plotting_biasmaps(ds_model, ds_obs , models, seasons, obs, out_path, verbose, biasmap_limits)
+
+    return error_fraction

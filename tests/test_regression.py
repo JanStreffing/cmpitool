@@ -16,6 +16,7 @@ fixes a bug has to remove its marker.
 import shutil
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pytest
@@ -23,7 +24,7 @@ import pytest
 import cmpitool as pkg
 from cmpitool import cmpitool, config_cmip6, read_errors
 
-from conftest import GOLDEN, OBS_PATH, REPO, SYNTH, make_out_path
+from conftest import GOLDEN, OBS_PATH, REPO, SYNTH
 
 EVAL_ERA5 = REPO / "eval" / "ERA5"
 KEYS = ["Variable", "Region", "Level", "Season"]
@@ -63,7 +64,7 @@ def run_case(case, setup, synth_model_path, out_path):
     if eval_names is not None:
         kwargs["eval_models"] = [m for m in cmip6_models(setup) if m.name in eval_names]
 
-    cmpitool(
+    return cmpitool(
         str(synth_model_path),
         models,
         out_path=str(out_path),
@@ -98,8 +99,12 @@ def assert_same_table(actual, expected):
 
 @pytest.mark.parametrize("case", list(CASES))
 def test_regression(case, setup, synth_model_path, tmp_path, update_golden):
-    out = make_out_path(tmp_path)
-    run_case(case, setup, synth_model_path, out)
+    # A directory that does not exist yet: cmpitool has to create its output folders.
+    out = tmp_path / "out"
+    error_fraction = run_case(case, setup, synth_model_path, out)
+
+    assert error_fraction and {key[3] for key in error_fraction} == {SYNTH}
+    assert plt.get_fignums() == [], "figures left open"
 
     outputs = [Path("abs") / f"{SYNTH}.csv", Path("frac") / f"{SYNTH}_fraction.csv"]
     assert (out / "plot" / f"{SYNTH}.png").is_file()

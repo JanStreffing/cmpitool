@@ -35,7 +35,6 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
     for region in regions:
         regions_names.append(region.name)
             
-    plt.rcParams.update({'figure.max_open_warning': 0})
     reorganized_error_fraction = OrderedDict()
     for model in tqdm(models):
         r=0
@@ -49,7 +48,7 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
                             else:
                                 reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=error_fraction[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0][0][0]
                             r+=1
-                        except:
+                        except KeyError: # variable not provided by this model
                             reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=np.nan
         def add_space(input): #Small helper function added spaces in front of season names
             output = []
@@ -72,7 +71,7 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
                 if var.name == 'zos':
                     levelname='st. dev. '
                 index_obs.append(levelname+var.name)
-        if verbose == 'true':
+        if verbose:
             print(model.name,'number of values: ',len(list(reorganized_error_fraction.values())),'; shape:',len(index_obs),'x',len(regions)*len(seasons))
         collect_frac_reshaped = np.array(list(reorganized_error_fraction.values()) ).reshape(len(index_obs),len(regions)*len(seasons)) # transform to 2D
         collect_frac_dataframe = pd.DataFrame(data=collect_frac_reshaped, index=index_obs, columns=coord)
@@ -86,4 +85,5 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
         plt.title(model.name+' CMPI: '+str(round(cmpi[model.name],3)), fontsize=18)
         
         plt.savefig(out_path+'plot/'+model.name+'.png',dpi=300,bbox_inches='tight')
+        plt.close(fig)
 

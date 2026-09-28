@@ -66,7 +66,6 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
             
         return default_limits.get(var, None)
 
-    plt.rcParams.update({'figure.max_open_warning': 0})
     for model in models:
         print('Plotting biasmaps for: ',model.name)
         for var in tqdm(model.variables):
@@ -79,7 +78,7 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
                     if var.name == 'zos':
                         levelname='st. dev. '
 
-                    plt.figure(figsize=(6, 4.5))
+                    fig = plt.figure(figsize=(6, 4.5))
                     ax = plt.axes(projection=ccrs.PlateCarree())
                     ax.add_feature(cfeature.COASTLINE, zorder=3)
 
@@ -111,8 +110,9 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
                     levels = np.linspace(-limit, limit, num_levels)
                     try:
                         imf = plt.contourf(lon_cyclic, lat, data_to_plot, cmap=plt.cm.PuOr_r, levels=levels, extend='both', transform=ccrs.PlateCarree())
-                    except:
+                    except Exception:
                         print('hit cartopy bug for this plot: https://github.com/SciTools/cartopy/issues/2176, not output for'+var.name, depth, seas, model.name)
+                        plt.close(fig)
                         continue
                     ax.set_title(model.name + ' ' + var.name + ' ' + str(depth) + ' ' + seas + ' bias vs. '+var.obs, fontweight="bold")
                     plt.tight_layout()
@@ -138,3 +138,4 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
                     cb.ax.tick_params(labelsize='12')
 
                     plt.savefig(out_path + 'plot/maps/' + model.name + '_' + var.name + '_' + str(depth) + '_' + seas + '.png', dpi=200, bbox_inches='tight')
+                    plt.close(fig)
