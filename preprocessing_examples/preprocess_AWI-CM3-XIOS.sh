@@ -47,6 +47,16 @@ tmpdir=$outdir/tmp
 rm -rf $tmpdir
 mkdir -p $tmpdir
 
+# OIFS output file name: 48r1 dropped the repeated frequency tag that 43r3 has,
+# e.g. atm_remapped_1m_2t_1989-1989.nc (48r1) vs atm_remapped_1m_2t_1m_1989-1989.nc (43r3)
+oifs_file()  # $1 = frequency prefix (1m or 1m_pl), $2 = variable, $3 = year
+{
+	local y=$(printf "%04d" $3)
+	local f=oifs/atm_remapped_${1}_${2}_${y}-${y}.nc
+	[[ -f $f ]] || f=oifs/atm_remapped_${1}_${2}_${1}_${y}-${y}.nc
+	echo $f
+}
+
 printf "##############################################\n"
 printf "# clean up so cat does not do strange things #\n"
 printf "##############################################\n"
@@ -67,9 +77,9 @@ do
 		cdo -intlevel,10,100,1000,4000 -setctomiss,0 fesom/${var}.fesom.${i}.nc $tmpdir/${var}.fesom.${i}.int.nc &
 	done
 	var='u'
-	cdo sellevel,30000 oifs/atm_remapped_1m_pl_${var}_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
+	cdo sellevel,30000 $(oifs_file 1m_pl $var $i) ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
 	var='z'
-	cdo sellevel,50000 oifs/atm_remapped_1m_pl_${var}_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
+	cdo sellevel,50000 $(oifs_file 1m_pl $var $i) ${outdir}/${var}_$(printf "%04d" $i)_${tmpstr}_lvl.nc &
 done
 wait
 
@@ -86,7 +96,7 @@ do
 	done
 	for var in ci 2t ttr tcc cp lsp 10u 10v;
 	do
-		cdo cat oifs/atm_remapped_1m_${var}_$(printf "%04d" $i)-$(printf "%04d" $i).nc ${outdir}/${var}_${tmpstr}.nc &
+		cdo cat $(oifs_file 1m $var $i) ${outdir}/${var}_${tmpstr}.nc &
 	done
 	for var in temp salt;
 	do
