@@ -1,0 +1,28 @@
+# Pinned to the levante env that produced tests/golden/ and the eval/ reference
+# CSVs (/work/ab0246/a270092/software/miniforge3/envs/cmpitool), so that CI
+# reproduces the stored outputs. Change a pin only together with a check that
+# the regression tests still pass.
+name: cmpitool-ci
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9.18
+  - numpy=1.26.4
+  - pandas=2.2.0
+  - xarray=2024.2.0
+  - dask=2024.2.0
+  - scipy=1.12.0
+  - netcdf4=1.6.5
+  - regionmask=0.11.0
+  - geopandas=0.14.3
+  - shapely=2.0.3
+  - fiona=1.9.5
+  - pyproj=3.6.1
+  - cartopy=0.22.0
+  - matplotlib=3.8.3
+  - seaborn=0.13.2
+  - pooch=1.8.1
+  - tqdm
+  - setuptools=69.1.0  # add_masks still uses pkg_resources
+  - pip
+  - pytest

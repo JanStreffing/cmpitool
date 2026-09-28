@@ -1,0 +1,36 @@
+name: tests
+
+on:
+  # No branch filter: in a stack, PRs above the bottom one target the branch
+  # below them, not main, and still need CI (fesom2 had to fix this in #1091).
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: tests/environment-ci.yml
+          cache-environment: true
+
+      # add_masks downloads the USGS continents at runtime, cartopy the coastlines.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pooch
+            ~/.local/share/cartopy
+          key: downloads-v1
+
+      - name: Install cmpitool
+        run: pip install --no-deps -e .
+
+      - name: Run tests
+        run: pytest -rxXs
