@@ -14,6 +14,7 @@ Bug fixes; ERA5 results are unchanged. Tracked in #62.
 * Bias maps print the area-weighted signed bias, MAE and RMSD with cos(lat) weights, as the index does. The value labelled bias was a mean absolute deviation with unnormalised sqrt(cos(lat)) weights.
 * Regression tests and CI.
 * ``setup.py`` and ``__init__.py`` say 1.3.1; tags v1.2 and v1.3 were made with 1.1.2 in the source.
+* ``meta.yaml`` is removed. It was a stale copy of the conda recipe, which lives in conda-forge/cmpitool-feedstock and is updated by the conda-forge bot after each PyPI release.
 
 1.1.2 (2025-04-15)
 ------------------
