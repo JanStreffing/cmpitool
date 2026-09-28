@@ -21,13 +21,25 @@ jobs:
           environment-file: tests/environment-ci.yml
           cache-environment: true
 
-      # add_masks downloads the USGS continents at runtime, cartopy the coastlines.
+      # add_masks downloads the USGS continents with pooch at runtime, but
+      # pubs.usgs.gov answers GitHub runners with 502. Put the same file
+      # (md5 b9e827dbc172fa90aab4670a1a786f56, identical to the live one on
+      # 2026-09-28) where pooch looks first.
+      - name: Seed the USGS continents download
+        run: |
+          python - <<'EOF'
+          import shutil, pooch, pooch.utils
+          url = "https://pubs.usgs.gov/of/2006/1187/basemaps/continents/continents.zip"
+          cache = pooch.os_cache("pooch")
+          cache.mkdir(parents=True, exist_ok=True)
+          shutil.copyfile("tests/data/usgs_continents.zip", cache / pooch.utils.unique_file_name(url))
+          EOF
+
+      # cartopy downloads the Natural Earth coastlines for the bias maps.
       - uses: actions/cache@v4
         with:
-          path: |
-            ~/.cache/pooch
-            ~/.local/share/cartopy
-          key: downloads-v1
+          path: ~/.local/share/cartopy
+          key: cartopy-v1
 
       - name: Install cmpitool
         run: pip install --no-deps -e .
