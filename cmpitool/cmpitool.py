@@ -38,8 +38,9 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     use_for_eval : bool, optional
         Whether to save results for future use as reference data (default: False)
     complexity : str, optional
-        Geographical complexity level: 'boxes' for lat/lon boxes or 'regions' for 
-        continents & ocean basins (default: 'boxes')
+        Which regions to evaluate: 'boxes' (five latitude bands and Nino3.4, default),
+        'boxes_all' (plus glob and innertropics), 'regions' (six ocean basins and eight
+        continents) or 'all' (all of these). See registry.COMPLEXITIES
     verbose : bool, optional
         Whether to print detailed information during execution (default: False)
     biasmaps : bool, optional
@@ -72,7 +73,7 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     AUTHORS:
     Jan Streffing               2022-12-01      Split off from main tool
     '''
-    from cmpitool import (make_variables, Model, Region, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,
+    from cmpitool import (make_variables, make_regions, Model, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,
                           write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps, plotting_biasmaps)
 
     #Setup safe paths
@@ -106,51 +107,9 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     models = [with_run_variables(model) for model in models]
     eval_models = [with_run_variables(model) for model in eval_models]
 
-    #Instancing default regions:
-    #Boxes:
-    glob = Region(name='glob', domain='mixed')
-    arctic = Region(name='arctic', domain='mixed')
-    northmid = Region(name='northmid', domain='mixed')
-    tropics = Region(name='tropics', domain='mixed')
-    innertropics = Region(name='innertropics', domain='mixed')
-    nino34 = Region(name='nino34', domain='mixed')
-    southmid = Region(name='southmid', domain='mixed')
-    antarctic = Region(name='antarctic', domain='mixed')
-    #Ocean basins:
-    Atlantic_Basin = Region(name='Atlantic_Basin', domain='ocean')
-    Pacific_Basin = Region(name='Pacific_Basin', domain='ocean')
-    Indian_Basin = Region(name='Indian_Basin', domain='ocean')
-    Arctic_Basin = Region(name='Arctic_Basin', domain='ocean')
-    Southern_Ocean_Basin = Region(name='Southern_Ocean_Basin', domain='ocean')
-    Mediterranean_Basin = Region(name='Mediterranean_Basin', domain='ocean')
-    #Landmasses:
-    Asia = Region(name='Asia', domain='land')
-    North_America = Region(name='North_America', domain='land')
-    Europe = Region(name='Europe', domain='land')
-    Africa = Region(name='Africa', domain='land')
-    South_America = Region(name='South_America', domain='land')
-    Oceania = Region(name='Oceania', domain='land')
-    Australia = Region(name='Australia', domain='land')
-    Antarctica = Region(name='Antarctica', domain='land')
+    #Regions to evaluate, from one of the preset lists in registry.COMPLEXITIES
+    regions = make_regions(complexity)
 
-    #Select which of the above you actually want to use by added them to the list of regions.
-    #complexity allows choosing from some premade lists.
-
-    if complexity == 'boxes':
-        regions = [arctic, northmid, tropics, nino34, southmid, antarctic]
-    elif complexity == 'boxes_all':
-        regions = [glob, arctic, northmid, tropics, innertropics, nino34, southmid, antarctic]
-    elif complexity == 'regions':
-        regions = [Atlantic_Basin, Pacific_Basin, Indian_Basin, Arctic_Basin, Southern_Ocean_Basin, 
-                          Mediterranean_Basin, Asia, North_America, Europe, Africa, South_America, 
-                          Oceania, Australia, Antarctica]
-    else:
-        regions = [Atlantic_Basin, Pacific_Basin, Indian_Basin, Arctic_Basin, Southern_Ocean_Basin, 
-                          Mediterranean_Basin, Asia, North_America, Europe, Africa, South_America, Oceania, 
-                          Australia, Antarctica,glob, arctic, northmid, tropics, innertropics, nino34, 
-                          southmid, antarctic]
-
-        
     #####################################
     # End of user config, start of tool #
     #####################################

@@ -9,7 +9,7 @@ Jan Streffing               2026-09-29      Replaces cmpisetup(), which defined 
 from dataclasses import dataclass
 from typing import List, Optional
 
-__all__ = ['Variable', 'Region', 'Model', 'VARIABLES', 'make_variables']
+__all__ = ['Variable', 'Region', 'Model', 'VARIABLES', 'make_variables', 'REGION_DOMAINS', 'COMPLEXITIES', 'make_regions']
 
 # Variables whose observations come from the reanalysis chosen with reanalysis=
 REANALYSIS_VARIABLES = ('tas', 'uas', 'vas', 'ua', 'zg')
@@ -57,6 +57,37 @@ class Region:
     domain: str
     mask: object = None
     active: bool = False
+
+
+# Domain of every region add_masks knows: boxes, ocean basins and continents
+REGION_DOMAINS = {
+    'glob': 'mixed', 'arctic': 'mixed', 'northmid': 'mixed', 'tropics': 'mixed',
+    'innertropics': 'mixed', 'nino34': 'mixed', 'southmid': 'mixed', 'antarctic': 'mixed',
+    'Atlantic_Basin': 'ocean', 'Pacific_Basin': 'ocean', 'Indian_Basin': 'ocean',
+    'Arctic_Basin': 'ocean', 'Southern_Ocean_Basin': 'ocean', 'Mediterranean_Basin': 'ocean',
+    'Asia': 'land', 'North_America': 'land', 'Europe': 'land', 'Africa': 'land',
+    'South_America': 'land', 'Oceania': 'land', 'Australia': 'land', 'Antarctica': 'land',
+}
+
+_BASINS_AND_CONTINENTS = ['Atlantic_Basin', 'Pacific_Basin', 'Indian_Basin', 'Arctic_Basin',
+                          'Southern_Ocean_Basin', 'Mediterranean_Basin', 'Asia', 'North_America',
+                          'Europe', 'Africa', 'South_America', 'Oceania', 'Australia', 'Antarctica']
+_ALL_BOXES = ['glob', 'arctic', 'northmid', 'tropics', 'innertropics', 'nino34', 'southmid', 'antarctic']
+
+# The region lists cmpitool(complexity=...) chooses from, in the order of the output rows
+COMPLEXITIES = {
+    'boxes': ['arctic', 'northmid', 'tropics', 'nino34', 'southmid', 'antarctic'],
+    'boxes_all': _ALL_BOXES,
+    'regions': _BASINS_AND_CONTINENTS,
+    'all': _BASINS_AND_CONTINENTS + _ALL_BOXES,
+}
+
+
+def make_regions(complexity):
+    '''Return new Region objects for one of the lists in COMPLEXITIES.'''
+    if complexity not in COMPLEXITIES:
+        raise ValueError("Unknown complexity '"+str(complexity)+"'. Known: "+', '.join(COMPLEXITIES))
+    return [Region(name, REGION_DOMAINS[name]) for name in COMPLEXITIES[complexity]]
 
 
 def make_variables(reanalysis='ERA5'):

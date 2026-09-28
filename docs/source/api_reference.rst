@@ -95,9 +95,10 @@ add_masks
 
 .. code-block:: python
 
-   def add_masks(regions, verbose)
+   def add_masks(regions, verbose, maskfixes=True)
+   def build_masks(maskfixes=True, verbose=False)
 
-Adds geographical masks to regions.
+``build_masks`` returns the masks of all boxes, ocean basins and continents on the 2 degree grid as one boolean DataArray ``(region, lat, lon)`` with the region names as coordinate. The boxes are defined in ``BOXES``, the regions and their domains in ``REGION_DOMAINS``, and the presets for ``complexity`` in ``COMPLEXITIES``. ``add_masks`` attaches the mask of each ``Region`` by name.
 
 loading_obs
 ^^^^^^^^^^
