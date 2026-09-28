@@ -63,9 +63,6 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     4. Computes performance metrics relative to reference models
     5. Generates visualizations of results
     
-    If you add new variables to the tool and generate new reference CSV files, 
-    you'll need to update the n_implemented_var value (currently 14) accordingly.
-    
     Examples
     --------
     >>> from cmpitool import cmpitool, cmpisetup
@@ -99,16 +96,6 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
 
     obs = [siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so]
 
-    '''
-    If you don't add all variables to obs for your analysis, the missing ones will be skipped.
-    However the variables are still present in the pre-generated .csv files. 
-    We still need to loop over the skipped variables to access the right lines. 
-    Thus we set number_of_implemented_variables manually, currently to 14.
-    - If you add more variables and generate new .csv files, increase the number 14 accordingly!
-    - If you just skip a variable for your analysis, don't change number_of_implemented_variables!
-    '''
-    n_implemented_var = 14 
-            
     #The CMIP6 models are set up by default in their own function
     cmip6_models = config_cmip6(climate_model, obs)
 
@@ -183,8 +170,7 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     write_errors(abs_error, mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose)
 
     #Reading in previously written absolute errors
-    eval_error_mean = read_errors(obs, eval_models, regions, seasons, out_path, eval_path, 
-                                  n_implemented_var, verbose)
+    eval_error_mean = read_errors(obs, eval_models, regions, seasons, out_path, eval_path, verbose)
     
     #Calculate fraction between your model errors and the evaluation model errors
     error_fraction = calculate_fractions(models, regions, seasons, mean_error, eval_error_mean, verbose)

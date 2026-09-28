@@ -158,7 +158,7 @@ read_errors
 
 .. code-block:: python
 
-   def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, n_implemented_var, verbose)
+   def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, verbose)
 
 Reads previously calculated error statistics from CSV files.
 
