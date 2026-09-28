@@ -1,3 +1,8 @@
+from .registry import VARIABLES, Model
+
+__all__ = ['config_cmip6']
+
+
 def config_cmip6():
     '''
     AUTHORS:
@@ -15,8 +20,6 @@ def config_cmip6():
     RETURN:
     cmip6_models		List of Model objects
     '''
-    from cmpitool.registry import Model, VARIABLES
-
     def all_but(*missing):
         return [name for name in VARIABLES if name not in missing]
 

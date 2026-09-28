@@ -1,4 +1,13 @@
-def calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_mean, verbose):
+import logging
+
+import xarray as xr
+
+__all__ = ['calculate_fractions']
+
+logger = logging.getLogger(__name__)
+
+
+def calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_mean):
     '''
     Calculate performance fractions comparing model errors against reference models.
 
@@ -22,8 +31,6 @@ def calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_me
     eval_error_mean : dict
         Mean error of the reference models by (variable, region, level, season),
         see read_errors
-    verbose : bool
-        Whether to print detailed information during execution
 
     Returns
     -------
@@ -44,9 +51,8 @@ def calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_me
     Jan Streffing               2026-09-29      One division of labelled arrays
     '''
 
-    import xarray as xr
 
-    print('Calculating ratio of current model error to evaluation model error')
+    logger.info('Calculating ratio of current model error to evaluation model error')
 
     fields = [(var, depth) for var in obs for depth in var.depths]
     reference = xr.DataArray(
@@ -61,6 +67,5 @@ def calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_me
                                coords={'region': [region.name for region in regions]})
 
     error_fraction = (mean_error / reference).where(~(ocean_field & land_region))
-    if verbose:
-        print(error_fraction)
+    logger.debug('%s', error_fraction)
     return error_fraction.transpose('model', 'field', 'season', 'region')

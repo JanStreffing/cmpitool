@@ -1,4 +1,18 @@
-def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, verbose):
+import logging
+import warnings
+from collections import OrderedDict
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
+
+__all__ = ['read_errors']
+
+logger = logging.getLogger(__name__)
+
+
+def read_errors(obs, eval_models, regions, seasons, eval_path):
     '''
     Read previously calculated error metrics from CSV files for model evaluation.
 
@@ -17,12 +31,8 @@ def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, verbose
         List of region objects defining geographical areas for evaluation
     seasons : list
         List of seasons to evaluate (e.g., ['DJF', 'MAM', 'JJA', 'SON'])
-    out_path : str
-        Path to directory containing this run's output files
     eval_path : str
         Path to directory containing evaluation reference data
-    verbose : bool
-        Whether to print detailed information during execution
 
     Returns
     -------
@@ -47,36 +57,29 @@ def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, verbose
 
     Examples
     --------
-    >>> eval_error_mean = read_errors(obs, eval_models, regions, seasons,
-    ...                              'output/', 'eval/ERA5/', verbose=True)
+    >>> eval_error_mean = read_errors(obs, eval_models, regions, seasons, 'eval/ERA5/')
 
     AUTHORS:
     Jan Streffing               2022-11-30      Split off from main tool
     Jan Streffing               2026-09-28      Look up rows by key instead of walking the file
     '''
 
-    import numpy as np
-    import pandas as pd
-    import warnings
-    from collections import OrderedDict
-    from tqdm import tqdm
 
-    print('Reading precalculated cmip6 field mean of errors from csv files')
+    logger.info('Reading precalculated cmip6 field mean of errors from csv files')
 
     keys = [(var.name, region.name, depth, seas)
             for var in obs for region in regions for depth in var.depths for seas in seasons]
     collect = np.full((len(eval_models), len(keys)), np.nan)
 
     for i, eval_model in enumerate(tqdm(eval_models)):
-        path = eval_path+eval_model.name+'.csv'
+        path = Path(eval_path) / (eval_model.name+'.csv')
         table = pd.read_csv(path, delimiter=' ', dtype={'Variable': str, 'Region': str, 'Level': str, 'Season': str})
         table = table.set_index(['Variable', 'Region', 'Level', 'Season'])['AbsMeanError']
         if not table.index.is_unique:
-            raise ValueError(path+' has more than one row for the same variable, region, level and season')
+            raise ValueError(str(path)+' has more than one row for the same variable, region, level and season')
         available = set(table.index.get_level_values('Variable'))
-        if verbose:
-            for var in obs:
-                print('reading: ' if var.name in available else 'filling: ', eval_model.name, var.name)
+        for var in obs:
+            logger.debug('%s %s %s', 'reading:' if var.name in available else 'filling:', eval_model.name, var.name)
 
         for j, key in enumerate(keys):
             if key[0] not in available: # This evaluation model does not provide the variable
@@ -84,10 +87,9 @@ def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, verbose
             try:
                 collect[i, j] = table.loc[key]
             except KeyError:
-                raise KeyError(path+' has '+key[0]+' but no row for region '+key[1]+', level '+key[2]
+                raise KeyError(str(path)+' has '+key[0]+' but no row for region '+key[1]+', level '+key[2]
                                +', season '+key[3]) from None
-            if verbose:
-                print(eval_model.name, *key, collect[i, j])
+            logger.debug('%s %s %s', eval_model.name, ' '.join(key), collect[i, j])
 
     # Ignoring non useful warning:
     # RuntimeWarning: Mean of empty slice, for variables no evaluation model provides

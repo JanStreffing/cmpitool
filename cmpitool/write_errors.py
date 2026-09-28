@@ -1,4 +1,16 @@
-def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose):
+import csv
+import logging
+import shutil
+from pathlib import Path
+
+from tqdm import tqdm
+
+__all__ = ['write_errors']
+
+logger = logging.getLogger(__name__)
+
+
+def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path):
     '''
     Write calculated error metrics to CSV files for analysis and evaluation.
     
@@ -23,8 +35,6 @@ def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, e
         Whether to copy results to evaluation directory for use as reference data
     eval_path : str
         Path to directory where evaluation reference data is stored
-    verbose : bool
-        Whether to print detailed information during execution
         
     Returns
     -------
@@ -46,29 +56,25 @@ def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, e
     Examples
     --------
     >>> write_errors(mean_error, models, regions, seasons, 
-    ...              'output/', False, 'eval/ERA5/', verbose=True)
+    ...              'output/', False, 'eval/ERA5/')
     
     AUTHORS:
     Jan Streffing               2022-11-30      Split off from main tool
     '''
     
-    import csv
-    from tqdm import tqdm
-    import shutil
 
-    print('Writing field mean of errors into csv files')
+    logger.info('Writing field mean of errors into csv files')
 
     for model in tqdm(models):
-        with open(out_path+'abs/'+model.name+'.csv', 'w', newline='') as csvfile:
+        path = Path(out_path) / 'abs' / (model.name+'.csv')
+        with open(path, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=' ',quotechar='|', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(['Variable','Region','Level','Season','AbsMeanError'])
             for var in model.variables:
                 for region in regions:
                     for depth in var.depths:
                         for seas in seasons:
-                            if verbose:
-                                print(seas, depth, region.name, var.name, model.name)
                             value = float(mean_error.loc[model.name, var.name+'/'+depth, seas, region.name])
                             writer.writerow([var.name,region.name,depth,seas,value])
         if use_for_eval:
-             shutil.copyfile(out_path+'abs/'+model.name+'.csv', eval_path+model.name+'.csv')   
+            shutil.copyfile(path, Path(eval_path) / (model.name+'.csv'))   

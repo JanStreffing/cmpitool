@@ -1,6 +1,43 @@
+'''
+The cmpitool() pipeline: load, compare, normalise, write and plot.
+'''
+
+import logging
+from pathlib import Path
+
+from .add_masks import add_masks
+from .calculate_errors import calculate_errors
+from .calculate_fractions import calculate_fractions
+from .config_cmip6 import config_cmip6
+from .loading_models import loading_models
+from .loading_obs import loading_obs
+from .plotting_biasmaps import plotting_biasmaps
+from .plotting_heatmaps import plotting_heatmaps
+from .read_errors import read_errors
+from .registry import Model, make_regions, make_variables
+from .write_errors import write_errors
+from .write_fractions import write_fractions
+
+__all__ = ['cmpitool']
+
+
+def _configure_logging(verbose):
+    '''
+    Show cmpitool's progress messages, and with verbose its details too. A handler
+    is only added when neither the cmpitool logger nor the root logger has one, so
+    logging set up by the caller is left alone.
+    '''
+    logger = logging.getLogger('cmpitool')
+    logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+    if not logger.handlers and not logging.getLogger().handlers:
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter('%(message)s'))
+        logger.addHandler(handler)
+
+
 def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: str = 'output/', obs_path: str = 'obs/' , reanalysis: str = 'ERA5', 
-             eval_path: str = None, time: str = '198912-201411', seasons: list = ['MAM', 'JJA', 'SON', 'DJF'], 
-             maskfixes: bool = True, use_for_eval: bool = False, complexity: str = 'boxes', verbose: bool = False, biasmaps: bool = False, biasmap_limits: dict = None) -> dict:
+             eval_path: str = None, time: str = '198912-201411', seasons: list = ('MAM', 'JJA', 'SON', 'DJF'), 
+             maskfixes: bool = True, use_for_eval: bool = False, complexity: str = 'boxes', verbose: bool = False, biasmaps: bool = False, biasmap_limits: dict = None):
     '''
     Main function for Climate Model Performance Index calculation and evaluation.
     
@@ -42,7 +79,8 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
         'boxes_all' (plus glob and innertropics), 'regions' (six ocean basins and eight
         continents) or 'all' (all of these). See registry.COMPLEXITIES
     verbose : bool, optional
-        Whether to print detailed information during execution (default: False)
+        Log details of every step, not only the progress (default: False). The
+        messages go to the 'cmpitool' logger.
     biasmaps : bool, optional
         Whether to generate bias map plots (default: False)
     biasmap_limits : dict, optional
@@ -73,30 +111,26 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     
     AUTHORS:
     Jan Streffing               2022-12-01      Split off from main tool
+    Jan Streffing               2026-09-29      Module renamed from cmpitool.py to pipeline.py
     '''
-    from cmpitool import (make_variables, make_regions, Model, config_cmip6, add_masks, loading_obs, loading_models, calculate_errors,
-                          write_errors, read_errors, calculate_fractions, write_fractions, plotting_heatmaps, plotting_biasmaps)
+    _configure_logging(verbose)
+    seasons = list(seasons)
 
-    #Setup safe paths
-    obs_path=obs_path+'/'
-    model_path=model_path+'/'
-    out_path=out_path+'/'
-    if eval_path == None:
-        eval_path='eval/'+reanalysis+'/'
-    else:
-        eval_path=eval_path+'/'
+    obs_path = Path(obs_path)
+    model_path = Path(model_path)
+    out_path = Path(out_path)
+    eval_path = Path('eval', reanalysis) if eval_path is None else Path(eval_path)
 
     #Create the output folders
-    import os
     for subdir in ['abs', 'frac', 'plot', 'plot/maps']:
-        os.makedirs(out_path+subdir, exist_ok=True)
+        (out_path / subdir).mkdir(parents=True, exist_ok=True)
 
     #Variables with the observations of this reanalysis
     variables = make_variables(reanalysis)
     obs = list(variables.values())
 
     #The use can define their own set of evaluation models. If they don't we use cmip6 by default.
-    if eval_models == None:
+    if eval_models is None:
         eval_models = config_cmip6()
 
     #Use this run's variables for every model, whichever reanalysis its variables were made with
@@ -116,33 +150,33 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     #####################################
 
     #Function to add masks to the selected regions
-    regions = add_masks(regions, verbose, maskfixes)
+    regions = add_masks(regions, maskfixes)
     
     #Loading observational data
-    ds_obs = loading_obs(obs, obs_path, seasons, verbose)
+    ds_obs = loading_obs(obs, obs_path, seasons)
 
     #Loading model data
-    ds_model = loading_models(models, model_path, seasons, time, verbose)
+    ds_model = loading_models(models, model_path, seasons, time)
         
     #Area weighted mean absolute error, DataArray (model, field, season, region)
-    mean_error = calculate_errors(ds_model, ds_obs, models, regions, obs, seasons, verbose)
+    mean_error = calculate_errors(ds_model, ds_obs, models, regions, obs, seasons)
     
     #Writing errors into csv files that can be:
     # a) read in for further cmip calculation
     # b) placed into eval/ subfolder to read as evaluation data
-    write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose)
+    write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path)
 
     #Reading in previously written absolute errors
-    eval_error_mean = read_errors(obs, eval_models, regions, seasons, out_path, eval_path, verbose)
+    eval_error_mean = read_errors(obs, eval_models, regions, seasons, eval_path)
     
     #Calculate fraction between your model errors and the evaluation model errors
-    error_fraction = calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_mean, verbose)
+    error_fraction = calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_mean)
     
-    cmpi =  write_fractions(error_fraction, models, regions, seasons, out_path, verbose)
+    cmpi = write_fractions(error_fraction, models, regions, seasons, out_path)
     
-    plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path, verbose)
+    plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path)
     
-    if biasmaps == True:
-        plotting_biasmaps(ds_model, ds_obs , models, seasons, obs, out_path, verbose, biasmap_limits)
+    if biasmaps:
+        plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, biasmap_limits)
 
     return error_fraction

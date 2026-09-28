@@ -1,3 +1,18 @@
+import logging
+from pathlib import Path
+
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import matplotlib.pyplot as plt
+import numpy as np
+from cartopy.util import add_cyclic_point
+from tqdm import tqdm
+
+__all__ = ['bias_statistics', 'plotting_biasmaps']
+
+logger = logging.getLogger(__name__)
+
+
 def bias_statistics(model, obs):
     '''
     AUTHORS:
@@ -15,7 +30,6 @@ def bias_statistics(model, obs):
     RETURN:
     bias, mae, rmsd             Floats in the units of the variable
     '''
-    import numpy as np
 
     diff = (model - obs).squeeze(drop=True)
     weights = np.cos(np.deg2rad(diff.lat))
@@ -26,7 +40,7 @@ def bias_statistics(model, obs):
     return fldmean(diff), fldmean(abs(diff)), float(np.sqrt(fldmean(diff**2)))
 
 
-def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose, biasmap_limits=None):
+def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, biasmap_limits=None):
     '''
     AUTHORS:
     Jan Streffing		2024-04-02	Copied from plotting_heatmaps
@@ -43,19 +57,12 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
     seasons                     List of seasons to be evaluated
     obs                         List of Variable objects
     out_path                    String pointing to the folder in which results will be stored
-    verbose                     Boolean for verbose output
     biasmap_limits              Colour ranges by variable name, overriding
                                 Variable.default_limit; None gives 3 standard deviations
 
     RETURN:
     '''
 
-    from tqdm import tqdm
-    import matplotlib.pyplot as plt
-    import numpy as np
-    import cartopy.crs as ccrs
-    import cartopy.feature as cfeature
-    from cartopy.util import add_cyclic_point
 
     num_levels = 11
     std_range_multiplier = 3
@@ -67,7 +74,7 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
         return var.default_limit
 
     for model in models:
-        print('Plotting biasmaps for: ',model.name)
+        logger.info('Plotting biasmaps for: %s', model.name)
         for var in tqdm(model.variables):
             for depth in var.depths:
                 for seas in seasons:
@@ -90,7 +97,7 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
                         imf = ax.contourf(lon_cyclic, diff.lat.values, data_to_plot, cmap=plt.cm.PuOr_r, levels=levels,
                                           extend='both', transform=ccrs.PlateCarree())
                     except Exception:
-                        print('hit cartopy bug for this plot: https://github.com/SciTools/cartopy/issues/2176, not output for'+var.name, depth, seas, model.name)
+                        logger.warning('hit cartopy bug https://github.com/SciTools/cartopy/issues/2176, no bias map for %s %s %s %s', var.name, depth, seas, model.name)
                         plt.close(fig)
                         continue
                     ax.set_title(model.name + ' ' + var.name + ' ' + str(depth) + ' ' + seas + ' bias vs. '+var.obs, fontweight="bold")
@@ -111,5 +118,5 @@ def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose,
                     cb = fig.colorbar(imf, cax=cbar_ax, orientation='horizontal')
                     cb.ax.tick_params(labelsize=12)
 
-                    fig.savefig(out_path + 'plot/maps/' + model.name + '_' + var.name + '_' + str(depth) + '_' + seas + '.png', dpi=200, bbox_inches='tight')
+                    fig.savefig(Path(out_path) / 'plot' / 'maps' / (model.name + '_' + var.name + '_' + str(depth) + '_' + seas + '.png'), dpi=200, bbox_inches='tight')
                     plt.close(fig)

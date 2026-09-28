@@ -54,3 +54,17 @@ def test_cmip6_models():
 def test_region():
     region = Region("arctic", "mixed")
     assert region.mask is None and not region.active
+
+
+def test_verbose_sets_the_log_level(monkeypatch):
+    import logging
+    from cmpitool.pipeline import _configure_logging
+
+    logger = logging.getLogger("cmpitool")
+    monkeypatch.setattr(logger, "handlers", [])
+    _configure_logging(False)
+    assert logger.level == logging.INFO
+    _configure_logging(True)
+    assert logger.level == logging.DEBUG
+    # pytest configures the root logger, so no handler of our own is added
+    assert logger.handlers == []

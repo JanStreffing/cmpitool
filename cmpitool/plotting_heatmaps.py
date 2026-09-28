@@ -1,4 +1,17 @@
-def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path, verbose):
+import logging
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+from tqdm import tqdm
+
+__all__ = ['plotting_heatmaps']
+
+logger = logging.getLogger(__name__)
+
+
+def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path):
     '''
     AUTHORS:
     Jan Streffing		2022-11-30	Split off from main tool
@@ -19,17 +32,12 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
     cmpi                        List of climate model overall performance indices
                                 one per model
     out_path                    String pointing to the folder in which results will be stored
-    verbose                     Boolean for verbose output
 
     RETURN:
     '''
 
-    from tqdm import tqdm
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    import seaborn as sns
 
-    print('Plotting heatmap(s)')
+    logger.info('Plotting heatmap(s)')
 
     # One row per field (variable and level), one column per region and season
     rows = [var.row_label(depth) for var in obs for depth in var.depths]
@@ -39,8 +47,7 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
         # Fields the model does not provide are NaN and stay empty
         values = error_fraction.sel(model=model.name).transpose('field', 'region', 'season').values
         table = pd.DataFrame(values.reshape(len(rows), len(columns)), index=rows, columns=columns)
-        if verbose:
-            print(model.name, 'shape:', table.shape)
+        logger.debug('%s heatmap shape: %s', model.name, table.shape)
 
         fig, ax = plt.subplots(figsize=(len(columns)/1.5, len(rows)/1.5))
         fig.patch.set_facecolor('white')
@@ -50,5 +57,5 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
         plt.setp(ax.get_yticklabels(), rotation=0, ha='right', fontsize=14)
         ax.set_title(model.name+' CMPI: '+str(round(cmpi[model.name],3)), fontsize=18)
 
-        fig.savefig(out_path+'plot/'+model.name+'.png', dpi=300, bbox_inches='tight')
+        fig.savefig(Path(out_path) / 'plot' / (model.name+'.png'), dpi=300, bbox_inches='tight')
         plt.close(fig)

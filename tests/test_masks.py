@@ -40,11 +40,11 @@ def test_fixes_change_only_the_atlantic_and_southern_ocean(masks):
 
 
 def test_add_masks_attaches_masks_by_name():
-    regions = add_masks([Region("nino34", "mixed"), Region("Europe", "land")], False)
+    regions = add_masks([Region("nino34", "mixed"), Region("Europe", "land")])
     assert all(region.active for region in regions)
     assert [int(region.mask.sum()) for region in regions] == [120, 367]
     with pytest.raises(ValueError, match="No mask for region 'Artic'"):
-        add_masks([Region("Artic", "mixed")], False)
+        add_masks([Region("Artic", "mixed")])
 
 
 def test_presets():

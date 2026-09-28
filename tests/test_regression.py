@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import cmpitool as pkg
+import cmpitool.pipeline as pipeline
 from cmpitool import VARIABLES, Model, Region, cmpitool, config_cmip6, read_errors
 
 from conftest import GOLDEN, OBS_PATH, REPO, SYNTH
@@ -123,7 +123,7 @@ class _Stop(Exception):
     """Raised by spies to end a cmpitool() run once the call of interest is seen."""
 
 
-def _no_masks(regions, verbose, *args, **kwargs):
+def _no_masks(regions, *args, **kwargs):
     return regions
 
 
@@ -134,8 +134,8 @@ def test_reanalysis_selects_obs(monkeypatch, tmp_path):
         seen.update({v.name: v.obs for v in obs})
         raise _Stop
 
-    monkeypatch.setattr(pkg, "add_masks", _no_masks)
-    monkeypatch.setattr(pkg, "loading_obs", spy)
+    monkeypatch.setattr(pipeline, "add_masks", _no_masks)
+    monkeypatch.setattr(pipeline, "loading_obs", spy)
     with pytest.raises(_Stop):
         cmpitool(str(tmp_path), [], out_path=str(tmp_path), obs_path=str(OBS_PATH),
                  eval_path=str(REPO / "eval" / "NCEP2"), reanalysis="NCEP2")
@@ -145,11 +145,11 @@ def test_reanalysis_selects_obs(monkeypatch, tmp_path):
 def test_maskfixes_passed(monkeypatch, tmp_path):
     seen = {}
 
-    def spy(regions, verbose, maskfixes=True):
+    def spy(regions, maskfixes=True):
         seen["maskfixes"] = maskfixes
         raise _Stop
 
-    monkeypatch.setattr(pkg, "add_masks", spy)
+    monkeypatch.setattr(pipeline, "add_masks", spy)
     with pytest.raises(_Stop):
         cmpitool(str(tmp_path), [], out_path=str(tmp_path), obs_path=str(OBS_PATH),
                  eval_path=str(EVAL_ERA5), maskfixes=False)
@@ -166,8 +166,7 @@ def _reference_value(model, variable, region, level, season):
 def _read_one_model(seasons, eval_path=EVAL_ERA5, name="ACCESS-CM2"):
     regions = [Region(name="arctic", domain="mixed"), Region(name="tropics", domain="mixed")]
     eval_models = [Model(name, [])]
-    return read_errors(list(VARIABLES.values()), eval_models, regions, seasons,
-                       "unused/", str(eval_path) + "/", False)
+    return read_errors(list(VARIABLES.values()), eval_models, regions, seasons, eval_path)
 
 
 @pytest.mark.parametrize("seasons", [["JJA", "DJF"], ["DJF", "JJA"], ["SON", "MAM", "DJF", "JJA"]])

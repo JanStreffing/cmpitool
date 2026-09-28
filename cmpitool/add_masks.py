@@ -6,7 +6,20 @@ Jan Streffing               2022-11-30      Split off from main tool
 Jan Streffing               2026-09-29      One DataArray of masks, fixes selected by name
 '''
 
+import logging
+import os
+
+import geopandas as gp
+import numpy as np
+import pkg_resources
+import pooch
+import regionmask
+import xarray as xr
+
 __all__ = ['add_masks', 'build_masks', 'BOXES']
+
+logger = logging.getLogger(__name__)
+
 
 # Latitude-longitude boxes: (lat_min, lat_max, lon_min, lon_max). Grid points on
 # an edge belong to no box, which drops the rows at -90, +-60 and +-30 and the
@@ -27,9 +40,6 @@ CONTINENTS_URL = "https://pubs.usgs.gov/of/2006/1187/basemaps/continents/contine
 
 def _ocean_basins_path():
     '''Find ocean_basins.geojson for an installed package or a checkout.'''
-    import os
-    import pkg_resources
-
     try:
         path = pkg_resources.resource_filename('cmpitool', 'data/ocean_basins.geojson')
         if not os.path.exists(path):
@@ -42,25 +52,18 @@ def _ocean_basins_path():
     return path
 
 
-def build_masks(maskfixes=True, verbose=False):
+def build_masks(maskfixes=True):
     '''
     Masks of all boxes, ocean basins and continents on the 2 degree grid.
 
     INPUT:
     maskfixes                   Remove the continents from the Southern Ocean basin
                                 and North America from the Atlantic basin
-    verbose                     Print where the ocean basins are read from
 
     RETURN:
     masks                       Boolean DataArray (region, lat, lon) with region names
                                 as the region coordinate
     '''
-    import geopandas as gp
-    import numpy as np
-    import pooch
-    import regionmask
-    import xarray as xr
-
     lon = np.arange(0, 360, 2)
     lat = np.arange(-90, 90, 2)
 
@@ -72,8 +75,7 @@ def build_masks(maskfixes=True, verbose=False):
 
     continents = gp.read_file("zip://" + pooch.retrieve(CONTINENTS_URL, None))
     ocean_basins_path = _ocean_basins_path()
-    if verbose:
-        print(f"Loading ocean basins from: {ocean_basins_path}")
+    logger.debug('Loading ocean basins from: %s', ocean_basins_path)
     ocean_basins = gp.read_file(ocean_basins_path)
 
     boxes = xr.DataArray(
@@ -97,13 +99,11 @@ def build_masks(maskfixes=True, verbose=False):
         atlantic = masks.sel(region='Atlantic_Basin')
         masks.loc[dict(region='Atlantic_Basin')] = np.logical_xor(atlantic, masks.sel(region='North_America')) & atlantic
 
-    if verbose:
-        for name in masks.region.values:
-            print('Mask available for:', name)
+    logger.debug('Masks available for: %s', ', '.join(masks.region.values))
     return masks
 
 
-def add_masks(regions, verbose, maskfixes=True):
+def add_masks(regions, maskfixes=True):
     '''
     Attach the mask of each region to its Region object and mark it active.
 
@@ -111,8 +111,6 @@ def add_masks(regions, verbose, maskfixes=True):
     ----------
     regions : list
         List of Region objects, named after a box, ocean basin or continent
-    verbose : bool
-        Whether to print detailed information during execution
     maskfixes : bool, optional
         Whether to apply corrections for overlapping ocean basins and continents (default: True)
 
@@ -125,15 +123,14 @@ def add_masks(regions, verbose, maskfixes=True):
     --------
     >>> from cmpitool import Region
     >>> regions = [Region(name='arctic', domain='mixed'), Region(name='Europe', domain='land')]
-    >>> regions = add_masks(regions, verbose=True)
+    >>> regions = add_masks(regions)
     '''
-    masks = build_masks(maskfixes, verbose)
+    masks = build_masks(maskfixes)
     known = list(masks.region.values)
     for region in regions:
         if region.name not in known:
             raise ValueError("No mask for region '"+region.name+"'. Known: "+', '.join(known))
-        if verbose:
-            print('Selecting Mask for:', region.name)
+        logger.debug('Selecting mask for: %s', region.name)
         region.active = True
         region.mask = masks.sel(region=region.name)
     return regions

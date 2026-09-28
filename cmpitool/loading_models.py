@@ -1,4 +1,16 @@
-def loading_models(models, model_path, seasons, time, verbose):
+import logging
+from collections import OrderedDict
+from pathlib import Path
+
+import xarray as xr
+from tqdm import tqdm
+
+__all__ = ['loading_models']
+
+logger = logging.getLogger(__name__)
+
+
+def loading_models(models, model_path, seasons, time):
     '''
     Load model data for comparison with observations.
     
@@ -16,8 +28,6 @@ def loading_models(models, model_path, seasons, time, verbose):
         List of seasons to be evaluated (e.g. ['DJF', 'MAM', 'JJA', 'SON'])
     time : str
         Time period string in format 'YYYYMM-YYYYMM' (e.g. '198912-201411')
-    verbose : bool
-        Whether to print detailed information during execution
         
     Returns
     -------
@@ -42,11 +52,8 @@ def loading_models(models, model_path, seasons, time, verbose):
     Jan Streffing               2022-11-30      Split off from main tool
     '''
 
-    from collections import OrderedDict
-    import xarray as xr
-    from tqdm import tqdm
 
-    print('Loading model data')
+    logger.info('Loading model data')
 
     ds_model = OrderedDict()
 
@@ -54,9 +61,9 @@ def loading_models(models, model_path, seasons, time, verbose):
         for var in model.variables:
             for depth in var.depths:
                 for seas in seasons:
-                    if verbose:
-                        print('loading '+model_path+var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc')
-                    with xr.open_dataset(model_path+var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc') as intermediate:
+                    path = Path(model_path) / (var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc')
+                    logger.debug('loading %s', path)
+                    with xr.open_dataset(path) as intermediate:
                         # Keep only the variable itself, not time_bnds, area or other extras
                         intermediate = intermediate[[var.name]].squeeze(drop=True).compute()
                     ds_model[var.name,depth,seas,model.name] = intermediate.drop_vars('depth', errors='ignore')

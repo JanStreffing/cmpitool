@@ -30,7 +30,7 @@ Parameters:
    - **maskfixes** (*bool*, optional): By default we load a set of ocean basins and continents that sometimes overlap. This switch fixes this particular dataset. If you read in your own masks, you want to turn this off
    - **use_for_eval** (*bool*, optional): Set to True if the models being processed should be used as reference for evaluation in future runs
    - **complexity** (*str*, optional): String allowing selection of whether CMPI shall be calculated for simple lat/lon boxes ('boxes') or continents & ocean basins ('regions')
-   - **verbose** (*bool*, optional): Boolean to activate verbose output
+   - **verbose** (*bool*, optional): Log the details of every step, not only the progress. Messages go to the ``cmpitool`` logger; a handler printing them is added only if the caller has not configured logging
    - **biasmaps** (*bool*, optional): Boolean to activate bias map plots
    - **biasmap_limits** (*dict*, optional): Colour ranges for the bias maps by variable name, overriding ``Variable.default_limit``. A value of None gives a range of 3 standard deviations of the bias
 
@@ -95,8 +95,8 @@ add_masks
 
 .. code-block:: python
 
-   def add_masks(regions, verbose, maskfixes=True)
-   def build_masks(maskfixes=True, verbose=False)
+   def add_masks(regions, maskfixes=True)
+   def build_masks(maskfixes=True)
 
 ``build_masks`` returns the masks of all boxes, ocean basins and continents on the 2 degree grid as one boolean DataArray ``(region, lat, lon)`` with the region names as coordinate. The boxes are defined in ``BOXES``, the regions and their domains in ``REGION_DOMAINS``, and the presets for ``complexity`` in ``COMPLEXITIES``. ``add_masks`` attaches the mask of each ``Region`` by name.
 
@@ -105,7 +105,7 @@ loading_obs
 
 .. code-block:: python
 
-   def loading_obs(obs, obs_path, seasons, verbose)
+   def loading_obs(obs, obs_path, seasons)
 
 Loads observational data for comparison.
 
@@ -114,7 +114,7 @@ loading_models
 
 .. code-block:: python
 
-   def loading_models(models, model_path, seasons, time, verbose)
+   def loading_models(models, model_path, seasons, time)
 
 Loads climate model output data for analysis.
 
@@ -123,7 +123,7 @@ calculate_errors
 
 .. code-block:: python
 
-   def calculate_errors(ds_model, ds_obs, models, regions, obs, seasons, verbose)
+   def calculate_errors(ds_model, ds_obs, models, regions, obs, seasons)
 
 Calculates the pointwise absolute error and the mean absolute error between models and observations.
 
@@ -132,7 +132,7 @@ write_errors
 
 .. code-block:: python
 
-   def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path, verbose)
+   def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path)
 
 Writes error statistics to CSV files.
 
@@ -141,7 +141,7 @@ read_errors
 
 .. code-block:: python
 
-   def read_errors(obs, eval_models, regions, seasons, out_path, eval_path, verbose)
+   def read_errors(obs, eval_models, regions, seasons, eval_path)
 
 Reads previously calculated error statistics from CSV files.
 
@@ -150,7 +150,7 @@ calculate_fractions
 
 .. code-block:: python
 
-   def calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_mean, verbose)
+   def calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_mean)
 
 Calculates performance fractions comparing model errors against reference model errors.
 
@@ -159,7 +159,7 @@ write_fractions
 
 .. code-block:: python
 
-   def write_fractions(error_fraction, models, regions, seasons, out_path, verbose)
+   def write_fractions(error_fraction, models, regions, seasons, out_path)
 
 Writes performance fractions to CSV files.
 
@@ -171,7 +171,7 @@ plotting_heatmaps
 
 .. code-block:: python
 
-   def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path, verbose)
+   def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path)
 
 Generates heatmap visualizations of model performance.
 
@@ -180,7 +180,7 @@ plotting_biasmaps
 
 .. code-block:: python
 
-   def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, verbose, biasmap_limits=None)
+   def plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, biasmap_limits=None)
 
 Generates spatial maps showing model biases relative to observations.
 
@@ -191,7 +191,6 @@ Parameters:
    - **seasons** (*list*): List of seasons to be evaluated
    - **obs** (*list*): List of variable objects for which observations will be loaded
    - **out_path** (*str*): Path to directory where output files will be stored
-   - **verbose** (*bool*): Whether to print detailed information during execution
    - **biasmap_limits** (*dict*, optional): Colour ranges by variable name, overriding ``Variable.default_limit``. None gives a range of 3 standard deviations of the bias
 
 Configuration Functions

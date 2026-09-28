@@ -1,4 +1,15 @@
-def calculate_errors(ds_model, ds_obs, models, regions, obs, seasons, verbose):
+import logging
+
+import numpy as np
+import xarray as xr
+from tqdm import tqdm
+
+__all__ = ['calculate_errors']
+
+logger = logging.getLogger(__name__)
+
+
+def calculate_errors(ds_model, ds_obs, models, regions, obs, seasons):
     '''
     Calculate the area-weighted mean absolute error of every model field in every region.
 
@@ -16,8 +27,6 @@ def calculate_errors(ds_model, ds_obs, models, regions, obs, seasons, verbose):
         List of Variable objects; their levels make up the field dimension
     seasons : list
         List of seasons to evaluate (e.g., ['DJF', 'MAM', 'JJA', 'SON'])
-    verbose : bool
-        Whether to print detailed information during execution
 
     Returns
     -------
@@ -39,11 +48,8 @@ def calculate_errors(ds_model, ds_obs, models, regions, obs, seasons, verbose):
     Jan Streffing               2026-09-29      One weighted mean over all regions at once
     '''
 
-    import numpy as np
-    import xarray as xr
-    from tqdm import tqdm
 
-    print('Calculating absolute error and field mean of abs error')
+    logger.info('Calculating absolute error and field mean of abs error')
 
     fields = [(var, depth) for var in obs for depth in var.depths]
 
@@ -75,6 +81,5 @@ def calculate_errors(ds_model, ds_obs, models, regions, obs, seasons, verbose):
     weights = masks * np.cos(np.deg2rad(masks.lat))
 
     mean_error = error.weighted(weights).mean(('lat', 'lon')).transpose('model', 'field', 'season', 'region')
-    if verbose:
-        print(mean_error)
+    logger.debug('%s', mean_error)
     return mean_error
