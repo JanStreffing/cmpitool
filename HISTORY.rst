@@ -2,6 +2,19 @@
 History
 =======
 
+1.3.1 (unreleased)
+------------------
+
+Bug fixes; ERA5 results are unchanged. Tracked in #62.
+
+* ``reanalysis='NCEP2'`` now loads the NCEP2 observations. Since the library conversion in 2022, ``cmpitool()`` read ERA5 files for tas, uas, vas, ua and zg while dividing by the NCEP2 references. The size-1 ``level`` dimension of the NCEP2 files is squeezed on load.
+* ``maskfixes=False`` now has an effect; it was never passed to ``add_masks``.
+* ``cmpitool()`` creates its output folders and returns ``error_fraction``.
+* Figures are closed after saving. The loaders keep only the named variable.
+* Bias maps print the area-weighted signed bias, MAE and RMSD with cos(lat) weights, as the index does. The value labelled bias was a mean absolute deviation with unnormalised sqrt(cos(lat)) weights.
+* Regression tests and CI.
+* ``setup.py`` and ``__init__.py`` say 1.3.1; tags v1.2 and v1.3 were made with 1.1.2 in the source.
+
 1.1.2 (2025-04-15)
 ------------------
 

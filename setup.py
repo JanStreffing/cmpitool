@@ -54,7 +54,7 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/JanStreffing/cmpitool",
-    download_url="https://github.com/JanStreffing/cmpitool/archive/refs/tags/v1.1.2.tar.gz",
-    version="1.1.2",
+    download_url="https://github.com/JanStreffing/cmpitool/archive/refs/tags/v1.3.1.tar.gz",
+    version="1.3.1",
     zip_safe=False,
 )
