@@ -3,14 +3,23 @@ from collections import OrderedDict
 from pathlib import Path
 
 import xarray as xr
-from tqdm import tqdm
+
+from .parallel import run_jobs
 
 __all__ = ['loading_models']
 
 logger = logging.getLogger(__name__)
 
 
-def loading_models(models, model_path, seasons, time):
+def _load(path, name):
+    '''One model file, with only the variable itself, not time_bnds, area or other extras.'''
+    logger.debug('loading %s', path)
+    with xr.open_dataset(path) as intermediate:
+        intermediate = intermediate[[name]].squeeze(drop=True).compute()
+    return intermediate.drop_vars('depth', errors='ignore')
+
+
+def loading_models(models, model_path, seasons, time, workers=None):
     '''
     Load model data for comparison with observations.
     
@@ -28,6 +37,9 @@ def loading_models(models, model_path, seasons, time):
         List of seasons to be evaluated (e.g. ['DJF', 'MAM', 'JJA', 'SON'])
     time : str
         Time period string in format 'YYYYMM-YYYYMM' (e.g. '198912-201411')
+    workers : int, optional
+        Number of processes reading files; None for the CPUs available, at
+        most 8; 1 reads them in this process
         
     Returns
     -------
@@ -50,21 +62,14 @@ def loading_models(models, model_path, seasons, time):
     
     AUTHORS:
     Jan Streffing               2022-11-30      Split off from main tool
+    Jan Streffing               2026-09-29      Files read in parallel processes
     '''
 
 
     logger.info('Loading model data')
 
-    ds_model = OrderedDict()
-
-    for model in tqdm(models):
-        for var in model.variables:
-            for depth in var.depths:
-                for seas in seasons:
-                    path = Path(model_path) / (var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc')
-                    logger.debug('loading %s', path)
-                    with xr.open_dataset(path) as intermediate:
-                        # Keep only the variable itself, not time_bnds, area or other extras
-                        intermediate = intermediate[[var.name]].squeeze(drop=True).compute()
-                    ds_model[var.name,depth,seas,model.name] = intermediate.drop_vars('depth', errors='ignore')
-    return ds_model
+    keys = [(var.name, depth, seas, model.name)
+            for model in models for var in model.variables for depth in var.depths for seas in seasons]
+    jobs = [(Path(model_path) / (name+'_'+model_name+'_'+time+'_'+depth+'_'+seas+'.nc'), name)
+            for name, depth, seas, model_name in keys]
+    return OrderedDict(zip(keys, run_jobs(_load, jobs, workers)))

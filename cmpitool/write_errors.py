@@ -78,11 +78,17 @@ def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, e
                 csvfile.write(line+'\r\n')
             writer = csv.writer(csvfile, delimiter=' ',quotechar='|', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(['Variable','Region','Level','Season','AbsMeanError'])
+            # One array per model, indexed by position: .loc per value took most of the time
+            table = mean_error.sel(model=model.name).transpose('field', 'season', 'region')
+            values = table.values
+            field_index = {field: i for i, field in enumerate(table.field.values)}
+            season_index = {seas: i for i, seas in enumerate(table.season.values)}
+            region_index = {region: i for i, region in enumerate(table.region.values)}
             for var in model.variables:
                 for region in regions:
                     for depth in var.depths:
                         for seas in seasons:
-                            value = float(mean_error.loc[model.name, var.name+'/'+depth, seas, region.name])
+                            value = float(values[field_index[var.name+'/'+depth], season_index[seas], region_index[region.name]])
                             writer.writerow([var.name,region.name,depth,seas,value])
         if use_for_eval:
             Path(eval_path).mkdir(parents=True, exist_ok=True)

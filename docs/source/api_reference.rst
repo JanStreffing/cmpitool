@@ -13,7 +13,8 @@ cmpitool
 
    def cmpitool(model_path, models, eval_models=None, out_path='output/', obs_path=None, reanalysis='ERA5', 
                 eval_path=None, time='198912-201411', seasons=['MAM', 'JJA', 'SON', 'DJF'], 
-                maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False, biasmap_limits=None)
+                maskfixes=True, use_for_eval=False, complexity='boxes', verbose=False, biasmaps=False, biasmap_limits=None,
+                workers=None)
 
 The main function of CMPITool that performs climate model performance analysis.
 
@@ -33,6 +34,7 @@ Parameters:
    - **verbose** (*bool*, optional): Log the details of every step, not only the progress. Messages go to the ``cmpitool`` logger; a handler printing them is added only if the caller has not configured logging
    - **biasmaps** (*bool*, optional): Boolean to activate bias map plots
    - **biasmap_limits** (*dict*, optional): Colour ranges for the bias maps by variable name, overriding ``Variable.default_limit``. A value of None gives a range of 3 standard deviations of the bias
+   - **workers** (*int*, optional): Number of processes reading the model files and drawing the heatmaps and bias maps. None (default) uses the CPUs available to the process, for example a Slurm allocation, at most 8; 1 does everything in one process
 
 Returns:
    The error fractions as an xarray DataArray (model, field, season, region), where a field is a variable at one level such as ``'thetao/100m'``. Results are also saved to the output directory.

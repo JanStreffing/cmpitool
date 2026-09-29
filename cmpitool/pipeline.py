@@ -49,7 +49,8 @@ def _configure_logging(verbose):
 
 def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: str = 'output/', obs_path: str = None, reanalysis: str = 'ERA5', 
              eval_path: str = None, time: str = '198912-201411', seasons: list = ('MAM', 'JJA', 'SON', 'DJF'), 
-             maskfixes: bool = True, use_for_eval: bool = False, complexity: str = 'boxes', verbose: bool = False, biasmaps: bool = False, biasmap_limits: dict = None):
+             maskfixes: bool = True, use_for_eval: bool = False, complexity: str = 'boxes', verbose: bool = False, biasmaps: bool = False, biasmap_limits: dict = None,
+             workers: int = None):
     '''
     Main function for Climate Model Performance Index calculation and evaluation.
     
@@ -101,7 +102,11 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     biasmap_limits : dict, optional
         Colour ranges for the bias maps by variable name, overriding Variable.default_limit.
         A value of None gives a range of 3 standard deviations of the bias (default: None)
-        
+    workers : int, optional
+        Number of processes reading the model files and drawing the heatmaps and bias
+        maps. None (default) uses the CPUs available to this process, at most 8; 1 does
+        everything in this process
+
     Returns
     -------
     error_fraction : xarray.DataArray
@@ -171,7 +176,7 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     ds_obs = loading_obs(obs, obs_path, seasons)
 
     #Loading model data
-    ds_model = loading_models(models, model_path, seasons, time)
+    ds_model = loading_models(models, model_path, seasons, time, workers)
         
     #Area weighted mean absolute error, DataArray (model, field, season, region)
     mean_error = calculate_errors(ds_model, ds_obs, models, regions, obs, seasons)
@@ -188,9 +193,9 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     
     cmpi = write_fractions(error_fraction, models, regions, seasons, out_path)
     
-    plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path)
+    plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path, workers)
     
     if biasmaps:
-        plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, biasmap_limits)
+        plotting_biasmaps(ds_model, ds_obs, models, seasons, obs, out_path, biasmap_limits, workers)
 
     return error_fraction
