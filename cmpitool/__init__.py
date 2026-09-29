@@ -10,8 +10,9 @@ CMPITool (Climate Model Performance Indexing Tool) is a Python framework for
 evaluating and comparing climate models against observational data and other
 reference models.
 
-The tool calculates performance indices based on the methodology of Reichler and Kim (2008),
-comparing model outputs to observational data across multiple variables, regions, and seasons.
+The tool divides the mean absolute error of a model against observations by the mean
+error of reference models, across multiple variables, regions, and seasons, and averages
+these fractions into the CMPI with one weight per variable.
 
 Key Features:
 - Evaluation of climate models against observations
@@ -26,7 +27,7 @@ For more information, see the documentation at: https://cmpitool.readthedocs.io/
 
 __author__ = """Jan Streffing"""
 __email__ = "j.streffing1988@gmail.com"
-__version__ = "1.4"
+__version__ = "2.0.0"
 __credits__ = "Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research"
 
 

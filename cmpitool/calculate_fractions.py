@@ -41,10 +41,11 @@ def calculate_fractions(models, regions, obs, seasons, mean_error, eval_error_me
 
     Notes
     -----
-    The CMPI value is calculated following the methodology of Reichler and Kim (2008),
-    where the error of a model is divided by the mean error of reference models for
-    the same variable, region, and season. This normalization allows for comparison
-    across different variables with different physical units.
+    The error of a model is divided by the mean error of the reference models for
+    the same variable, level, region and season. This normalization allows for
+    comparison across variables with different physical units. Normalising by a
+    reference ensemble follows Reichler and Kim (2008); their index uses squared
+    errors over the interannual variance instead. See docs/source/method.rst.
 
     AUTHORS:
     Jan Streffing               2022-11-30      Split off from main tool

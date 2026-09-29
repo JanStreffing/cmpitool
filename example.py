@@ -23,6 +23,8 @@ own_limits = {
     'pr': None,         # Precipitation (kg m-2 s-1): 3 standard deviations
 }
 
-#cmpitool(model_path, models, eval_models=eval_models, verbose=True, biasmaps=False)
-#cmpitool(model_path, models, eval_models=eval_models, verbose=True, biasmaps=True, biasmap_limits=own_limits, use_for_eval=True)
+# Your own eval_models: an earlier run with use_for_eval=True wrote their errors
+# to <out_path>/eval/<reanalysis>/, so pass that folder as eval_path.
+#cmpitool(model_path, models, eval_models=eval_models, eval_path='output/eval/ERA5/', verbose=True, biasmaps=False)
+#cmpitool(model_path, models, eval_models=eval_models, eval_path='output/eval/ERA5/', verbose=True, biasmaps=True, biasmap_limits=own_limits, use_for_eval=True)
 cmpitool(model_path, models, verbose=True, biasmaps=True, use_for_eval=True)

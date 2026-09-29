@@ -14,9 +14,12 @@ models:
   - TUNE11_RVICE
   - TUNE12_ENTSTPC
 
-# Reference models. Leave out to compare with the 30 CMIP6 models.
+# Reference models. Leave out, together with eval_path, to compare with the
+# 30 CMIP6 models. Your own reference models come from an earlier run with
+# use_for_eval: true, which wrote them to <out_path>/eval/<reanalysis>/.
 eval_models:
   - REF_V340
+eval_path: output/eval/ERA5/
 
 out_path: output/
 reanalysis: ERA5          # or NCEP2
@@ -27,5 +30,5 @@ biasmaps: true
 biasmap_limits:           # override Variable.default_limit; null gives 3 standard deviations
   tas: 3.0
 
-use_for_eval: false
+use_for_eval: false       # true also writes the errors to <out_path>/eval/<reanalysis>/
 verbose: false

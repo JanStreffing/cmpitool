@@ -4,6 +4,8 @@ Region masks on the 2 degree grid.
 AUTHORS:
 Jan Streffing               2022-11-30      Split off from main tool
 Jan Streffing               2026-09-29      One DataArray of masks, fixes selected by name
+Jan Streffing               2026-09-29      Half-open box edges; before, grid points on an edge
+                                            (rows at -90, +-60, +-30, column at 0E) were in no box
 '''
 
 import logging
@@ -20,9 +22,9 @@ __all__ = ['add_masks', 'build_masks', 'BOXES']
 logger = logging.getLogger(__name__)
 
 
-# Latitude-longitude boxes: (lat_min, lat_max, lon_min, lon_max). Grid points on
-# an edge belong to no box, which drops the rows at -90, +-60 and +-30 and the
-# column at 0E; the reference CSVs were made that way (fixed in stack C, #62).
+# Latitude-longitude boxes: (lat_min, lat_max, lon_min, lon_max), with
+# lat_min <= lat < lat_max and lon_min <= lon < lon_max, so that the latitude
+# bands arctic to antarctic share no grid points and together cover the globe.
 BOXES = {
     'glob':         (-90, 90, 0, 360),
     'arctic':       (60, 90, 0, 360),
@@ -64,7 +66,7 @@ def build_masks(maskfixes=True):
         ocean_basins = gp.read_file(ocean_basins_path)
 
     boxes = xr.DataArray(
-        np.stack([np.outer((lat > lat_min) & (lat < lat_max), (lon > lon_min) & (lon < lon_max))
+        np.stack([np.outer((lat >= lat_min) & (lat < lat_max), (lon >= lon_min) & (lon < lon_max))
                   for lat_min, lat_max, lon_min, lon_max in BOXES.values()]),
         coords={'region': list(BOXES), 'lat': lat, 'lon': lon}, dims=('region', 'lat', 'lon'))
 

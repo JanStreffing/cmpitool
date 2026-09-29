@@ -42,8 +42,10 @@ CASES = {
     "partial_model": {"complexity": "boxes", "drop": ["siconc", "mlotst"]},
     # NCEP2 obs for tas, uas, vas, ua and zg, against the eval/NCEP2 references.
     "ncep2": {"complexity": "boxes", "reanalysis": "NCEP2"},
-    # Without the Southern Ocean and Arctic basin fixes in add_masks.
-    "regions_nomaskfixes": {"complexity": "regions", "maskfixes": False},
+    # Without the Southern Ocean and Atlantic basin fixes in add_masks. The
+    # CMIP6 references were made with the fixes, so read_errors refuses them
+    # once abs/ is written; only abs/ is compared.
+    "regions_nomaskfixes": {"complexity": "regions", "maskfixes": False, "refused": "another mask for"},
 }
 
 
@@ -51,6 +53,7 @@ def run_case(case, synth_model_path, out_path):
     kwargs = dict(CASES[case])
     eval_names = kwargs.pop("eval", None)
     drop = kwargs.pop("drop", [])
+    kwargs.pop("refused", None)
 
     models = [Model(SYNTH, [name for name in VARIABLES if name not in drop])]
     if eval_names is not None:
@@ -67,7 +70,7 @@ def run_case(case, synth_model_path, out_path):
 
 
 def read_table(path):
-    df = pd.read_csv(path, sep=" ", dtype={k: str for k in KEYS})
+    df = pd.read_csv(path, sep=" ", comment="#", dtype={k: str for k in KEYS})
     value_col = df.columns[-1]
     cmpi = df[df["Variable"] == "CMPI"]
     df = df[df["Variable"] != "CMPI"].reset_index(drop=True)
@@ -77,7 +80,14 @@ def read_table(path):
     return df[KEYS], df[value_col].to_numpy(dtype=float), cmpi_value
 
 
+def header_lines(path):
+    """The observations and masks lines of the header; the version may differ."""
+    return [line for line in path.read_text().splitlines()
+            if line.startswith("#") and not line.startswith("# cmpitool ")]
+
+
 def assert_same_table(actual, expected):
+    assert header_lines(actual) == header_lines(expected), f"header of {actual.name}"
     keys_a, values_a, cmpi_a = read_table(actual)
     keys_e, values_e, cmpi_e = read_table(expected)
     pd.testing.assert_frame_equal(keys_a, keys_e, obj=f"keys of {actual.name}")
@@ -93,16 +103,20 @@ def assert_same_table(actual, expected):
 def test_regression(case, synth_model_path, tmp_path, update_golden):
     # A directory that does not exist yet: cmpitool has to create its output folders.
     out = tmp_path / "out"
-    error_fraction = run_case(case, synth_model_path, out)
-
-    assert error_fraction.dims == ("model", "field", "season", "region")
-    assert list(error_fraction.model.values) == [SYNTH]
-    assert plt.get_fignums() == [], "figures left open"
-
-    outputs = [Path("abs") / f"{SYNTH}.csv", Path("frac") / f"{SYNTH}_fraction.csv"]
-    assert (out / "plot" / f"{SYNTH}.png").is_file()
-    if CASES[case].get("biasmaps"):
-        assert any((out / "plot" / "maps").glob(f"{SYNTH}_*.png"))
+    refused = CASES[case].get("refused")
+    if refused:
+        with pytest.raises(ValueError, match=refused):
+            run_case(case, synth_model_path, out)
+        outputs = [Path("abs") / f"{SYNTH}.csv"]
+    else:
+        error_fraction = run_case(case, synth_model_path, out)
+        assert error_fraction.dims == ("model", "field", "season", "region")
+        assert list(error_fraction.model.values) == [SYNTH]
+        assert plt.get_fignums() == [], "figures left open"
+        outputs = [Path("abs") / f"{SYNTH}.csv", Path("frac") / f"{SYNTH}_fraction.csv"]
+        assert (out / "plot" / f"{SYNTH}.png").is_file()
+        if CASES[case].get("biasmaps"):
+            assert any((out / "plot" / "maps").glob(f"{SYNTH}_*.png"))
 
     if update_golden:
         for rel in outputs:
@@ -159,7 +173,7 @@ def test_maskfixes_passed(monkeypatch, tmp_path):
 # --- read_errors ------------------------------------------------------------
 
 def _reference_value(model, variable, region, level, season):
-    df = pd.read_csv(EVAL_ERA5 / f"{model}.csv", sep=" ").set_index(KEYS)
+    df = pd.read_csv(EVAL_ERA5 / f"{model}.csv", sep=" ", comment="#").set_index(KEYS)
     return df.loc[(variable, region, level, season), "AbsMeanError"]
 
 
@@ -184,9 +198,11 @@ def test_read_errors_matches_csv(seasons):
 
 def test_read_errors_row_order_does_not_matter(tmp_path):
     # Shuffle the text lines, so that every value stays byte for byte the same.
-    header, *rows = (EVAL_ERA5 / "ACCESS-CM2.csv").read_text().splitlines()
+    lines = (EVAL_ERA5 / "ACCESS-CM2.csv").read_text().splitlines()
+    header = [line for line in lines if line.startswith("#")] + [lines[3]]
+    rows = lines[len(header):]
     random.Random(0).shuffle(rows)
-    (tmp_path / "SHUFFLED.csv").write_text("\n".join([header, *rows]) + "\n")
+    (tmp_path / "SHUFFLED.csv").write_text("\n".join([*header, *rows]) + "\n")
     seasons = ["MAM", "JJA", "SON", "DJF"]
     shuffled = _read_one_model(seasons, tmp_path, "SHUFFLED")
     original = _read_one_model(seasons)
@@ -195,8 +211,8 @@ def test_read_errors_row_order_does_not_matter(tmp_path):
 
 
 def test_read_errors_names_a_missing_row(tmp_path):
-    df = pd.read_csv(EVAL_ERA5 / "ACCESS-CM2.csv", sep=" ")
-    df = df[~((df.Variable == "tas") & (df.Region == "tropics"))]
-    df.to_csv(tmp_path / "INCOMPLETE.csv", sep=" ", index=False)
+    lines = (EVAL_ERA5 / "ACCESS-CM2.csv").read_text().splitlines()
+    kept = [line for line in lines if not line.startswith("tas tropics ")]
+    (tmp_path / "INCOMPLETE.csv").write_text("\n".join(kept) + "\n")
     with pytest.raises(KeyError, match="INCOMPLETE.csv has tas but no row for region tropics"):
         _read_one_model(["DJF"], tmp_path, "INCOMPLETE")

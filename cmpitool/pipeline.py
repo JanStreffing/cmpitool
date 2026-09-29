@@ -55,8 +55,8 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     
     This function coordinates the entire workflow of the Climate Model Performance Index (CMPI)
     tool, from loading data to calculating performance metrics and generating visualizations.
-    It evaluates climate models against observational data and computes normalized performance
-    indices following the methodology of Reichler and Kim (2008).
+    It evaluates climate models against observational data and computes performance indices:
+    mean absolute errors divided by the mean error of reference models, see docs/source/method.rst.
     
     Parameters
     ----------
@@ -78,6 +78,7 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     eval_path : str, optional
         Path to directory containing pre-computed error values for reference models.
         If None (default), eval/{reanalysis}/ of the cmpitool checkout will be used.
+        A reference file made with other observations or masks than this run is refused.
     time : str, optional
         Time period for analysis in format 'YYYYMM-YYYYMM' (default: '198912-201411')
     seasons : list, optional
@@ -86,7 +87,8 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
         Whether to apply corrections for overlapping ocean basins and continents 
         (default: True)
     use_for_eval : bool, optional
-        Whether to save results for future use as reference data (default: False)
+        Also write the errors of models to out_path/eval/{reanalysis}/, to evaluate
+        other runs against them later with eval_path set to that folder (default: False)
     complexity : str, optional
         Which regions to evaluate: 'boxes' (five latitude bands and Nino3.4, default),
         'boxes_all' (plus glob and innertropics), 'regions' (six ocean basins and eight
@@ -174,10 +176,9 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     #Area weighted mean absolute error, DataArray (model, field, season, region)
     mean_error = calculate_errors(ds_model, ds_obs, models, regions, obs, seasons)
     
-    #Writing errors into csv files that can be:
-    # a) read in for further cmip calculation
-    # b) placed into eval/ subfolder to read as evaluation data
-    write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path)
+    #Writing errors into csv files, and with use_for_eval also into a folder
+    #that later runs can use as eval_path
+    write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, out_path / 'eval' / reanalysis)
 
     #Reading in previously written absolute errors
     eval_error_mean = read_errors(obs, eval_models, regions, seasons, eval_path)

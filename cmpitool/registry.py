@@ -107,7 +107,7 @@ def make_variables(reanalysis='ERA5'):
         Variable('zg', reanalysis, ['500hPa'], default_limit=100.0),                # m
         Variable('zos', 'NESDIS', ['surface'], 'oce', label='st. dev. ', default_limit=0.3),  # m
         Variable('mlotst', 'C-GLORSv7', ['surface'], 'oce', default_limit=100.0),   # m
-        Variable('thetao', 'EN4', ['10m', '100m', '1000m'], 'oce', default_limit=3.0),  # K
+        Variable('thetao', 'EN4', ['10m', '100m', '1000m'], 'oce', default_limit=3.0),  # degC
         Variable('so', 'EN4', ['10m', '100m', '1000m'], 'oce', default_limit=1.0),  # psu
     ]
     return {variable.name: variable for variable in variables}

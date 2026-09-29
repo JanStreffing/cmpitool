@@ -4,7 +4,7 @@ API Reference
 This section provides detailed documentation for all the components of CMPITool.
 
 Core Functionality
-----------------
+------------------
 
 cmpitool
 ^^^^^^^^
@@ -24,11 +24,11 @@ Parameters:
    - **out_path** (*str*, optional): String pointing to the folder in which results will be stored
    - **obs_path** (*str*, optional): Folder with the observational data. By default the ``obs/`` folder of the cmpitool checkout, whatever the working directory
    - **reanalysis** (*str*, optional): String allowing switch between ERA5 and NCEP2 for the variables where obs come from atmospheric reanalysis systems (tas, uas, vas, ua, zg)
-   - **eval_path** (*str*, optional): Folder with the pre-computed errors of the reference models. By default ``eval/<reanalysis>/`` of the cmpitool checkout
+   - **eval_path** (*str*, optional): Folder with the pre-computed errors of the reference models. By default ``eval/<reanalysis>/`` of the cmpitool checkout. A reference file made with other observations or region masks than this run is refused
    - **time** (*str*, optional): String containing analysis period
    - **seasons** (*list*, optional): List of seasons for which the analysis can be done
    - **maskfixes** (*bool*, optional): By default we load a set of ocean basins and continents that sometimes overlap. This switch fixes this particular dataset. If you read in your own masks, you want to turn this off
-   - **use_for_eval** (*bool*, optional): Set to True if the models being processed should be used as reference for evaluation in future runs
+   - **use_for_eval** (*bool*, optional): Also write the errors of ``models`` to ``<out_path>/eval/<reanalysis>/``, to evaluate later runs against them with ``eval_path`` set to that folder
    - **complexity** (*str*, optional): String allowing selection of whether CMPI shall be calculated for simple lat/lon boxes ('boxes') or continents & ocean basins ('regions')
    - **verbose** (*bool*, optional): Log the details of every step, not only the progress. Messages go to the ``cmpitool`` logger; a handler printing them is added only if the caller has not configured logging
    - **biasmaps** (*bool*, optional): Boolean to activate bias map plots
@@ -88,10 +88,10 @@ Parameters:
    - **mask**, **active**: filled in by ``add_masks``
 
 Processing Functions
-------------------
+--------------------
 
 add_masks
-^^^^^^^^
+^^^^^^^^^
 
 .. code-block:: python
 
@@ -101,7 +101,7 @@ add_masks
 ``build_masks`` returns the masks of all boxes, ocean basins and continents on the 2 degree grid as one boolean DataArray ``(region, lat, lon)`` with the region names as coordinate. The boxes are defined in ``BOXES``, the regions and their domains in ``REGION_DOMAINS``, and the presets for ``complexity`` in ``COMPLEXITIES``. ``add_masks`` attaches the mask of each ``Region`` by name.
 
 loading_obs
-^^^^^^^^^^
+^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -110,7 +110,7 @@ loading_obs
 Loads observational data for comparison.
 
 loading_models
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -119,7 +119,7 @@ loading_models
 Loads climate model output data for analysis.
 
 calculate_errors
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -128,16 +128,16 @@ calculate_errors
 Calculates the pointwise absolute error and the mean absolute error between models and observations.
 
 write_errors
-^^^^^^^^^^^
+^^^^^^^^^^^^
 
 .. code-block:: python
 
    def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path)
 
-Writes error statistics to CSV files.
+Writes error statistics to CSV files. Each file starts with a header naming the cmpitool version, the observations of each variable and a hash of each region mask (``cmpitool.provenance``); ``read_errors`` refuses a reference whose observations or masks differ from the current run.
 
 read_errors
-^^^^^^^^^^
+^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -146,7 +146,7 @@ read_errors
 Reads previously calculated error statistics from CSV files.
 
 calculate_fractions
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -155,19 +155,19 @@ calculate_fractions
 Calculates performance fractions comparing model errors against reference model errors.
 
 write_fractions
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
    def write_fractions(error_fraction, models, regions, seasons, out_path)
 
-Writes performance fractions to CSV files.
+Writes performance fractions to CSV files and returns the CMPI of each model, the mean of its fractions with one weight per variable (see :doc:`method`).
 
 Visualization Functions
----------------------
+-----------------------
 
 plotting_heatmaps
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -176,7 +176,7 @@ plotting_heatmaps
 Generates heatmap visualizations of model performance.
 
 plotting_biasmaps
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -194,10 +194,10 @@ Parameters:
    - **biasmap_limits** (*dict*, optional): Colour ranges by variable name, overriding ``Variable.default_limit``. None gives a range of 3 standard deviations of the bias
 
 Configuration Functions
----------------------
+-----------------------
 
 config_cmip6
-^^^^^^^^^^
+^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -206,10 +206,10 @@ config_cmip6
 Configures the default set of 30 CMIP6 models used for evaluation.
 
 Advanced Usage Examples
----------------------
+-----------------------
 
 Example 1: Basic Analysis
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -247,7 +247,7 @@ Example 2: Choosing the Regions
    )
 
 Example 3: Custom Evaluation Models
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 

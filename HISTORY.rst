@@ -2,6 +2,18 @@
 History
 =======
 
+2.0.0 (unreleased)
+------------------
+
+Results change: CMPI values are not comparable with 1.x. Tracked in #62.
+
+* Error CSVs start with a header naming the cmpitool version, the observations of each variable and a hash of each region mask. ``read_errors`` refuses a reference without it, or made with other observations or masks than the run, so references from 1.x, including your own ``use_for_eval`` files, have to be recomputed.
+* ``use_for_eval=True`` writes to ``<out_path>/eval/<reanalysis>/`` instead of the ``eval/`` folder of the checkout, which now holds only the CMIP6 references. Pass that folder as ``eval_path`` to evaluate against them.
+* Box edges are half-open, ``lat_min <= lat < lat_max`` and the same for lon. Grid points on an edge were in no box: the rows at ±30° and ±60° (and -90°), the column at 0°E, in ``glob`` too, and the column at 190°E in ``nino34``. The latitude bands ``arctic`` to ``antarctic`` now cover the globe once.
+* The 60 CMIP6 references in ``eval/ERA5`` and ``eval/NCEP2`` are regenerated with these masks by ``tests/regenerate_references.py``.
+* The CMPI gives every variable the same weight: the fractions of each variable are averaged over its levels, the regions and the seasons first. ``thetao`` and ``so``, with three levels each, counted three times as much as ``tas`` before. For the 30 CMIP6 models the CMPI changes by up to 0.05 and the ranks by up to 4 places.
+* Docs: a method page with the definitions of error, fraction and CMPI, and how they relate to Reichler and Kim (2008), whose index the docs wrongly claimed to compute. The CMOR table gives pr in kg m-2 s-1 and no longer lists tos, the release notes are this file, the FAQ has the zos period, the docs take their version from the package, and the heading underlines are fixed.
+
 1.4 (2026-09-29)
 ----------------
 

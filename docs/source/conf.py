@@ -19,14 +19,17 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u'cmpitool documentation'
+project = u'cmpitool'
 copyright = u'2022, Jan Streffing'
 author = u'Jan Streffing'
 
-# The short X.Y version
-version = u''
-# The full version, including alpha/beta/rc tags
-release = u'1'
+# The version, read from cmpitool/__init__.py without importing the package,
+# whose dependencies the docs build does not install
+import re
+from pathlib import Path
+release = re.search(r'^__version__ = "(.+)"$',
+                    (Path(__file__).resolve().parents[2] / 'cmpitool' / '__init__.py').read_text(), re.M).group(1)
+version = release
 
 
 # -- General configuration ---------------------------------------------------

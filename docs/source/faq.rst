@@ -1,8 +1,8 @@
 Frequently asked Questions
-************
+**************************
 
 What are the default periods for observations and CMIP6 model evaluations delived with the package:
-==============
+===================================================================================================
 The tool tires to cover as much as possible the last 25 years worth of fully available seasons (DJF,MAM,JJA,SON) within the CMIP6 framework. For model data that means the last most of the CMIP6 period, 12/2014 is removed, and the final period is 12/1989 till 11/2014. For observations and reanalysis data, an effort is made to match that time period as much as possible. Since some datasets do not cover the whole period, a list is given:
 
 .. list-table:: Variable Date Ranges
@@ -38,6 +38,8 @@ The tool tires to cover as much as possible the last 25 years worth of fully ava
      - 1989/11/01 to 2014/11/30
    * - zg_NCEP2
      - 1989/11/01 to 2014/11/30
+   * - zos_NESDIS
+     - 2012/01/01 to 2019/03/01, standard deviation in time of the sea level anomaly
    * - mlotst_C-GLORSv7
      - 1993/11/01 to 2014/11/30
    * - so_EN4
