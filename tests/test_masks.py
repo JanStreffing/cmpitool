@@ -40,7 +40,7 @@ def test_fixes_change_only_the_atlantic_and_southern_ocean(masks):
 
 
 def test_latitude_bands_cover_the_globe_once(masks):
-    # Before 2.0.0 the rows at +-30, +-60 and the column at 0E were in no box
+    # Before 1.5.0 the rows at +-30, +-60 and the column at 0E were in no box
     fixed, _ = masks
     bands = ["arctic", "northmid", "tropics", "southmid", "antarctic"]
     count = sum(fixed.sel(region=name).astype(int) for name in bands)

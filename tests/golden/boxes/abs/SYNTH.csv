@@ -1,4 +1,4 @@
-# cmpitool 2.0.0
+# cmpitool 1.5.0
 # obs siconc=OSISAF tas=ERA5 clt=MODIS pr=GPCP rlut=CERES uas=ERA5 vas=ERA5 ua=ERA5 zg=ERA5 zos=NESDIS mlotst=C-GLORSv7 thetao=EN4 so=EN4
 # masks arctic=73a483b98d49 northmid=04d617dfc924 tropics=5e62e42c331e nino34=c6d37ed87c10 southmid=d8ede356f8df antarctic=340d4fc68023
 Variable Region Level Season AbsMeanError

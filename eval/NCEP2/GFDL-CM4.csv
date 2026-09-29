@@ -1,4 +1,4 @@
-# cmpitool 2.0.0
+# cmpitool 1.5.0
 # obs siconc=OSISAF tas=NCEP2 clt=MODIS pr=GPCP rlut=CERES uas=NCEP2 vas=NCEP2 ua=NCEP2 zg=NCEP2 zos=NESDIS thetao=EN4 so=EN4
 # masks Atlantic_Basin=2d671d49ebd5 Pacific_Basin=6794c0bf483e Indian_Basin=81637eab977f Arctic_Basin=8a4338fd0edb Southern_Ocean_Basin=e8bdbe28f3ed Mediterranean_Basin=1e77ec7b1df8 Asia=5c2932e33746 North_America=aa68aeb105bf Europe=0c8f8b0108e4 Africa=22be9e7e97ad South_America=4551e0cc2b10 Oceania=62d33f42a6e2 Australia=91d3525a6d87 Antarctica=2df1f7a50bc6 glob=a1d8a9ea3a7e arctic=73a483b98d49 northmid=04d617dfc924 tropics=5e62e42c331e innertropics=0a176a44ad46 nino34=c6d37ed87c10 southmid=d8ede356f8df antarctic=340d4fc68023
 Variable Region Level Season AbsMeanError

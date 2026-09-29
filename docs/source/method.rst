@@ -45,4 +45,4 @@ Normalising the error of a model by the errors of an ensemble of reference model
 Comparability
 =============
 
-CMPI values depend on the observations, the region masks, the reference models and the version of CMPITool. Values from CMPITool 2.0.0 are not comparable with 1.x, whose latitude boxes left out the grid rows at ±30° and ±60° and the column at 0°E, and whose CMPI gave every field the same weight. Each reference file records the observations and masks it was made with, and a run refuses reference files that do not match (see :doc:`how_to`).
+CMPI values depend on the observations, the region masks, the reference models and the version of CMPITool. Values from CMPITool 1.5.0 on are not comparable with 1.4.0 and earlier, whose latitude boxes left out the grid rows at ±30° and ±60° and the column at 0°E, and whose CMPI gave every field the same weight. Each reference file records the observations and masks it was made with, and a run refuses reference files that do not match (see :doc:`how_to`).
