@@ -49,7 +49,7 @@ Bug fixes; ERA5 results are unchanged. Tracked in #62.
 0.1.5 (2023-12-08)
 ------------------
 * Test for conda installation
-* Includes sphinx found on https://cmpitool.readthedocs.io/en/documentation/
+* Includes sphinx found on https://cmpitool.readthedocs.io/
 
 0.1.1 (2022-12-08)
 ------------------
