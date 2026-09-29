@@ -12,7 +12,7 @@ If you use CMPITool in your research, please cite:
    https://github.com/JanStreffing/cmpitool
    https://doi.org/10.5281/zenodo.7689792
 
-And the original methodology paper:
+And the paper that introduced normalising model errors by a reference ensemble (see :doc:`method` for how CMPITool differs):
 
 .. code-block:: text
 
@@ -30,7 +30,7 @@ As a first time user, for non-CMORized model output, preparing the raw output fo
 - Variable names and units have to follow the CMOR standard. 
 
 Understanding CMOR Variable Names
------------------------------
+---------------------------------
 
 CMOR (Climate Model Output Rewriter) standardizes variables used in climate modeling to ensure consistency across different models and datasets. Each variable has:
 
@@ -40,24 +40,23 @@ CMOR (Climate Model Output Rewriter) standardizes variables used in climate mode
 
 Below is a reference table of common CMOR variables used in CMPITool:
 
-===========  =============================================  ==========
-Short Name   Long Name                                     Unit
-===========  =============================================  ==========
-siconc       Sea Ice Area Fraction                         percent
-tas          Near-Surface Air Temperature                  K
-clt          Total Cloud Area Fraction                     percent
-pr           Precipitation Rate                            mm/day
-rlut         TOA Outgoing Longwave Radiation              W/m²
-uas          Eastward Near-Surface Wind Speed              m/s
-vas          Northward Near-Surface Wind Speed             m/s
-ua           Eastward Wind Component                       m/s
-zg           Geopotential Height                           m
-zos          Sea Surface Height Above Geoid                m
-tos          Sea Surface Temperature                       K
-mlotst       Ocean Mixed Layer Thickness Defined by Sigma T m
-thetao       Sea Water Potential Temperature               K
-so           Sea Water Practical Salinity                  psu
-===========  =============================================  ==========
+==========  =================================================  ===========
+Short Name  Long Name                                          Unit
+==========  =================================================  ===========
+siconc      Sea Ice Area Fraction                              %
+tas         Near-Surface Air Temperature                       K
+clt         Total Cloud Cover Percentage                       %
+pr          Precipitation Flux                                 kg m-2 s-1
+rlut        TOA Outgoing Longwave Radiation                    W m-2
+uas         Eastward Near-Surface Wind                         m s-1
+vas         Northward Near-Surface Wind                        m s-1
+ua          Eastward Wind (300 hPa)                            m s-1
+zg          Geopotential Height (500 hPa)                      m
+zos         Sea Surface Height Above Geoid                     m
+mlotst      Ocean Mixed Layer Thickness Defined by Sigma T     m
+thetao      Sea Water Potential Temperature (10, 100, 1000 m)  degC
+so          Sea Water Salinity (10, 100, 1000 m)               0.001 (psu)
+==========  =================================================  ===========
 
 For a complete reference of all CMOR standard variables, please refer to the official CMOR documentation.
 

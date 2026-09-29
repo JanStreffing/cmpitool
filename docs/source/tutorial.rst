@@ -4,7 +4,7 @@ Tutorial
 This tutorial provides a comprehensive walkthrough for using CMPITool to evaluate climate model performance.
 
 Prerequisites
-============
+=============
 
 Before starting this tutorial, ensure you have:
 
@@ -13,10 +13,10 @@ Before starting this tutorial, ensure you have:
 3. Access to the observational datasets (or use the ones provided)
 
 Complete Workflow
-===============
+=================
 
 Step 1: Setup the Environment
-----------------------------
+-----------------------------
 
 First, ensure you've activated your cmpitool environment:
 
@@ -25,7 +25,7 @@ First, ensure you've activated your cmpitool environment:
    conda activate cmpitool
 
 Step 2: Prepare Your Data
-------------------------
+-------------------------
 
 Your model data must be in the correct format for CMPITool. See :doc:`how_to` for details on preprocessing.
 
@@ -43,7 +43,7 @@ For example:
    pr_YOUR-MODEL_198912-201411_surface_JJA.nc
 
 Step 3: Create an Analysis Script
---------------------------------
+---------------------------------
 
 Create a Python script (or Jupyter notebook) with the following structure:
 
@@ -94,7 +94,7 @@ Create a Python script (or Jupyter notebook) with the following structure:
    )
 
 Step 4: Run the Analysis
------------------------
+------------------------
 
 Execute your script:
 
@@ -109,7 +109,7 @@ The tool will:
 4. Generate output files and visualizations
 
 Step 5: Interpret the Results
----------------------------
+-----------------------------
 
 After running the analysis, check your output directory for:
 
@@ -118,7 +118,7 @@ After running the analysis, check your output directory for:
 3. **Bias Maps**: Showing spatial patterns of model biases
 
 Understanding heatmap plots:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: text
 
@@ -128,10 +128,10 @@ Understanding heatmap plots:
    White colors (CMPI ≈ 1.0):  Your model performs similar to the evaluation models average
    Red colors (CMPI > 1.0):  Your model performs worse than the evaluation models average
 
-The overall CMPI value represents the performance across all variables, regions, and seasons, where lower values indicate better performance.
+The overall CMPI value represents the performance across all variables, regions, and seasons, with the same weight for every variable, where lower values indicate better performance (see :doc:`method`).
 
 Example: Analyzing Results for a Specific Region
-==============================================
+================================================
 
 Let's say you're particularly interested in model performance in the Arctic region:
 
@@ -156,10 +156,10 @@ Let's say you're particularly interested in model performance in the Arctic regi
    )
 
 Advanced Use Cases
-================
+==================
 
 Comparing Against Your Own Experiments
-------------------------------------
+--------------------------------------
 
 If you want to evaluate a model against your own experiment instead of CMIP6:
 

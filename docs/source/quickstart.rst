@@ -39,7 +39,7 @@ Run your first analysis:
 - You can now run an analysis against CMIP6 model performance.
 
 Understanding the Output:
-========================
+=========================
 
 CMPITool generates several types of output:
 
@@ -52,7 +52,7 @@ CMPITool generates several types of output:
 4. **Bias Maps** (optional): Spatial maps showing the difference between your model and observations for each variable and season.
 
 Example Output Interpretation:
------------------------------
+------------------------------
 
 .. code-block:: text
 
@@ -63,17 +63,19 @@ Example Output Interpretation:
    CMPI = 1.2: Your model performs 20% worse than the evaluation models average
 
 Understanding Error Metrics:
----------------------------
+----------------------------
 
 For each variable in each region and season, CMPITool:
 
 1. Calculates the absolute error (model minus observation)
 2. Computes an area-weighted mean of the absolute error
-3. Compares this error to the same error from evaluation models
-4. Produces a normalized index where lower is better
+3. Divides this error by the mean error of the evaluation models
+4. Averages these fractions into the CMPI, with the same weight for every variable; lower is better
+
+See :doc:`method` for the formulas.
 
 Example Analysis Script:
-=======================
+========================
 
 Here's a minimal example script:
 

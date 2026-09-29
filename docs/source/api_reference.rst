@@ -4,7 +4,7 @@ API Reference
 This section provides detailed documentation for all the components of CMPITool.
 
 Core Functionality
-----------------
+------------------
 
 cmpitool
 ^^^^^^^^
@@ -88,10 +88,10 @@ Parameters:
    - **mask**, **active**: filled in by ``add_masks``
 
 Processing Functions
-------------------
+--------------------
 
 add_masks
-^^^^^^^^
+^^^^^^^^^
 
 .. code-block:: python
 
@@ -101,7 +101,7 @@ add_masks
 ``build_masks`` returns the masks of all boxes, ocean basins and continents on the 2 degree grid as one boolean DataArray ``(region, lat, lon)`` with the region names as coordinate. The boxes are defined in ``BOXES``, the regions and their domains in ``REGION_DOMAINS``, and the presets for ``complexity`` in ``COMPLEXITIES``. ``add_masks`` attaches the mask of each ``Region`` by name.
 
 loading_obs
-^^^^^^^^^^
+^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -110,7 +110,7 @@ loading_obs
 Loads observational data for comparison.
 
 loading_models
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -119,7 +119,7 @@ loading_models
 Loads climate model output data for analysis.
 
 calculate_errors
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -128,7 +128,7 @@ calculate_errors
 Calculates the pointwise absolute error and the mean absolute error between models and observations.
 
 write_errors
-^^^^^^^^^^^
+^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -137,7 +137,7 @@ write_errors
 Writes error statistics to CSV files. Each file starts with a header naming the cmpitool version, the observations of each variable and a hash of each region mask (``cmpitool.provenance``); ``read_errors`` refuses a reference whose observations or masks differ from the current run.
 
 read_errors
-^^^^^^^^^^
+^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -146,7 +146,7 @@ read_errors
 Reads previously calculated error statistics from CSV files.
 
 calculate_fractions
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -155,19 +155,19 @@ calculate_fractions
 Calculates performance fractions comparing model errors against reference model errors.
 
 write_fractions
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
    def write_fractions(error_fraction, models, regions, seasons, out_path)
 
-Writes performance fractions to CSV files.
+Writes performance fractions to CSV files and returns the CMPI of each model, the mean of its fractions with one weight per variable (see :doc:`method`).
 
 Visualization Functions
----------------------
+-----------------------
 
 plotting_heatmaps
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -176,7 +176,7 @@ plotting_heatmaps
 Generates heatmap visualizations of model performance.
 
 plotting_biasmaps
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -194,10 +194,10 @@ Parameters:
    - **biasmap_limits** (*dict*, optional): Colour ranges by variable name, overriding ``Variable.default_limit``. None gives a range of 3 standard deviations of the bias
 
 Configuration Functions
----------------------
+-----------------------
 
 config_cmip6
-^^^^^^^^^^
+^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -206,10 +206,10 @@ config_cmip6
 Configures the default set of 30 CMIP6 models used for evaluation.
 
 Advanced Usage Examples
----------------------
+-----------------------
 
 Example 1: Basic Analysis
-^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -247,7 +247,7 @@ Example 2: Choosing the Regions
    )
 
 Example 3: Custom Evaluation Models
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 

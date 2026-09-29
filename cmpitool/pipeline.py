@@ -55,8 +55,8 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     
     This function coordinates the entire workflow of the Climate Model Performance Index (CMPI)
     tool, from loading data to calculating performance metrics and generating visualizations.
-    It evaluates climate models against observational data and computes normalized performance
-    indices following the methodology of Reichler and Kim (2008).
+    It evaluates climate models against observational data and computes performance indices:
+    mean absolute errors divided by the mean error of reference models, see docs/source/method.rst.
     
     Parameters
     ----------

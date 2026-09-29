@@ -4,9 +4,9 @@
    contain the root `toctree` directive.
 
 cmpitool documentation
-=================================================
+======================
 
-Welcome to the documention of the cmpitool. Cmpitool is a simple python library that calculated climate model performance indices after Reichler and Kim (2008) <https://doi.org/10.1175/BAMS-89-3-303>`. It does so while using a large set of 30 CMPI6 model simulations and the latest observational dataset for up to 14 variables, 21 regions, and 4 seasons. 
+Welcome to the documentation of cmpitool. Cmpitool is a simple Python library that calculates climate model performance indices (CMPI): the mean absolute error of a model against observations, divided by the mean error of 30 CMIP6 models, for 13 variables, 22 regions and 4 seasons. See :doc:`method` for the definition.
 
 .. toctree::
    :maxdepth: 2
@@ -14,6 +14,7 @@ Welcome to the documention of the cmpitool. Cmpitool is a simple python library 
 
    quickstart
    tutorial
+   method
    releases
    contribute
    how_to

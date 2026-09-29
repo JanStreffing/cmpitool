@@ -1,7 +1,1 @@
-Releases
-********
-
-cmpitool v1.0
-=============
-
-TBA
+.. include:: ../../HISTORY.rst
