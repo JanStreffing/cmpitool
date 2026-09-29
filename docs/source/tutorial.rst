@@ -171,7 +171,8 @@ If you want to evaluate a model against your own experiment instead of CMIP6:
    cmpitool(
        model_path='/path/to/reference/data/',
        models=reference_model,
-       use_for_eval=True,  # Copy its errors to eval/ERA5/ as a reference
+       out_path='output/',
+       use_for_eval=True,  # Also write its errors to output/eval/ERA5/ as a reference
        verbose=True
    )
    
@@ -182,8 +183,11 @@ If you want to evaluate a model against your own experiment instead of CMIP6:
        model_path='/path/to/test/data/',
        models=test_model,
        eval_models=reference_model,  # Use your reference model
+       eval_path='output/eval/ERA5/',  # from the folder the first run wrote it to
        verbose=True
    )
+
+Each reference file records the observations and region masks it was made with. A run with other observations (``reanalysis``) or masks (``maskfixes``, or another cmpitool or regionmask version) refuses it, since the errors would not be comparable. Recompute the reference with ``use_for_eval=True`` in that case.
 
 A Model That Does Not Output Every Variable
 -------------------------------------------

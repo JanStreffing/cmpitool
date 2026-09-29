@@ -1,3 +1,6 @@
+# cmpitool 1.4
+# obs siconc=OSISAF tas=ERA5 clt=MODIS pr=GPCP rlut=CERES uas=ERA5 vas=ERA5 ua=ERA5 zg=ERA5 zos=NESDIS mlotst=C-GLORSv7 thetao=EN4 so=EN4
+# masks arctic=e34f5b2de48a northmid=5447d51ca852 tropics=b212210ba455 nino34=f37a6f1a94d6 southmid=721f938e13b3 antarctic=7b964d304526
 Variable Region Level Season AbsMeanError
 siconc arctic surface MAM 2.731788153594712
 siconc arctic surface JJA 2.4459404261968296

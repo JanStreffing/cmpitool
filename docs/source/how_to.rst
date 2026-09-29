@@ -88,6 +88,8 @@ Evaluate against your own experiment(s)
 
 To evaluate your experiment(s) against your own set of eval_models, rather than the default cmpi6 set, follow these steps:
 
-1. For the experiment(s) that you want to evaluate against, run the analysis the the additional argument ``use_for_eval=True``, e.g. ``cmpitool(model_path, models, use_for_eval=True)``
-2. Set the ``models`` from step 1. as ``eval_models`` and define a new ``models`` dictionary for the experiments that you want to evaluate.
-3. Run the tool again with ``cmpitool(model_path, models, eval_models)``.
+1. For the experiment(s) that you want to evaluate against, run the analysis with the additional argument ``use_for_eval=True``, e.g. ``cmpitool(model_path, models, out_path='output/', use_for_eval=True)``. Their errors are written to ``output/eval/ERA5/`` (``output/eval/NCEP2/`` with ``reanalysis='NCEP2'``).
+2. Set the ``models`` from step 1. as ``eval_models`` and define a new ``models`` list for the experiments that you want to evaluate.
+3. Run the tool again with ``cmpitool(model_path, models, eval_models, eval_path='output/eval/ERA5/')``.
+
+A reference file made with other observations or region masks than the current run is refused; recompute it with ``use_for_eval=True``.

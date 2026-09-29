@@ -2,6 +2,14 @@
 History
 =======
 
+2.0.0 (unreleased)
+------------------
+
+Results change: CMPI values are not comparable with 1.x. Tracked in #62.
+
+* Error CSVs start with a header naming the cmpitool version, the observations of each variable and a hash of each region mask. ``read_errors`` refuses a reference without it, or made with other observations or masks than the run, so references from 1.x, including your own ``use_for_eval`` files, have to be recomputed.
+* ``use_for_eval=True`` writes to ``<out_path>/eval/<reanalysis>/`` instead of the ``eval/`` folder of the checkout, which now holds only the CMIP6 references. Pass that folder as ``eval_path`` to evaluate against them.
+
 1.4 (2026-09-29)
 ----------------
 

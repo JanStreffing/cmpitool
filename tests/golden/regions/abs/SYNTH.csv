@@ -1,3 +1,6 @@
+# cmpitool 1.4
+# obs siconc=OSISAF tas=ERA5 clt=MODIS pr=GPCP rlut=CERES uas=ERA5 vas=ERA5 ua=ERA5 zg=ERA5 zos=NESDIS mlotst=C-GLORSv7 thetao=EN4 so=EN4
+# masks Atlantic_Basin=2d671d49ebd5 Pacific_Basin=6794c0bf483e Indian_Basin=81637eab977f Arctic_Basin=8a4338fd0edb Southern_Ocean_Basin=e8bdbe28f3ed Mediterranean_Basin=1e77ec7b1df8 Asia=5c2932e33746 North_America=aa68aeb105bf Europe=0c8f8b0108e4 Africa=22be9e7e97ad South_America=4551e0cc2b10 Oceania=62d33f42a6e2 Australia=91d3525a6d87 Antarctica=2df1f7a50bc6
 Variable Region Level Season AbsMeanError
 siconc Atlantic_Basin surface MAM 4.755421755231326
 siconc Atlantic_Basin surface JJA 5.456640714011451

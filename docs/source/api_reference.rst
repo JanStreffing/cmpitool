@@ -24,11 +24,11 @@ Parameters:
    - **out_path** (*str*, optional): String pointing to the folder in which results will be stored
    - **obs_path** (*str*, optional): Folder with the observational data. By default the ``obs/`` folder of the cmpitool checkout, whatever the working directory
    - **reanalysis** (*str*, optional): String allowing switch between ERA5 and NCEP2 for the variables where obs come from atmospheric reanalysis systems (tas, uas, vas, ua, zg)
-   - **eval_path** (*str*, optional): Folder with the pre-computed errors of the reference models. By default ``eval/<reanalysis>/`` of the cmpitool checkout
+   - **eval_path** (*str*, optional): Folder with the pre-computed errors of the reference models. By default ``eval/<reanalysis>/`` of the cmpitool checkout. A reference file made with other observations or region masks than this run is refused
    - **time** (*str*, optional): String containing analysis period
    - **seasons** (*list*, optional): List of seasons for which the analysis can be done
    - **maskfixes** (*bool*, optional): By default we load a set of ocean basins and continents that sometimes overlap. This switch fixes this particular dataset. If you read in your own masks, you want to turn this off
-   - **use_for_eval** (*bool*, optional): Set to True if the models being processed should be used as reference for evaluation in future runs
+   - **use_for_eval** (*bool*, optional): Also write the errors of ``models`` to ``<out_path>/eval/<reanalysis>/``, to evaluate later runs against them with ``eval_path`` set to that folder
    - **complexity** (*str*, optional): String allowing selection of whether CMPI shall be calculated for simple lat/lon boxes ('boxes') or continents & ocean basins ('regions')
    - **verbose** (*bool*, optional): Log the details of every step, not only the progress. Messages go to the ``cmpitool`` logger; a handler printing them is added only if the caller has not configured logging
    - **biasmaps** (*bool*, optional): Boolean to activate bias map plots
@@ -134,7 +134,7 @@ write_errors
 
    def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, eval_path)
 
-Writes error statistics to CSV files.
+Writes error statistics to CSV files. Each file starts with a header naming the cmpitool version, the observations of each variable and a hash of each region mask (``cmpitool.provenance``); ``read_errors`` refuses a reference whose observations or masks differ from the current run.
 
 read_errors
 ^^^^^^^^^^

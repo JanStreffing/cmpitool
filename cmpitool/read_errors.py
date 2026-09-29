@@ -7,6 +7,8 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
+from .provenance import check_header, read_header
+
 __all__ = ['read_errors']
 
 logger = logging.getLogger(__name__)
@@ -42,7 +44,8 @@ def read_errors(obs, eval_models, regions, seasons, eval_path):
 
     Notes
     -----
-    The function expects CSV files in a specific format with columns for:
+    The function expects CSV files as written by write_errors: a header naming
+    the observations and region masks, then columns for:
     - Variable name
     - Region name
     - Level/depth
@@ -55,6 +58,10 @@ def read_errors(obs, eval_models, regions, seasons, eval_path):
     variable. A file that has the variable but lacks one of the requested
     regions, levels or seasons raises a KeyError that names the file and the row.
 
+    A file without the header, or made with other observations than obs or
+    other masks than those attached to regions, raises a ValueError: its
+    errors are not comparable with this run.
+
     Examples
     --------
     >>> eval_error_mean = read_errors(obs, eval_models, regions, seasons, 'eval/ERA5/')
@@ -62,6 +69,7 @@ def read_errors(obs, eval_models, regions, seasons, eval_path):
     AUTHORS:
     Jan Streffing               2022-11-30      Split off from main tool
     Jan Streffing               2026-09-28      Look up rows by key instead of walking the file
+    Jan Streffing               2026-09-29      Check the header for observations and masks
     '''
 
 
@@ -73,7 +81,9 @@ def read_errors(obs, eval_models, regions, seasons, eval_path):
 
     for i, eval_model in enumerate(tqdm(eval_models)):
         path = Path(eval_path) / (eval_model.name+'.csv')
-        table = pd.read_csv(path, delimiter=' ', dtype={'Variable': str, 'Region': str, 'Level': str, 'Season': str})
+        header, header_lines = read_header(path)
+        check_header(path, header, obs, regions)
+        table = pd.read_csv(path, delimiter=' ', skiprows=header_lines, dtype={'Variable': str, 'Region': str, 'Level': str, 'Season': str})
         table = table.set_index(['Variable', 'Region', 'Level', 'Season'])['AbsMeanError']
         if not table.index.is_unique:
             raise ValueError(str(path)+' has more than one row for the same variable, region, level and season')

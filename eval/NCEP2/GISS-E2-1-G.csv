@@ -1,3 +1,6 @@
+# cmpitool 1.4.0
+# obs tas=NCEP2 clt=MODIS pr=GPCP rlut=CERES uas=NCEP2 vas=NCEP2 ua=NCEP2 zg=NCEP2 zos=NESDIS mlotst=C-GLORSv7 thetao=EN4 so=EN4
+# masks Atlantic_Basin=2d671d49ebd5 Pacific_Basin=6794c0bf483e Indian_Basin=81637eab977f Arctic_Basin=8a4338fd0edb Southern_Ocean_Basin=e8bdbe28f3ed Mediterranean_Basin=1e77ec7b1df8 Asia=5c2932e33746 North_America=aa68aeb105bf Europe=0c8f8b0108e4 Africa=22be9e7e97ad South_America=4551e0cc2b10 Oceania=62d33f42a6e2 Australia=91d3525a6d87 Antarctica=2df1f7a50bc6 glob=150babffcc67 arctic=e34f5b2de48a northmid=5447d51ca852 tropics=b212210ba455 innertropics=0612c93faac9 nino34=f37a6f1a94d6 southmid=721f938e13b3 antarctic=7b964d304526
 Variable Region Level Season AbsMeanError
 tas Atlantic_Basin surface MAM 1.5770747735337998
 tas Atlantic_Basin surface JJA 1.6671012306284692

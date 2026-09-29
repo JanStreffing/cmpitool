@@ -5,6 +5,8 @@ from pathlib import Path
 
 from tqdm import tqdm
 
+from .provenance import format_header
+
 __all__ = ['write_errors']
 
 logger = logging.getLogger(__name__)
@@ -17,7 +19,9 @@ def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, e
     This function exports the calculated absolute error metrics to CSV files
     for each model. These files can be used for further analysis or as reference
     data for evaluating other models. If use_for_eval is True, files are also
-    copied to the evaluation directory for use as reference data.
+    copied to eval_path for use as reference data. Each file starts with a
+    header naming the cmpitool version, the observations and a hash of each
+    region mask, see cmpitool.provenance.
     
     Parameters
     ----------
@@ -34,7 +38,8 @@ def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, e
     use_for_eval : bool
         Whether to copy results to evaluation directory for use as reference data
     eval_path : str
-        Path to directory where evaluation reference data is stored
+        Directory the files are copied to if use_for_eval is True; cmpitool()
+        passes <out_path>/eval/<reanalysis>/
         
     Returns
     -------
@@ -43,7 +48,7 @@ def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, e
         
     Notes
     -----
-    CSV files are organized with columns for:
+    After the header, CSV files are organized with columns for:
     - Variable name
     - Region name
     - Level/depth
@@ -56,10 +61,11 @@ def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, e
     Examples
     --------
     >>> write_errors(mean_error, models, regions, seasons, 
-    ...              'output/', False, 'eval/ERA5/')
+    ...              'output/', False, 'output/eval/ERA5/')
     
     AUTHORS:
     Jan Streffing               2022-11-30      Split off from main tool
+    Jan Streffing               2026-09-29      Header with observations and masks
     '''
     
 
@@ -68,6 +74,8 @@ def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, e
     for model in tqdm(models):
         path = Path(out_path) / 'abs' / (model.name+'.csv')
         with open(path, 'w', newline='') as csvfile:
+            for line in format_header(model.variables, regions):
+                csvfile.write(line+'\r\n')
             writer = csv.writer(csvfile, delimiter=' ',quotechar='|', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(['Variable','Region','Level','Season','AbsMeanError'])
             for var in model.variables:
@@ -77,4 +85,6 @@ def write_errors(mean_error, models, regions, seasons, out_path, use_for_eval, e
                             value = float(mean_error.loc[model.name, var.name+'/'+depth, seas, region.name])
                             writer.writerow([var.name,region.name,depth,seas,value])
         if use_for_eval:
-            shutil.copyfile(path, Path(eval_path) / (model.name+'.csv'))   
+            Path(eval_path).mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(path, Path(eval_path) / (model.name+'.csv'))
+            logger.info('Copied %s to %s for use as a reference', path.name, eval_path)
