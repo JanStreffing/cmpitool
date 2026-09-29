@@ -1,0 +1,31 @@
+# Run with:  cmpitool run example.yaml
+# The keys are the arguments of cmpitool(); see docs/source/api_reference.rst.
+
+# Folder with the preprocessed model files, named
+# <variable>_<model>_<time>_<level>_<season>.nc
+model_path: /work/ab0246/a270092/software/cmpitool/input/
+
+# Models to evaluate, each with every variable cmpitool evaluates. Only for a
+# model that does not output some variable, list the ones it has:
+#   - name: MODEL
+#     variables: [tas, pr, ...]
+models:
+  - TUNE10_GGAUSS
+  - TUNE11_RVICE
+  - TUNE12_ENTSTPC
+
+# Reference models. Leave out to compare with the 30 CMIP6 models.
+eval_models:
+  - REF_V340
+
+out_path: output/
+reanalysis: ERA5          # or NCEP2
+complexity: boxes         # boxes, boxes_all, regions or all
+seasons: [MAM, JJA, SON, DJF]
+
+biasmaps: true
+biasmap_limits:           # override Variable.default_limit; null gives 3 standard deviations
+  tas: 3.0
+
+use_for_eval: false
+verbose: false

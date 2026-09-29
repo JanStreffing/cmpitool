@@ -1,4 +1,16 @@
-def loading_models(models, model_path, seasons, time, verbose):
+import logging
+from collections import OrderedDict
+from pathlib import Path
+
+import xarray as xr
+from tqdm import tqdm
+
+__all__ = ['loading_models']
+
+logger = logging.getLogger(__name__)
+
+
+def loading_models(models, model_path, seasons, time):
     '''
     Load model data for comparison with observations.
     
@@ -9,15 +21,13 @@ def loading_models(models, model_path, seasons, time, verbose):
     Parameters
     ----------
     models : list
-        List of climate_model objects to be evaluated
+        List of Model objects to be evaluated
     model_path : str
         Path to directory containing preprocessed model data files
     seasons : list
         List of seasons to be evaluated (e.g. ['DJF', 'MAM', 'JJA', 'SON'])
     time : str
         Time period string in format 'YYYYMM-YYYYMM' (e.g. '198912-201411')
-    verbose : bool
-        Whether to print detailed information during execution
         
     Returns
     -------
@@ -33,21 +43,17 @@ def loading_models(models, model_path, seasons, time, verbose):
     Examples
     --------
     >>> from collections import OrderedDict
-    >>> from cmpitool import cmpisetup, loading_models
-    >>> variable, region, climate_model, *variables = cmpisetup()
-    >>> models = [climate_model(name='MODEL', variables=[variables[0]])]
+    >>> from cmpitool import Model, loading_models
+    >>> models = [Model('MODEL')]
     >>> seasons = ['DJF', 'JJA']
-    >>> ds_model = loading_models(models, '/path/to/data/', seasons, '198912-201411', True)
+    >>> ds_model = loading_models(models, '/path/to/data/', seasons, '198912-201411')
     
     AUTHORS:
     Jan Streffing               2022-11-30      Split off from main tool
     '''
 
-    from collections import OrderedDict
-    import xarray as xr
-    from tqdm import tqdm
 
-    print('Loading model data')
+    logger.info('Loading model data')
 
     ds_model = OrderedDict()
 
@@ -55,9 +61,9 @@ def loading_models(models, model_path, seasons, time, verbose):
         for var in model.variables:
             for depth in var.depths:
                 for seas in seasons:
-                    if verbose:
-                        print('loading '+model_path+var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc')
-                    with xr.open_dataset(model_path+var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc') as intermediate:
+                    path = Path(model_path) / (var.name+'_'+model.name+'_'+time+'_'+depth+'_'+seas+'.nc')
+                    logger.debug('loading %s', path)
+                    with xr.open_dataset(path) as intermediate:
                         # Keep only the variable itself, not time_bnds, area or other extras
                         intermediate = intermediate[[var.name]].squeeze(drop=True).compute()
                     ds_model[var.name,depth,seas,model.name] = intermediate.drop_vars('depth', errors='ignore')

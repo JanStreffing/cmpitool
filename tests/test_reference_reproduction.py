@@ -34,9 +34,8 @@ pytestmark = [
     ("IPSL-CM6A-LR", "ERA5"),
     ("ACCESS-CM2", "NCEP2"),
 ])
-def test_reproduces_reference(name, reanalysis, setup, tmp_path):
-    models = [m for m in config_cmip6(setup["climate_model"], list(setup["variables"].values()))
-              if m.name == name]
+def test_reproduces_reference(name, reanalysis, tmp_path):
+    models = [m for m in config_cmip6() if m.name == name]
     out = tmp_path
     eval_path = REPO / "eval" / reanalysis
     # The reference CSVs were written with every region, which is complexity='all'.

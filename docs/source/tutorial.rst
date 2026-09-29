@@ -50,23 +50,16 @@ Create a Python script (or Jupyter notebook) with the following structure:
 .. code-block:: python
 
    # Import required modules
-   from cmpitool import cmpitool, cmpisetup
-
-   # Initialize variables, regions, and model classes
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
+   from cmpitool import cmpitool, Model
 
    # Define the path to your processed model data
    model_path = '/path/to/your/processed/model/data/'
 
-   # Define which models and variables to analyze
+   # The models to analyze, each with every variable cmpitool evaluates
    models = [
-       climate_model(name='YOUR-MODEL-1', variables=[tas, pr, rlut, uas, vas]),
-       climate_model(name='YOUR-MODEL-2', variables=[tas, pr, rlut, uas, vas, zg])
+       Model('YOUR-MODEL-1'),
+       Model('YOUR-MODEL-2')
    ]
-
-   # Optional: Specify custom regions
-   # For example, to focus on a specific ocean basin:
-   custom_region = region(name='Custom_Region', domain='ocean')
 
    # Run the analysis
    cmpitool(
@@ -82,31 +75,22 @@ Create a Python script (or Jupyter notebook) with the following structure:
        biasmaps=True        # Generate bias maps
    )
    
-   # Optional: Using fixed biasmap plot limits
-   # Create a dictionary of limits for bias map variables
-   fixed_limits = {
-       'siconc': 60.0,     # Sea ice concentration (percent)
-       'tas': 5.0,         # Surface air temperature (K)
-       'clt': 30.0,        # Cloud fraction (percent)
-       'pr': 5.0,          # Precipitation (mm/day)
-       'rlut': 20.0,       # Outgoing longwave radiation (W/m²)
-       'uas': 3.0,         # Eastward near-surface wind (m/s)
-       'vas': 3.0,         # Northward near-surface wind (m/s)
-       'ua': 5.0,          # Eastward wind (m/s)
-       'zg': 100.0,        # Geopotential height (m)
-       'zos': 0.3,         # Sea surface height (m)
-       'mlotst': 100.0,    # Ocean mixed layer thickness (m)
-       'thetao': 3.0,      # Sea water potential temperature (K)
-       'so': 1.0           # Sea water salinity (psu)
+   # Bias maps use each variable's default colour range (Variable.default_limit),
+   # for example 5 K for tas and 5 mm/day for pr. Override some of them by
+   # variable name, in the units of the variable; None gives a range of 3
+   # standard deviations of the bias.
+   own_limits = {
+       'tas': 3.0,         # Surface air temperature (K)
+       'pr': 2.0/86400,    # Precipitation (kg m-2 s-1): 2 mm/day
+       'zos': None,        # Sea surface height: 3 standard deviations
    }
-   
-   # Run the analysis with fixed biasmap limits
+
    cmpitool(
        model_path=model_path,
        models=models,
-       out_path='output_fixed_limits/',
+       out_path='output_own_limits/',
        biasmaps=True,
-       biasmap_limits=fixed_limits  # Pass the dictionary of fixed limits
+       biasmap_limits=own_limits
    )
 
 Step 4: Run the Analysis
@@ -154,21 +138,18 @@ Let's say you're particularly interested in model performance in the Arctic regi
 .. code-block:: python
 
    # Focus on Arctic analysis
-   from cmpitool import cmpitool, cmpisetup
-   
-   variable, region, climate_model, siconc, tas, clt, pr, rlut, uas, vas, ua, zg, zos, mlotst, thetao, so = cmpisetup()
-   
-   # Create a model list with Arctic-relevant variables
+   from cmpitool import cmpitool, Model
+
    models = [
-       climate_model(name='YOUR-MODEL', variables=[siconc, tas, uas, vas])
+       Model('YOUR-MODEL')
    ]
    
-   # Run analysis with focus on Arctic region
+   # Run the analysis for the latitude boxes, which include the Arctic (60N-90N);
+   # complexity='regions' gives the Arctic basin instead
    cmpitool(
        model_path='/path/to/your/data/',
        models=models,
-       # Use custom region list focusing on Arctic
-       regions=[region(name='arctic', domain='mixed')],
+       complexity='boxes',
        seasons=['DJF'],  # Winter season focus
        verbose=True,
        biasmaps=True
@@ -185,24 +166,40 @@ If you want to evaluate a model against your own experiment instead of CMIP6:
 .. code-block:: python
 
    # First run for reference model
-   reference_model = [climate_model(name='REFERENCE-MODEL', variables=[tas, pr, uas, vas])]
+   reference_model = [Model('REFERENCE-MODEL')]
    
    cmpitool(
        model_path='/path/to/reference/data/',
        models=reference_model,
-       use_for_eval=True,  # Mark this as reference for evaluation
+       use_for_eval=True,  # Copy its errors to eval/ERA5/ as a reference
        verbose=True
    )
    
    # Then run for your test model using the reference
-   test_model = [climate_model(name='TEST-MODEL', variables=[tas, pr, uas, vas])]
+   test_model = [Model('TEST-MODEL')]
    
    cmpitool(
        model_path='/path/to/test/data/',
        models=test_model,
        eval_models=reference_model,  # Use your reference model
-       eval_path='output/',  # Where reference model results were saved
        verbose=True
    )
+
+A Model That Does Not Output Every Variable
+-------------------------------------------
+
+Evaluate every variable a model provides. Only when a run cannot provide some of them, list the ones it has. An atmosphere-only (AMIP) run, for example, has prescribed sea ice and sea-surface temperature and no ocean, so it has none of siconc, zos, mlotst, thetao and so:
+
+.. code-block:: python
+
+   amip_run = Model('YOUR-AMIP-RUN', ['tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg'])
+
+   cmpitool(
+       model_path='/path/to/your/amip/data/',
+       models=[amip_run],
+       verbose=True
+   )
+
+Its heatmap leaves the rows of the missing variables empty, and its CMPI is the mean over the variables it has.
 
 This concludes the tutorial. For more advanced usage and detailed parameter descriptions, refer to the API documentation.

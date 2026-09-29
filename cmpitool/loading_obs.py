@@ -1,4 +1,16 @@
-def loading_obs(obs, obs_path, seasons, verbose):
+import logging
+from collections import OrderedDict
+from pathlib import Path
+
+import xarray as xr
+from tqdm import tqdm
+
+__all__ = ['loading_obs']
+
+logger = logging.getLogger(__name__)
+
+
+def loading_obs(obs, obs_path, seasons):
     '''
     Load observational data for comparison with climate models.
     
@@ -14,8 +26,6 @@ def loading_obs(obs, obs_path, seasons, verbose):
         Path to directory containing observational data files
     seasons : list
         List of seasons to load (e.g., ['DJF', 'MAM', 'JJA', 'SON'])
-    verbose : bool
-        Whether to print detailed information during execution
         
     Returns
     -------
@@ -34,30 +44,25 @@ def loading_obs(obs, obs_path, seasons, verbose):
     
     Examples
     --------
-    >>> from cmpitool import cmpisetup, loading_obs
-    >>> variable, region, climate_model, *variables = cmpisetup()
-    >>> obs = [variables[0], variables[1]]  # Select specific variables
-    >>> ds_obs = loading_obs(obs, 'path/to/obs/', ['DJF', 'JJA'], verbose=True)
+    >>> from cmpitool import VARIABLES, loading_obs
+    >>> obs = list(VARIABLES.values())
+    >>> ds_obs = loading_obs(obs, 'path/to/obs/', ['DJF', 'JJA'])
     
     AUTHORS:
     Jan Streffing               2022-11-30      Split off from main tool
     '''
 
-    from collections import OrderedDict
-    import xarray as xr
-    from tqdm import tqdm
 
-    print('Loading obs data')
+    logger.info('Loading obs data')
 
     ds_obs = OrderedDict()
 
     for var in tqdm(obs):
         for depth in var.depths:
             for seas in seasons:
-                if verbose:
-                    print('loading '+obs_path+var.name+'_'+var.obs+'_'+depth+'_'+seas+'.nc')
-
-                with xr.open_dataset(obs_path+var.name+'_'+var.obs+'_'+depth+'_'+seas+'.nc') as intermediate:
+                path = Path(obs_path) / (var.name+'_'+var.obs+'_'+depth+'_'+seas+'.nc')
+                logger.debug('loading %s', path)
+                with xr.open_dataset(path) as intermediate:
                     # Keep only the variable itself, not time_bnds or other extras
                     intermediate = intermediate[[var.name]].compute()
                 intermediate = intermediate.drop_vars('depth', errors='ignore')

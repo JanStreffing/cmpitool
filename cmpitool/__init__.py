@@ -26,20 +26,31 @@ For more information, see the documentation at: https://cmpitool.readthedocs.io/
 
 __author__ = """Jan Streffing"""
 __email__ = "j.streffing1988@gmail.com"
-__version__ = "1.3.1"
+__version__ = "1.4"
 __credits__ = "Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research"
 
 
-from .cmpitool import *
-from .cmpisetup import *
-from .config_cmip6 import *
-from .add_masks import *
-from .loading_obs import *
-from .loading_models import *
-from .calculate_errors import *
-from .write_errors import *
-from .read_errors import *
-from .calculate_fractions import *
-from .write_fractions import *
-from .plotting_heatmaps import *
-from .plotting_biasmaps import *
+from .add_masks import BOXES, add_masks, build_masks
+from .calculate_errors import calculate_errors
+from .calculate_fractions import calculate_fractions
+from .config_cmip6 import config_cmip6
+from .loading_models import loading_models
+from .loading_obs import loading_obs
+from .pipeline import cmpitool
+from .plotting_biasmaps import bias_statistics, plotting_biasmaps
+from .plotting_heatmaps import plotting_heatmaps
+from .read_errors import read_errors
+from .registry import (COMPLEXITIES, REGION_DOMAINS, VARIABLES, Model, Region, Variable,
+                       make_regions, make_variables)
+from .write_errors import write_errors
+from .write_fractions import write_fractions
+
+__all__ = [
+    'cmpitool',
+    'Variable', 'Region', 'Model', 'VARIABLES', 'make_variables',
+    'REGION_DOMAINS', 'COMPLEXITIES', 'make_regions', 'config_cmip6',
+    'BOXES', 'build_masks', 'add_masks',
+    'loading_obs', 'loading_models', 'calculate_errors', 'write_errors', 'read_errors',
+    'calculate_fractions', 'write_fractions', 'plotting_heatmaps', 'plotting_biasmaps',
+    'bias_statistics',
+]

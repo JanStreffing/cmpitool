@@ -8,11 +8,9 @@ relative 1e-12. Regenerate the stored outputs with
     pytest --update-golden
 
 only when a change is meant to alter results, and say so in the PR.
-
-The xfail tests at the end pin known bugs. They are strict, so the PR that
-fixes a bug has to remove its marker.
 """
 
+import random
 import shutil
 from pathlib import Path
 
@@ -21,8 +19,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import cmpitool as pkg
-from cmpitool import cmpitool, config_cmip6, read_errors
+import cmpitool.pipeline as pipeline
+from cmpitool import VARIABLES, Model, Region, cmpitool, config_cmip6, read_errors
 
 from conftest import GOLDEN, OBS_PATH, REPO, SYNTH
 
@@ -36,8 +34,7 @@ CASES = {
     "boxes": {"complexity": "boxes"},
     "regions": {"complexity": "regions"},
     "all": {"complexity": "all"},
-    # Seasons in the order of the reference CSVs; the reverse order is the
-    # xfail test_read_errors_season_order below.
+    # A subset of the seasons, with bias maps.
     "seasons_biasmaps": {"complexity": "boxes", "seasons": ["JJA", "DJF"], "biasmaps": True},
     # Reference models that lack variables exercise the skip paths in read_errors.
     "eval_subset": {"complexity": "boxes", "eval": ["ACCESS-CM2", "CIESM", "IITM-ESM", "KIOST-ESM"]},
@@ -50,19 +47,14 @@ CASES = {
 }
 
 
-def cmip6_models(setup):
-    return config_cmip6(setup["climate_model"], list(setup["variables"].values()))
-
-
-def run_case(case, setup, synth_model_path, out_path):
+def run_case(case, synth_model_path, out_path):
     kwargs = dict(CASES[case])
     eval_names = kwargs.pop("eval", None)
     drop = kwargs.pop("drop", [])
 
-    variables = [v for name, v in setup["variables"].items() if name not in drop]
-    models = [setup["climate_model"](name=SYNTH, variables=variables)]
+    models = [Model(SYNTH, [name for name in VARIABLES if name not in drop])]
     if eval_names is not None:
-        kwargs["eval_models"] = [m for m in cmip6_models(setup) if m.name in eval_names]
+        kwargs["eval_models"] = [m for m in config_cmip6() if m.name in eval_names]
 
     return cmpitool(
         str(synth_model_path),
@@ -98,12 +90,13 @@ def assert_same_table(actual, expected):
 
 
 @pytest.mark.parametrize("case", list(CASES))
-def test_regression(case, setup, synth_model_path, tmp_path, update_golden):
+def test_regression(case, synth_model_path, tmp_path, update_golden):
     # A directory that does not exist yet: cmpitool has to create its output folders.
     out = tmp_path / "out"
-    error_fraction = run_case(case, setup, synth_model_path, out)
+    error_fraction = run_case(case, synth_model_path, out)
 
-    assert error_fraction and {key[3] for key in error_fraction} == {SYNTH}
+    assert error_fraction.dims == ("model", "field", "season", "region")
+    assert list(error_fraction.model.values) == [SYNTH]
     assert plt.get_fignums() == [], "figures left open"
 
     outputs = [Path("abs") / f"{SYNTH}.csv", Path("frac") / f"{SYNTH}_fraction.csv"]
@@ -130,19 +123,19 @@ class _Stop(Exception):
     """Raised by spies to end a cmpitool() run once the call of interest is seen."""
 
 
-def _no_masks(regions, verbose, *args, **kwargs):
+def _no_masks(regions, *args, **kwargs):
     return regions
 
 
-def test_reanalysis_selects_obs(setup, monkeypatch, tmp_path):
+def test_reanalysis_selects_obs(monkeypatch, tmp_path):
     seen = {}
 
     def spy(obs, *args, **kwargs):
         seen.update({v.name: v.obs for v in obs})
         raise _Stop
 
-    monkeypatch.setattr(pkg, "add_masks", _no_masks)
-    monkeypatch.setattr(pkg, "loading_obs", spy)
+    monkeypatch.setattr(pipeline, "add_masks", _no_masks)
+    monkeypatch.setattr(pipeline, "loading_obs", spy)
     with pytest.raises(_Stop):
         cmpitool(str(tmp_path), [], out_path=str(tmp_path), obs_path=str(OBS_PATH),
                  eval_path=str(REPO / "eval" / "NCEP2"), reanalysis="NCEP2")
@@ -152,42 +145,58 @@ def test_reanalysis_selects_obs(setup, monkeypatch, tmp_path):
 def test_maskfixes_passed(monkeypatch, tmp_path):
     seen = {}
 
-    def spy(regions, verbose, maskfixes=True):
+    def spy(regions, maskfixes=True):
         seen["maskfixes"] = maskfixes
         raise _Stop
 
-    monkeypatch.setattr(pkg, "add_masks", spy)
+    monkeypatch.setattr(pipeline, "add_masks", spy)
     with pytest.raises(_Stop):
         cmpitool(str(tmp_path), [], out_path=str(tmp_path), obs_path=str(OBS_PATH),
                  eval_path=str(EVAL_ERA5), maskfixes=False)
     assert seen["maskfixes"] is False
 
 
-# --- Known bugs ------------------------------------------------------------
+# --- read_errors ------------------------------------------------------------
 
 def _reference_value(model, variable, region, level, season):
     df = pd.read_csv(EVAL_ERA5 / f"{model}.csv", sep=" ").set_index(KEYS)
     return df.loc[(variable, region, level, season), "AbsMeanError"]
 
 
-def _read_one_model(setup, seasons):
-    region = setup["region"]
-    regions = [region(name="arctic", domain="mixed"), region(name="tropics", domain="mixed")]
-    eval_models = [m for m in cmip6_models(setup) if m.name == "ACCESS-CM2"]
-    return read_errors(list(setup["variables"].values()), eval_models, regions, seasons,
-                       "unused/", str(EVAL_ERA5) + "/", 14, False)
+def _read_one_model(seasons, eval_path=EVAL_ERA5, name="ACCESS-CM2"):
+    regions = [Region(name="arctic", domain="mixed"), Region(name="tropics", domain="mixed")]
+    eval_models = [Model(name, [])]
+    return read_errors(list(VARIABLES.values()), eval_models, regions, seasons, eval_path)
 
 
-def test_read_errors_matches_csv(setup):
-    got = _read_one_model(setup, ["JJA", "DJF"])
-    for season in ["JJA", "DJF"]:
+@pytest.mark.parametrize("seasons", [["JJA", "DJF"], ["DJF", "JJA"], ["SON", "MAM", "DJF", "JJA"]])
+def test_read_errors_matches_csv(seasons):
+    # Any season order: the cursor this replaced swapped values unless the
+    # seasons came in the order of the CSV rows.
+    got = _read_one_model(seasons)
+    for season in seasons:
+        for level in ["10m", "100m", "1000m"]:
+            assert got["thetao", "arctic", level, season] == \
+                _reference_value("ACCESS-CM2", "thetao", "arctic", level, season)
         assert got["tas", "tropics", "surface", season] == \
             _reference_value("ACCESS-CM2", "tas", "tropics", "surface", season)
 
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="read_errors assumes the seasons come in CSV order; fixed in PR 4")
-def test_read_errors_season_order(setup):
-    got = _read_one_model(setup, ["DJF", "JJA"])
-    for season in ["JJA", "DJF"]:
-        assert got["tas", "tropics", "surface", season] == \
-            _reference_value("ACCESS-CM2", "tas", "tropics", "surface", season)
+def test_read_errors_row_order_does_not_matter(tmp_path):
+    # Shuffle the text lines, so that every value stays byte for byte the same.
+    header, *rows = (EVAL_ERA5 / "ACCESS-CM2.csv").read_text().splitlines()
+    random.Random(0).shuffle(rows)
+    (tmp_path / "SHUFFLED.csv").write_text("\n".join([header, *rows]) + "\n")
+    seasons = ["MAM", "JJA", "SON", "DJF"]
+    shuffled = _read_one_model(seasons, tmp_path, "SHUFFLED")
+    original = _read_one_model(seasons)
+    assert list(shuffled) == list(original)
+    np.testing.assert_array_equal(list(shuffled.values()), list(original.values()))
+
+
+def test_read_errors_names_a_missing_row(tmp_path):
+    df = pd.read_csv(EVAL_ERA5 / "ACCESS-CM2.csv", sep=" ")
+    df = df[~((df.Variable == "tas") & (df.Region == "tropics"))]
+    df.to_csv(tmp_path / "INCOMPLETE.csv", sep=" ", index=False)
+    with pytest.raises(KeyError, match="INCOMPLETE.csv has tas but no row for region tropics"):
+        _read_one_model(["DJF"], tmp_path, "INCOMPLETE")

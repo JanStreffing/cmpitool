@@ -2,6 +2,20 @@
 History
 =======
 
+1.4 (unreleased)
+----------------
+
+Refactor; results are unchanged. Tracked in #62.
+
+* ``cmpisetup()`` is removed. Models are ``Model('NAME')``, with all variables; the variables are in ``VARIABLES`` and ``make_variables(reanalysis)``, the regions and presets in ``REGION_DOMAINS`` and ``COMPLEXITIES``.
+* ``cmpitool run config.yaml`` runs cmpitool from a YAML file; see ``example.yaml``.
+* ``cmpitool()`` returns the error fractions as an xarray DataArray (model, field, season, region).
+* ``read_errors`` looks up rows by key. Seasons in another order than the reference CSVs got each other's values; a reference file missing a requested row now raises an error naming it.
+* Bias maps have default colour ranges per variable (``Variable.default_limit``). The 5.0 for pr used in example.py was meant as mm/day but pr is in kg m-2 s-1, so those maps were a single colour; the default is 5 mm/day.
+* Masks are one DataArray, the mask fixes select regions by name, and an unknown ``complexity`` raises an error instead of selecting all regions.
+* Progress goes to the ``cmpitool`` logger; ``verbose`` adds details.
+* ``pyproject.toml`` replaces ``setup.py``. cartopy is a dependency, dask is not. The default ``obs/`` and ``eval/`` are those of the checkout, not of the working directory.
+
 1.3.1 (unreleased)
 ------------------
 

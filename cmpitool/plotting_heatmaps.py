@@ -1,10 +1,25 @@
-def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path, verbose):
+import logging
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+from tqdm import tqdm
+
+__all__ = ['plotting_heatmaps']
+
+logger = logging.getLogger(__name__)
+
+
+def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_path):
     '''
     AUTHORS:
     Jan Streffing		2022-11-30	Split off from main tool
+    Jan Streffing		2026-09-29	Table straight from the fraction array
 
     DESCRIPTION:
-    This function loads the model data against that is compared against obs data.
+    This function plots a heatmap of the error fractions per model, with one row per
+    variable and level and one column per region and season.
     
     INPUT:
     models         		List of models to be evaluated
@@ -12,78 +27,35 @@ def plotting_heatmaps(models, regions, seasons, obs, error_fraction, cmpi, out_p
     seasons                     List of seasons to be evaluated
     obs                         List of variables objects for which observations
                                 will be loaded
-    error_fraction              Ordered dictionary containing the fraction of error 
-                                between your model / evaluation model mean
+    error_fraction              DataArray (model, field, season, region) of the ratio of
+                                your model's error to the evaluation models' mean error
     cmpi                        List of climate model overall performance indices
                                 one per model
     out_path                    String pointing to the folder in which results will be stored
-    verbose                     Boolean for verbose output
 
     RETURN:
     '''
 
-    from collections import OrderedDict
-    from tqdm import tqdm
-    import matplotlib.pyplot as plt
-    import numpy as np
-    import pandas as pd
-    import seaborn as sns
 
-    print('Plotting heatmap(s)')
+    logger.info('Plotting heatmap(s)')
 
-    regions_names = []
-    for region in regions:
-        regions_names.append(region.name)
-            
-    reorganized_error_fraction = OrderedDict()
+    # One row per field (variable and level), one column per region and season
+    rows = [var.row_label(depth) for var in obs for depth in var.depths]
+    columns = [region.name+' '+seas for region in regions for seas in seasons]
+
     for model in tqdm(models):
-        r=0
-        for var in obs:
-            for depth in var.depths:
-                for region in regions:
-                    for seas in seasons:
-                        try:
-                            if len(var.depths) == 1:
-                                reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=error_fraction[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0][0]
-                            else:
-                                reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=error_fraction[var.name,depth,seas,model.name,region.name].to_array(var.name).values[0][0][0]
-                            r+=1
-                        except KeyError: # variable not provided by this model
-                            reorganized_error_fraction[var.name+' '+region.name,depth+' '+seas]=np.nan
-        def add_space(input): #Small helper function added spaces in front of season names
-            output = []
-            for string in input:
-                output.append(str(' ')+string)
-            return output
+        # Fields the model does not provide are NaN and stay empty
+        values = error_fraction.sel(model=model.name).transpose('field', 'region', 'season').values
+        table = pd.DataFrame(values.reshape(len(rows), len(columns)), index=rows, columns=columns)
+        logger.debug('%s heatmap shape: %s', model.name, table.shape)
 
-        seasons_plot = add_space(seasons) 
-        a=seasons_plot*len(regions)
-        b=np.repeat(regions_names,len(seasons_plot))
-        coord=[n+str(m) for m,n in zip(a,b)]
-        
-        index_obs=[]
-        for var in obs:
-            for depth in var.depths:
-                if depth == 'surface':
-                    levelname=''
-                else:
-                    levelname=depth+' '
-                if var.name == 'zos':
-                    levelname='st. dev. '
-                index_obs.append(levelname+var.name)
-        if verbose:
-            print(model.name,'number of values: ',len(list(reorganized_error_fraction.values())),'; shape:',len(index_obs),'x',len(regions)*len(seasons))
-        collect_frac_reshaped = np.array(list(reorganized_error_fraction.values()) ).reshape(len(index_obs),len(regions)*len(seasons)) # transform to 2D
-        collect_frac_dataframe = pd.DataFrame(data=collect_frac_reshaped, index=index_obs, columns=coord)
-
-        fig, ax = plt.subplots(figsize=((len(regions)*len(seasons))/1.5,len(index_obs)/1.5))
+        fig, ax = plt.subplots(figsize=(len(columns)/1.5, len(rows)/1.5))
         fig.patch.set_facecolor('white')
-        plt.rcParams['axes.facecolor'] = 'white'
-        ax = sns.heatmap(collect_frac_dataframe, vmin=0.5, vmax=1.5,center=1,annot=True,fmt='.2f',cmap="PiYG_r",cbar=False,linewidths=1)
-        plt.xticks(rotation=90,fontsize=14)
-        plt.yticks(rotation=0, ha='right',fontsize=14)
-        plt.title(model.name+' CMPI: '+str(round(cmpi[model.name],3)), fontsize=18)
-        
-        plt.savefig(out_path+'plot/'+model.name+'.png',dpi=300,bbox_inches='tight')
-        plt.close(fig)
+        ax.set_facecolor('white')
+        sns.heatmap(table, vmin=0.5, vmax=1.5, center=1, annot=True, fmt='.2f', cmap="PiYG_r", cbar=False, linewidths=1, ax=ax)
+        plt.setp(ax.get_xticklabels(), rotation=90, fontsize=14)
+        plt.setp(ax.get_yticklabels(), rotation=0, ha='right', fontsize=14)
+        ax.set_title(model.name+' CMPI: '+str(round(cmpi[model.name],3)), fontsize=18)
 
+        fig.savefig(Path(out_path) / 'plot' / (model.name+'.png'), dpi=300, bbox_inches='tight')
+        plt.close(fig)
