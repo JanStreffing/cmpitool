@@ -35,7 +35,7 @@ Run your first analysis:
 - Prepare your model output by following the `guide to preprocessing <how_to.rst#preprocess-data-for-cmpitool>`_
 - Open the ``example.py`` and/or integrate cmpitool into your existing python script/notebook. 
 - Or copy ``example.yaml``, set your paths and models, and run ``cmpitool run example.yaml``.
-- Configure cmpitool with ``Model('YOUR-MODEL', 'all')`` (or a list of variable names) and the optional arguments of ``cmpitool()``.
+- Configure cmpitool with ``Model('YOUR-MODEL')``, which evaluates every variable, and the optional arguments of ``cmpitool()``.
 - You can now run an analysis against CMIP6 model performance.
 
 Understanding the Output:
@@ -84,12 +84,12 @@ Here's a minimal example script:
    # Specify model data path
    model_path = '/path/to/your/processed/model/data/'
    
-   # Define models and variables to analyze
+   # The models to analyze, each with every variable cmpitool evaluates
    models = [
-       Model('SAME_EXPERIMENT_NAME_AS_SET_DURING_PREPROCESSING', ['tas', 'pr', 'uas', 'vas'])
+       Model('SAME_EXPERIMENT_NAME_AS_SET_DURING_PREPROCESSING')
    ]
    
    # Run analysis
    cmpitool(model_path, models, verbose=True, biasmaps=True)
 
-This will analyze your model against the default set of 30 CMIP6 models for the specified variables.
+This will analyze your model against the default set of 30 CMIP6 models for all variables.

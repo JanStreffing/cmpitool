@@ -122,7 +122,9 @@ class Model:
     A model to evaluate, or to evaluate against.
 
     name                        Model name, the middle part of its file names
-    variables                   'all', or a list of variable names or Variable objects
+    variables                   'all' (default): everything cmpitool evaluates, the normal
+                                case. A list of variable names or Variable objects only
+                                for a model that does not output some of them
     '''
     name: str
     variables: object = 'all'

@@ -45,7 +45,7 @@ def loading_obs(obs, obs_path, seasons):
     Examples
     --------
     >>> from cmpitool import VARIABLES, loading_obs
-    >>> obs = [VARIABLES['tas'], VARIABLES['pr']]  # Select specific variables
+    >>> obs = list(VARIABLES.values())
     >>> ds_obs = loading_obs(obs, 'path/to/obs/', ['DJF', 'JJA'])
     
     AUTHORS:

@@ -5,12 +5,14 @@
 # <variable>_<model>_<time>_<level>_<season>.nc
 model_path: /work/ab0246/a270092/software/cmpitool/input/
 
-# Models to evaluate: a name for all variables, or a name with a list of variables
+# Models to evaluate, each with every variable cmpitool evaluates. Only for a
+# model that does not output some variable, list the ones it has:
+#   - name: MODEL
+#     variables: [tas, pr, ...]
 models:
-  - name: TUNE10_GGAUSS
-  - name: TUNE11_RVICE
-  - name: TUNE12_ENTSTPC
-    variables: [tas, pr, rlut, siconc]
+  - TUNE10_GGAUSS
+  - TUNE11_RVICE
+  - TUNE12_ENTSTPC
 
 # Reference models. Leave out to compare with the 30 CMIP6 models.
 eval_models:

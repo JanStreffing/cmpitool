@@ -13,7 +13,6 @@ models=[
         Model('TUNE10_GGAUSS', 'all'),
         Model('TUNE11_RVICE', 'all'),
         Model('TUNE12_ENTSTPC', 'all'),
-        # A model with only some variables: Model('NAME', ['tas', 'pr', 'siconc'])
     ]
 
 # Bias maps use each variable's default colour range, Variable.default_limit in

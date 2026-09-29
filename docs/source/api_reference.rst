@@ -73,7 +73,7 @@ Model
 
 Parameters:
    - **name** (*str*): Model name, the middle part of its file names
-   - **variables**: ``'all'``, or a list of variable names or ``Variable`` objects, e.g. ``Model('MY-MODEL', ['tas', 'pr'])``
+   - **variables**: ``'all'`` (default), which is the normal case: the tool is meant to evaluate everything a model outputs. A list of variable names or ``Variable`` objects is only for a model that does not output some of them
 
 Region
 ^^^^^^
@@ -217,7 +217,7 @@ Example 1: Basic Analysis
 
    # Define models
    models = [
-       Model('YOUR-MODEL', ['tas', 'pr', 'rlut'])
+       Model('YOUR-MODEL')
    ]
    
    # Run analysis
@@ -241,7 +241,7 @@ Example 2: Choosing the Regions
    #   'all'       all of the above
    cmpitool(
        model_path='/path/to/your/data/',
-       models=[Model('YOUR-MODEL', ['tas', 'pr'])],
+       models=[Model('YOUR-MODEL')],
        complexity='regions',
        verbose=True
    )
@@ -255,13 +255,13 @@ Example 3: Custom Evaluation Models
 
    # Define evaluation models
    eval_models = [
-       Model('EVAL-MODEL-1', ['tas', 'pr']),
-       Model('EVAL-MODEL-2', ['tas', 'pr'])
+       Model('EVAL-MODEL-1'),
+       Model('EVAL-MODEL-2')
    ]
    
    # Define models to evaluate
    models = [
-       Model('TEST-MODEL', ['tas', 'pr'])
+       Model('TEST-MODEL')
    ]
    
    # Run analysis with custom evaluation models

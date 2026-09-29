@@ -7,7 +7,7 @@ History
 
 Refactor; results are unchanged. Tracked in #62.
 
-* ``cmpisetup()`` is removed. Models are ``Model('NAME', 'all')`` or ``Model('NAME', ['tas', 'pr'])``; the variables are in ``VARIABLES`` and ``make_variables(reanalysis)``, the regions and presets in ``REGION_DOMAINS`` and ``COMPLEXITIES``.
+* ``cmpisetup()`` is removed. Models are ``Model('NAME')``, with all variables; the variables are in ``VARIABLES`` and ``make_variables(reanalysis)``, the regions and presets in ``REGION_DOMAINS`` and ``COMPLEXITIES``.
 * ``cmpitool run config.yaml`` runs cmpitool from a YAML file; see ``example.yaml``.
 * ``cmpitool()`` returns the error fractions as an xarray DataArray (model, field, season, region).
 * ``read_errors`` looks up rows by key. Seasons in another order than the reference CSVs got each other's values; a reference file missing a requested row now raises an error naming it.

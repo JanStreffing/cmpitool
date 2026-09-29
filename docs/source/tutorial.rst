@@ -55,10 +55,10 @@ Create a Python script (or Jupyter notebook) with the following structure:
    # Define the path to your processed model data
    model_path = '/path/to/your/processed/model/data/'
 
-   # Define which models and variables to analyze
+   # The models to analyze, each with every variable cmpitool evaluates
    models = [
-       Model('YOUR-MODEL-1', ['tas', 'pr', 'rlut', 'uas', 'vas']),
-       Model('YOUR-MODEL-2', ['tas', 'pr', 'rlut', 'uas', 'vas', 'zg'])
+       Model('YOUR-MODEL-1'),
+       Model('YOUR-MODEL-2')
    ]
 
    # Run the analysis
@@ -140,9 +140,8 @@ Let's say you're particularly interested in model performance in the Arctic regi
    # Focus on Arctic analysis
    from cmpitool import cmpitool, Model
 
-   # Create a model list with Arctic-relevant variables
    models = [
-       Model('YOUR-MODEL', ['siconc', 'tas', 'uas', 'vas'])
+       Model('YOUR-MODEL')
    ]
    
    # Run the analysis for the latitude boxes, which include the Arctic (60N-90N);
@@ -167,23 +166,22 @@ If you want to evaluate a model against your own experiment instead of CMIP6:
 .. code-block:: python
 
    # First run for reference model
-   reference_model = [Model('REFERENCE-MODEL', ['tas', 'pr', 'uas', 'vas'])]
+   reference_model = [Model('REFERENCE-MODEL')]
    
    cmpitool(
        model_path='/path/to/reference/data/',
        models=reference_model,
-       use_for_eval=True,  # Mark this as reference for evaluation
+       use_for_eval=True,  # Copy its errors to eval/ERA5/ as a reference
        verbose=True
    )
    
    # Then run for your test model using the reference
-   test_model = [Model('TEST-MODEL', ['tas', 'pr', 'uas', 'vas'])]
+   test_model = [Model('TEST-MODEL')]
    
    cmpitool(
        model_path='/path/to/test/data/',
        models=test_model,
        eval_models=reference_model,  # Use your reference model
-       eval_path='output/',  # Where reference model results were saved
        verbose=True
    )
 

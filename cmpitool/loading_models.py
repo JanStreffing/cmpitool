@@ -44,9 +44,9 @@ def loading_models(models, model_path, seasons, time):
     --------
     >>> from collections import OrderedDict
     >>> from cmpitool import Model, loading_models
-    >>> models = [Model('MODEL', ['siconc'])]
+    >>> models = [Model('MODEL')]
     >>> seasons = ['DJF', 'JJA']
-    >>> ds_model = loading_models(models, '/path/to/data/', seasons, '198912-201411', True)
+    >>> ds_model = loading_models(models, '/path/to/data/', seasons, '198912-201411')
     
     AUTHORS:
     Jan Streffing               2022-11-30      Split off from main tool

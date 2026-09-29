@@ -119,7 +119,7 @@ def cmpitool(model_path: str, models: list, eval_models: list = None, out_path: 
     Examples
     --------
     >>> from cmpitool import cmpitool, Model
-    >>> mymodel = Model('MyModel', ['tas', 'pr'])     # or Model('MyModel', 'all')
+    >>> mymodel = Model('MyModel')     # every variable cmpitool evaluates
     >>> result = cmpitool('model_data/', [mymodel], out_path='results/')
     
     AUTHORS:
