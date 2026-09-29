@@ -55,11 +55,17 @@ def write_fractions(error_fraction, models, regions, seasons, out_path):
         with open(Path(out_path) / 'frac' / (model.name+'_fraction.csv'), 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=' ',quotechar='|', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(['Variable','Region','Level','Season','FracMeanError'])
+            # One array per model, indexed by position: .loc per value took most of the time
+            table = error_fraction.sel(model=model.name).transpose('field', 'season', 'region')
+            values = table.values
+            field_index = {field: i for i, field in enumerate(table.field.values)}
+            season_index = {seas: i for i, seas in enumerate(table.season.values)}
+            region_index = {region: i for i, region in enumerate(table.region.values)}
             for var in model.variables:
                 for depth in var.depths:
                     for region in regions:
                         for seas in seasons:
-                            value = float(error_fraction.loc[model.name, var.name+'/'+depth, seas, region.name])
+                            value = float(values[field_index[var.name+'/'+depth], season_index[seas], region_index[region.name]])
                             writer.writerow([var.name,region.name,depth,seas,value])
             writer.writerow(['CMPI','global','yearly',cmpi[model.name]])
     return cmpi

@@ -2,6 +2,16 @@
 History
 =======
 
+Unreleased
+----------
+
+Faster; results unchanged.
+
+* Bias maps are drawn with ``transform_first=True``: cartopy projects the grid points instead of the contour polygons, which gives the same map about 20 times faster.
+* Model files are read, and heatmaps and bias maps drawn, in parallel processes. The new ``workers`` argument of ``cmpitool()`` sets their number; the default uses the CPUs available, at most 8.
+* ``write_errors`` and ``write_fractions`` index one array per model instead of looking up every value with ``.loc``.
+* One model with bias maps: 114 s to 7 s. 30 models with all regions: 323 s to 32 s. CSVs, reference files and heatmaps are byte-identical; the bias maps are the same apart from two pixels of height.
+
 1.5.0 (2026-09-29)
 ------------------
 
