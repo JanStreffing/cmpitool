@@ -185,4 +185,21 @@ If you want to evaluate a model against your own experiment instead of CMIP6:
        verbose=True
    )
 
+A Model That Does Not Output Every Variable
+-------------------------------------------
+
+Evaluate every variable a model provides. Only when a run cannot provide some of them, list the ones it has. An atmosphere-only (AMIP) run, for example, has prescribed sea ice and sea-surface temperature and no ocean, so it has none of siconc, zos, mlotst, thetao and so:
+
+.. code-block:: python
+
+   amip_run = Model('YOUR-AMIP-RUN', ['tas', 'clt', 'pr', 'rlut', 'uas', 'vas', 'ua', 'zg'])
+
+   cmpitool(
+       model_path='/path/to/your/amip/data/',
+       models=[amip_run],
+       verbose=True
+   )
+
+Its heatmap leaves the rows of the missing variables empty, and its CMPI is the mean over the variables it has.
+
 This concludes the tutorial. For more advanced usage and detailed parameter descriptions, refer to the API documentation.
