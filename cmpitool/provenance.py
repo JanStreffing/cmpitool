@@ -1,7 +1,7 @@
 '''
 The header of the error CSVs: which cmpitool, observations and region masks made them.
 
-    # cmpitool 2.0.0
+    # cmpitool 1.5.0
     # obs siconc=OSISAF tas=ERA5 ...
     # masks arctic=1f0c9d2e4b7a northmid=...
     Variable Region Level Season AbsMeanError
@@ -11,7 +11,7 @@ read_errors refuses a reference file made with other observations or masks
 than the current run, since its errors would not be comparable.
 
 AUTHORS:
-Jan Streffing               2026-09-29      Written for the 2.0.0 reference format
+Jan Streffing               2026-09-29      Written for the 1.5.0 reference format
 '''
 
 import hashlib
@@ -63,7 +63,7 @@ def check_header(path, header, variables, regions):
     '''
     if 'obs' not in header or 'masks' not in header:
         raise ValueError(str(path)+' has no header naming its observations and masks. It was written before '
-                         'cmpitool 2.0.0, whose masks differ; recompute it with use_for_eval=True.')
+                         'cmpitool 1.5.0, whose masks differ; recompute it with use_for_eval=True.')
     for var in variables:
         made_with = header['obs'].get(var.name)
         if made_with is not None and made_with != var.obs:
