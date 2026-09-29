@@ -2,7 +2,7 @@
 History
 =======
 
-1.4 (unreleased)
+1.4 (2026-09-29)
 ----------------
 
 Refactor; results are unchanged. Tracked in #62.
@@ -16,7 +16,7 @@ Refactor; results are unchanged. Tracked in #62.
 * Progress goes to the ``cmpitool`` logger; ``verbose`` adds details.
 * ``pyproject.toml`` replaces ``setup.py``. cartopy is a dependency, dask is not. The default ``obs/`` and ``eval/`` are those of the checkout, not of the working directory.
 
-1.3.1 (unreleased)
+1.3.1 (2026-09-28)
 ------------------
 
 Bug fixes; ERA5 results are unchanged. Tracked in #62.
